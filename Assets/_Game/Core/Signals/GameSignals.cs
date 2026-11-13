@@ -18,6 +18,27 @@ namespace OutOfOffice.Core.Signals
     public readonly struct LanguageCycleRequestedSignal { }
     public readonly struct AbilityRequestedSignal { }
 
+    /// <summary>Sahip olunan aksesuarı kullan (çift dokunuş, HUD butonu ya da E tuşu).</summary>
+    public readonly struct AccessoryUseRequestedSignal { }
+    public readonly struct AccessoryBuyRequestedSignal { }
+
+    /// <summary>Koleksiyondan bir mesleği seç.</summary>
+    public readonly struct CharacterSelectRequestedSignal
+    {
+        public readonly string Id;
+        public CharacterSelectRequestedSignal(string id) { Id = id; }
+    }
+
+    public readonly struct StorePurchaseRequestedSignal
+    {
+        public readonly string ItemId;
+        public StorePurchaseRequestedSignal(string itemId) { ItemId = itemId; }
+    }
+
+    /// <summary>Anahtar harcayıp yakalandığın yerden devam et / teklifi geri çevir.</summary>
+    public readonly struct ReviveRequestedSignal { }
+    public readonly struct ReviveDeclinedSignal { }
+
     /// <summary>Seçili (otomatikleşmiş) mesleği altınla geri al.</summary>
     public readonly struct BuybackRequestedSignal { }
 
@@ -47,6 +68,27 @@ namespace OutOfOffice.Core.Signals
 
     /// <summary>Menüye dönüldü; sahnedeki koşu kalıntıları temizlenir.</summary>
     public readonly struct RunClearedSignal { }
+
+    /// <summary>Oyuncu yakalandı ve yeterli anahtarı var; karar bekleniyor.</summary>
+    public readonly struct ReviveOfferedSignal
+    {
+        public readonly int KeyCost;
+        public readonly float Seconds;
+        public ReviveOfferedSignal(int keyCost, float seconds) { KeyCost = keyCost; Seconds = seconds; }
+    }
+
+    /// <summary>Anahtar kullanıldı; koşu kaldığı yerden sürüyor.</summary>
+    public readonly struct RunRevivedSignal { }
+
+    public readonly struct PackageCollectedSignal { }
+
+    /// <summary>Oyun sonunda bir sürpriz paket açıldı.</summary>
+    public readonly struct PackageOpenedSignal
+    {
+        public readonly RewardKind Kind;
+        public readonly int Amount;
+        public PackageOpenedSignal(RewardKind kind, int amount) { Kind = kind; Amount = amount; }
+    }
 
     public readonly struct RunEndedSignal
     {
@@ -159,6 +201,32 @@ namespace OutOfOffice.Core.Signals
         }
     }
 
+    /// <summary>
+    /// Koleksiyondaki bir meslek kartının güncel hali. Seçim, otomasyon ya da geri alma
+    /// olduğunda her meslek için yeniden duyurulur.
+    /// </summary>
+    public readonly struct CharacterCardSignal
+    {
+        public readonly string Id;
+        public readonly string NameKey;
+        public readonly string AbilityNameKey;
+        public readonly UnityEngine.Color Color;
+        public readonly bool IsAutomated;
+        public readonly int BuybackCost;
+        public readonly bool IsSelected;
+
+        public CharacterCardSignal(string id, string nameKey, string abilityNameKey, UnityEngine.Color color, bool isAutomated, int buybackCost, bool isSelected)
+        {
+            Id = id;
+            NameKey = nameKey;
+            AbilityNameKey = abilityNameKey;
+            Color = color;
+            IsAutomated = isAutomated;
+            BuybackCost = buybackCost;
+            IsSelected = isSelected;
+        }
+    }
+
     /// <summary>Oyuncu yakalandı ve oynadığı meslek otomatikleşti.</summary>
     public readonly struct ProfessionAutomatedSignal
     {
@@ -167,11 +235,45 @@ namespace OutOfOffice.Core.Signals
         public ProfessionAutomatedSignal(string id, string nameKey) { Id = id; NameKey = nameKey; }
     }
 
+    /// <summary>Mağazada satılan bir ürün. Açılışta her ürün için bir kez duyurulur.</summary>
+    public readonly struct StoreItemListedSignal
+    {
+        public readonly string Id;
+        public readonly string NameKey;
+        public readonly RewardKind Kind;
+        public readonly int Amount;
+        public readonly int Price;
+
+        public StoreItemListedSignal(string id, string nameKey, RewardKind kind, int amount, int price)
+        {
+            Id = id;
+            NameKey = nameKey;
+            Kind = kind;
+            Amount = amount;
+            Price = price;
+        }
+    }
+
+    public readonly struct AccessoryChangedSignal
+    {
+        public readonly string NameKey;
+        public readonly int Count;
+        public readonly int Price;
+        public AccessoryChangedSignal(string nameKey, int count, int price) { NameKey = nameKey; Count = count; Price = price; }
+    }
+
     public readonly struct ProfileChangedSignal
     {
         public readonly int BestScore;
         public readonly int TotalCoins;
-        public ProfileChangedSignal(int bestScore, int totalCoins) { BestScore = bestScore; TotalCoins = totalCoins; }
+        public readonly int Keys;
+
+        public ProfileChangedSignal(int bestScore, int totalCoins, int keys)
+        {
+            BestScore = bestScore;
+            TotalCoins = totalCoins;
+            Keys = keys;
+        }
     }
 
     public readonly struct LocaleChangedSignal

@@ -20,6 +20,8 @@ namespace OutOfOffice.Gameplay
         readonly ISignalBus _bus;
         readonly SubscriptionBag _subscriptions = new SubscriptionBag();
 
+        const float FlightClimbSpeed = 14f;
+
         int _lane;
         float _x;
         float _y;
@@ -29,6 +31,7 @@ namespace OutOfOffice.Gameplay
         float _slideTimer;
         float _jumpBufferedUntil;
         bool _grounded = true;
+        bool _flying;
 
         public PlayerSystem(
             GameConfig config,
@@ -66,7 +69,8 @@ namespace OutOfOffice.Gameplay
             _grounded = true;
             _slideTimer = 0f;
             _jumpBufferedUntil = 0f;
-            _status.HasShield = false;
+            _flying = false;
+            _status.ResetModifiers();
             _rig.SetSliding(false);
             _rig.Animate(0f, 0f, 0f, true, 0f);
             Apply();
@@ -98,6 +102,8 @@ namespace OutOfOffice.Gameplay
 
         void Jump()
         {
+            if (_flying) return;
+
             if (!_grounded)
             {
                 // Girdi tamponu: inişten hemen önce basılan zıplama kaybolmaz.
@@ -107,12 +113,14 @@ namespace OutOfOffice.Gameplay
 
             StopSliding();
             _grounded = false;
-            _verticalSpeed = Mathf.Sqrt(2f * _config.gravity * _config.jumpHeight);
+            _verticalSpeed = Mathf.Sqrt(2f * _config.gravity * _config.jumpHeight * Mathf.Max(1f, _status.JumpMultiplier));
             _bus.Fire<PlayerJumpedSignal>();
         }
 
         void Slide()
         {
+            if (_flying) return;
+
             // Havadayken aşağı kaydırma: hızlı in, sonra kay.
             if (!_grounded) _verticalSpeed = -_config.fastFallSpeed;
 
@@ -137,8 +145,23 @@ namespace OutOfOffice.Gameplay
             _z += _session.Speed * dt;
             _x = Mathf.SmoothDamp(_x, _config.LaneToX(_lane), ref _sideSpeed, _config.laneSmoothTime, Mathf.Infinity, dt);
 
-            if (!_grounded)
+            float flightHeight = _status.FlightHeight;
+            if (flightHeight > 0f)
             {
+                // Uçuş: engellerin üstünde süzül. Zıplama ve kayma kapalı.
+                if (!_flying)
+                {
+                    _flying = true;
+                    _grounded = false;
+                    StopSliding();
+                }
+
+                _verticalSpeed = 0f;
+                _y = Mathf.MoveTowards(_y, flightHeight, FlightClimbSpeed * dt);
+            }
+            else if (!_grounded)
+            {
+                _flying = false;
                 _verticalSpeed -= _config.gravity * dt;
                 _y += _verticalSpeed * dt;
                 if (_y <= 0f)

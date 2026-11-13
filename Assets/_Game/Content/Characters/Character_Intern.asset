@@ -14,8 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.CharacterDefinition
   id: intern
   nameKey: char.intern
+  themeColor: {r: 0.5, g: 0.55, b: 0.62, a: 1}
   prefab: {fileID: 9140222558689045086, guid: caac2d65dd76645658412f44f1ab83d6, type: 3}
   ability: {fileID: 0}
   canBeAutomated: 0
   buybackCost: 0
+  buybackGrowth: 1.5
+  buybackMaxCost: 0
   automatedObstacle: {fileID: 0}

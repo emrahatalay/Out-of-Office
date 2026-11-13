@@ -9,5 +9,6 @@ namespace OutOfOffice.Data.Effects
     {
         public override void Apply(EffectContext context) { context.Player.HasShield = true; }
         public override void Remove(EffectContext context) { context.Player.HasShield = false; }
+        public override bool EndsWhenShieldBreaks => true;
     }
 }

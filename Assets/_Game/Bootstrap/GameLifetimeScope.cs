@@ -44,7 +44,7 @@ namespace OutOfOffice.Bootstrap
             // Koşunun paylaşılan durumu
             builder.Register<RunSession>(Lifetime.Singleton);
             builder.Register<PlayerStatus>(Lifetime.Singleton).AsSelf().As<IPlayerStatus>();
-            builder.Register<PlayerRig>(Lifetime.Singleton);
+            builder.Register<PlayerRig>(Lifetime.Singleton).AsSelf().As<IPlayerAttachments>();
             builder.Register<EffectContext>(Lifetime.Singleton);
             builder.RegisterEntryPoint<PlayerProfile>().AsSelf();
             builder.Register<Workforce>(Lifetime.Singleton);
@@ -63,6 +63,9 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<EffectRunner>().AsSelf();
             builder.RegisterEntryPoint<CameraFollowSystem>();
             builder.RegisterEntryPoint<PoolWarmupSystem>();
+            builder.RegisterEntryPoint<AccessorySystem>().AsSelf();
+            RegisterAlwaysOn<RewardSystem>(builder);
+            builder.RegisterEntryPoint<StoreSystem>();
 
             // His ve efektler (sadece sinyal dinler; çıkarılsalar oyun aynen çalışır)
             builder.RegisterEntryPoint<TimeFeelSystem>();
@@ -76,6 +79,10 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<HudPresenter>();
             builder.RegisterEntryPoint<PausePresenter>();
             builder.RegisterEntryPoint<GameOverPresenter>();
+            builder.RegisterEntryPoint<AccessoryPresenter>();
+            builder.RegisterEntryPoint<StorePresenter>();
+            builder.RegisterEntryPoint<MenuTabsPresenter>();
+            builder.RegisterEntryPoint<CollectionPresenter>();
         }
 
         /// <summary>Yalnızca sinyal dinleyen (Tick'i olmayan) sistemler için: kimse istemese de kurulur.</summary>

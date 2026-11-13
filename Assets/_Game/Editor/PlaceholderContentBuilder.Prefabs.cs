@@ -10,6 +10,7 @@ namespace OutOfOffice.EditorTools
             public GameObject DevBot, DesignBot;
             public GameObject ServerRack, CookieWall, RobotVacuum, CargoDrone, AutoTaxi;
             public GameObject Coin, Captcha, Hallucination, Shield;
+            public GameObject DronePickup, Magnet, Overtime, Espresso, OfficeChair, Package;
             public GameObject Ground;
         }
 
@@ -29,6 +30,7 @@ namespace OutOfOffice.EditorTools
             var green = Mat("CaptchaGreen", new Color(0.25f, 0.85f, 0.45f), 0.6f, 1.5f);
             var purple = Mat("HallucinationPurple", new Color(0.62f, 0.35f, 0.95f), 0.6f, 1.5f);
             var cyan = Mat("ShieldCyan", new Color(0.25f, 0.85f, 0.95f), 0.6f, 1.5f);
+            var espresso = Mat("EspressoBrown", new Color(0.55f, 0.33f, 0.18f), 0.5f, 1.2f);
             var internGrey = Mat("InternGrey", new Color(0.62f, 0.66f, 0.72f));
             var floor = Mat("Floor", new Color(0.3f, 0.33f, 0.4f), 0.1f);
             var floorStripe = Mat("FloorStripe", new Color(0.25f, 0.28f, 0.34f), 0.1f);
@@ -51,6 +53,12 @@ namespace OutOfOffice.EditorTools
                 Captcha = BuildPowerUp("Pickup_Captcha", green, white),
                 Hallucination = BuildPowerUp("Pickup_Hallucination", purple, white),
                 Shield = BuildPowerUp("Pickup_Shield", cyan, white),
+                DronePickup = BuildPowerUp("Pickup_Drone", orange, white),
+                Magnet = BuildPowerUp("Pickup_Magnet", red, white),
+                Overtime = BuildPowerUp("Pickup_Overtime", yellow, white),
+                Espresso = BuildPowerUp("Pickup_Espresso", espresso, white),
+                OfficeChair = BuildOfficeChair(dark, steel),
+                Package = BuildPackage(espresso, yellow),
                 Ground = BuildGround(floor, floorStripe, white, wall, dark),
             };
         }
@@ -91,6 +99,30 @@ namespace OutOfOffice.EditorTools
 
             BoxTrigger(root, new Vector3(0f, 1.2f, 0f), new Vector3(1.5f, 2.4f, 1.1f));
             CombineByMaterial(root, castShadows: true);
+            return SavePrefab(root);
+        }
+
+        // Kaykayın karşılığı: tekerlekli ofis sandalyesi. Yalnızca görsel; oyuncuya takılır.
+        static GameObject BuildOfficeChair(Material seat, Material metal)
+        {
+            var root = new GameObject("Accessory_OfficeChair");
+            Part(root.transform, PrimitiveType.Cylinder, "Base", new Vector3(0f, 0.06f, 0f), new Vector3(1.1f, 0.05f, 1.1f), metal);
+            Part(root.transform, PrimitiveType.Cylinder, "Stem", new Vector3(0f, 0.25f, 0f), new Vector3(0.12f, 0.2f, 0.12f), metal);
+            Part(root.transform, PrimitiveType.Cube, "Seat", new Vector3(0f, 0.48f, 0f), new Vector3(0.95f, 0.14f, 0.9f), seat);
+            Part(root.transform, PrimitiveType.Cube, "Back", new Vector3(0f, 1.05f, -0.48f), new Vector3(0.9f, 1.1f, 0.12f), seat);
+            return SavePrefab(root);
+        }
+
+        // Sürpriz paket: kurdeleli kutu. Oyun sonunda açılır.
+        static GameObject BuildPackage(Material box, Material ribbon)
+        {
+            var root = new GameObject("Pickup_Package");
+            Part(root.transform, PrimitiveType.Cube, "Box", new Vector3(0f, 1.05f, 0f), new Vector3(0.9f, 0.9f, 0.9f), box);
+            Part(root.transform, PrimitiveType.Cube, "RibbonA", new Vector3(0f, 1.05f, 0f), new Vector3(0.94f, 0.94f, 0.2f), ribbon);
+            Part(root.transform, PrimitiveType.Cube, "RibbonB", new Vector3(0f, 1.05f, 0f), new Vector3(0.2f, 0.94f, 0.94f), ribbon);
+
+            SphereTrigger(root, new Vector3(0f, 1.05f, 0f), 0.85f);
+            CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 

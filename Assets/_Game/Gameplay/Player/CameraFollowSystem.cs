@@ -68,7 +68,8 @@ namespace OutOfOffice.Gameplay
 
             // Koşu pozu
             _x = Mathf.SmoothDamp(_x, player.x * _config.cameraSideFollow, ref _xVelocity, _config.cameraSmoothTime, Mathf.Infinity, dt);
-            _y = Mathf.SmoothDamp(_y, player.y * _config.cameraJumpFollow, ref _yVelocity, _config.cameraSmoothTime, Mathf.Infinity, dt);
+            float heightFollow = _player.FlightHeight > 0f ? _config.cameraFlightFollow : _config.cameraJumpFollow;
+            _y = Mathf.SmoothDamp(_y, player.y * heightFollow, ref _yVelocity, _config.cameraSmoothTime * 2f, Mathf.Infinity, dt);
 
             var runPosition = new Vector3(_x, _y, player.z) + _config.cameraOffset;
             var runLook = new Vector3(_x, _config.cameraLookHeight + _y, player.z + _config.cameraLookAhead);

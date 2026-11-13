@@ -29,6 +29,11 @@ namespace OutOfOffice.Gameplay
         readonly bool[] _laneUsed;
         readonly float[] _laneWeights;
         float _nextRowZ;
+        bool _wasFlying;
+
+        const int AirCoinCount = 34;
+        const float AirCoinSpacing = 3f;
+        const float AirCoinLead = 16f;
 
         public SpawnDirector(
             GameConfig config,
@@ -58,6 +63,7 @@ namespace OutOfOffice.Gameplay
         void OnRunStarted()
         {
             _nextRowZ = _config.firstRowDistance;
+            _wasFlying = false;
 
             // Bu koşunun engel havuzu: dünyanın engelleri + işini kaptıran mesleklerin robotları.
             _candidates.Clear();
@@ -69,6 +75,10 @@ namespace OutOfOffice.Gameplay
         public void Tick()
         {
             if (_state.Current != GameState.Running) return;
+
+            bool flying = _player.FlightHeight > 0f;
+            if (flying && !_wasFlying) SpawnAirCoins();
+            _wasFlying = flying;
 
             float horizon = _player.Position.z + _config.spawnAhead;
             while (_nextRowZ < horizon)
@@ -131,6 +141,25 @@ namespace OutOfOffice.Gameplay
                 float start = z - (_config.coinsPerTrail - 1) * 0.5f * _config.coinSpacing;
                 for (int i = 0; i < _config.coinsPerTrail; i++)
                     _pickups.Spawn(world.coinPrefab, null, LanePosition(freeLane, start + i * _config.coinSpacing));
+            }
+        }
+
+        // Uçuş süresince toplanacak, şeritler arasında kıvrılan altın yolu.
+        void SpawnAirCoins()
+        {
+            var world = _session.World;
+            if (world == null || world.coinPrefab == null) return;
+
+            int lane = _player.Lane;
+            float y = _player.FlightHeight - 0.1f;
+            float z = _player.Position.z + AirCoinLead;
+
+            for (int i = 0; i < AirCoinCount; i++)
+            {
+                if (i > 0 && i % 8 == 0)
+                    lane = Mathf.Clamp(lane + (Random.value < 0.5f ? -1 : 1), 0, _config.laneCount - 1);
+
+                _pickups.Spawn(world.coinPrefab, null, new Vector3(_config.LaneToX(lane), y, z + i * AirCoinSpacing));
             }
         }
 

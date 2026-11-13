@@ -8,15 +8,22 @@
             <ui:VisualElement class="safe-area" picking-mode="Ignore">
                 <ui:VisualElement class="screen-content" picking-mode="Ignore">
                     <ui:VisualElement class="top-bar" picking-mode="Ignore">
-                        <ui:VisualElement class="chip">
-                            <ui:VisualElement class="icon icon-coin" />
-                            <ui:Label name="menuCoinsValue" text="0" class="chip-value" />
+                        <ui:VisualElement class="chip-group">
+                            <ui:VisualElement class="chip">
+                                <ui:VisualElement class="icon icon-coin" />
+                                <ui:Label name="menuCoinsValue" text="0" class="chip-value" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="chip chip--next">
+                                <ui:VisualElement class="icon icon-key" />
+                                <ui:Label name="menuKeysValue" text="0" class="chip-value" />
+                            </ui:VisualElement>
                         </ui:VisualElement>
                         <ui:Button name="languageButton" class="chip chip-button">
                             <ui:VisualElement class="icon icon-globe" picking-mode="Ignore" />
                             <ui:Label text="#ui.language.short" class="chip-value" picking-mode="Ignore" />
                         </ui:Button>
                     </ui:VisualElement>
+                    <ui:VisualElement name="homePage" class="page" picking-mode="Ignore">
                     <ui:VisualElement class="logo" picking-mode="Ignore">
                         <ui:Label text="#ui.title" class="logo-title" />
                         <ui:VisualElement class="logo-rule" />
@@ -49,6 +56,18 @@
                             </ui:Button>
                         </ui:VisualElement>
                     </ui:VisualElement>
+                    <ui:VisualElement class="accessory-row">
+                        <ui:VisualElement class="chip">
+                            <ui:VisualElement class="icon icon-chair" />
+                            <ui:Label name="accessoryName" class="chip-label" />
+                            <ui:Label name="accessoryCount" text="0" class="chip-value" />
+                        </ui:VisualElement>
+                        <ui:Button name="accessoryBuyButton" class="chip chip-button">
+                            <ui:Label text="+1" class="chip-value chip-value--first" picking-mode="Ignore" />
+                            <ui:VisualElement class="icon icon-coin icon-gap" picking-mode="Ignore" />
+                            <ui:Label name="accessoryPrice" text="0" class="chip-value" picking-mode="Ignore" />
+                        </ui:Button>
+                    </ui:VisualElement>
                     <ui:Button name="playButton" class="btn btn-primary btn-large">
                         <ui:VisualElement class="icon icon-play" picking-mode="Ignore" />
                         <ui:Label text="#ui.play" class="btn-label btn-label-large" picking-mode="Ignore" />
@@ -58,6 +77,33 @@
                         <ui:VisualElement class="icon icon-coin icon-coin-dark" picking-mode="Ignore" />
                         <ui:Label name="buybackCost" text="0" class="btn-label btn-label-dark" picking-mode="Ignore" />
                     </ui:Button>
+                    </ui:VisualElement>
+
+                    <ui:VisualElement name="collectionPage" class="page page--panel hidden">
+                        <ui:Label text="#ui.collection" class="dialog-title" />
+                        <ui:Label text="#ui.collection.hint" class="dialog-hint" />
+                        <ui:VisualElement name="collectionGrid" class="card-grid" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement name="storePage" class="page page--panel hidden">
+                        <ui:Label text="#ui.store" class="dialog-title" />
+                        <ui:VisualElement name="storeList" class="store-list" />
+                    </ui:VisualElement>
+
+                    <ui:VisualElement class="tab-bar">
+                        <ui:Button name="homeTab" class="tab">
+                            <ui:VisualElement class="icon icon-home tab-icon" picking-mode="Ignore" />
+                            <ui:Label text="#ui.tab.home" class="tab-label" picking-mode="Ignore" />
+                        </ui:Button>
+                        <ui:Button name="collectionTab" class="tab">
+                            <ui:VisualElement class="icon icon-person tab-icon" picking-mode="Ignore" />
+                            <ui:Label text="#ui.tab.collection" class="tab-label" picking-mode="Ignore" />
+                        </ui:Button>
+                        <ui:Button name="storeTab" class="tab">
+                            <ui:VisualElement class="icon icon-package tab-icon" picking-mode="Ignore" />
+                            <ui:Label text="#ui.store" class="tab-label" picking-mode="Ignore" />
+                        </ui:Button>
+                    </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
@@ -86,6 +132,12 @@
                     </ui:VisualElement>
                     <ui:VisualElement class="spacer" picking-mode="Ignore" />
                     <ui:VisualElement class="hud-bottom" picking-mode="Ignore">
+                        <ui:VisualElement class="hud-left" picking-mode="Ignore">
+                            <ui:Button name="accessoryButton" class="chip chip-button hidden">
+                                <ui:VisualElement class="icon icon-chair" picking-mode="Ignore" />
+                                <ui:Label name="hudAccessoryCount" text="0" class="chip-value" picking-mode="Ignore" />
+                            </ui:Button>
+                        </ui:VisualElement>
                         <ui:Button name="abilityButton" class="ability-button">
                             <OutOfOffice.UI.RadialProgress name="abilityRing" class="ability-ring" picking-mode="Ignore" />
                             <ui:VisualElement class="icon icon-large icon-bolt" picking-mode="Ignore" />
@@ -120,34 +172,56 @@
                     <ui:VisualElement class="card card--dialog">
                         <ui:Label text="#ui.gameover.eyebrow" class="eyebrow eyebrow--danger" />
                         <ui:Label text="#ui.gameover" class="dialog-title" />
-                        <ui:Label name="finalScoreValue" text="0" class="final-score" />
-                        <ui:VisualElement name="automatedBadge" class="danger-chip danger-chip--row hidden">
-                            <ui:Label name="automatedName" class="danger-chip-label" />
-                            <ui:Label text="#ui.automated.suffix" class="danger-chip-label danger-chip-suffix" />
+
+                        <ui:VisualElement name="reviveGroup" class="dialog-group hidden">
+                            <ui:Label text="#ui.revive.hint" class="dialog-hint" />
+                            <ui:Button name="reviveButton" class="btn btn-accent">
+                                <ui:Label text="#ui.continue" class="btn-label btn-label-dark" picking-mode="Ignore" />
+                                <ui:VisualElement class="icon icon-key icon-key-dark" picking-mode="Ignore" />
+                                <ui:Label name="reviveCost" text="1" class="btn-label btn-label-dark" picking-mode="Ignore" />
+                            </ui:Button>
+                            <ui:Button name="giveUpButton" class="btn btn-secondary">
+                                <ui:Label text="#ui.giveup" class="btn-label" picking-mode="Ignore" />
+                            </ui:Button>
                         </ui:VisualElement>
-                        <ui:VisualElement name="newBestBadge" class="new-best hidden">
-                            <ui:Label text="#ui.newbest" class="new-best-label" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="stat-row">
-                            <ui:VisualElement class="stat">
-                                <ui:VisualElement class="icon icon-trophy" />
-                                <ui:Label text="#ui.best" class="stat-label" />
-                                <ui:Label name="finalBestValue" text="0" class="stat-value" />
+
+                        <ui:VisualElement name="resultGroup" class="dialog-group">
+                            <ui:Label name="finalScoreValue" text="0" class="final-score" />
+                            <ui:VisualElement name="automatedBadge" class="danger-chip danger-chip--row hidden">
+                                <ui:Label name="automatedName" class="danger-chip-label" />
+                                <ui:Label text="#ui.automated.suffix" class="danger-chip-label danger-chip-suffix" />
                             </ui:VisualElement>
-                            <ui:VisualElement class="stat">
-                                <ui:VisualElement class="icon icon-coin" />
-                                <ui:Label text="#ui.coins" class="stat-label" />
-                                <ui:Label name="finalCoinsValue" text="0" class="stat-value" />
+                            <ui:VisualElement name="newBestBadge" class="new-best hidden">
+                                <ui:Label text="#ui.newbest" class="new-best-label" />
                             </ui:VisualElement>
+                            <ui:VisualElement class="stat-row">
+                                <ui:VisualElement class="stat">
+                                    <ui:VisualElement class="icon icon-trophy" />
+                                    <ui:Label text="#ui.best" class="stat-label" />
+                                    <ui:Label name="finalBestValue" text="0" class="stat-value" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="stat">
+                                    <ui:VisualElement class="icon icon-coin" />
+                                    <ui:Label text="#ui.coins" class="stat-label" />
+                                    <ui:Label name="finalCoinsValue" text="0" class="stat-value" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                            <ui:VisualElement name="rewardsBlock" class="rewards-block hidden">
+                                <ui:VisualElement class="rewards-title">
+                                    <ui:VisualElement class="icon icon-small icon-package" />
+                                    <ui:Label text="#ui.rewards" class="eyebrow eyebrow--left" />
+                                </ui:VisualElement>
+                                <ui:VisualElement name="rewardsRow" class="rewards-row" />
+                            </ui:VisualElement>
+                            <ui:Button name="retryButton" class="btn btn-primary">
+                                <ui:VisualElement class="icon icon-retry" picking-mode="Ignore" />
+                                <ui:Label text="#ui.retry" class="btn-label" picking-mode="Ignore" />
+                            </ui:Button>
+                            <ui:Button name="gameOverMenuButton" class="btn btn-secondary">
+                                <ui:VisualElement class="icon icon-home" picking-mode="Ignore" />
+                                <ui:Label text="#ui.menu" class="btn-label" picking-mode="Ignore" />
+                            </ui:Button>
                         </ui:VisualElement>
-                        <ui:Button name="retryButton" class="btn btn-primary">
-                            <ui:VisualElement class="icon icon-retry" picking-mode="Ignore" />
-                            <ui:Label text="#ui.retry" class="btn-label" picking-mode="Ignore" />
-                        </ui:Button>
-                        <ui:Button name="gameOverMenuButton" class="btn btn-secondary">
-                            <ui:VisualElement class="icon icon-home" picking-mode="Ignore" />
-                            <ui:Label text="#ui.menu" class="btn-label" picking-mode="Ignore" />
-                        </ui:Button>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>

@@ -14,10 +14,12 @@ namespace OutOfOffice.Infrastructure
     {
         const float SwipeScreenFraction = 0.04f;
         const float MinSwipePixels = 24f;
+        const float DoubleTapSeconds = 0.3f;
 
         readonly ISignalBus _bus;
         Vector2 _pressPosition;
         bool _tracking;
+        float _lastTapTime = -1f;
 
         public InputReader(ISignalBus bus)
         {
@@ -40,6 +42,7 @@ namespace OutOfOffice.Infrastructure
             if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame) Move(MoveDirection.Up);
             if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame) Move(MoveDirection.Down);
             if (keyboard.spaceKey.wasPressedThisFrame) _bus.Fire<AbilityRequestedSignal>();
+            if (keyboard.eKey.wasPressedThisFrame) _bus.Fire<AccessoryUseRequestedSignal>();
             if (keyboard.escapeKey.wasPressedThisFrame) _bus.Fire<PauseToggleRequestedSignal>();
         }
 
@@ -57,6 +60,8 @@ namespace OutOfOffice.Infrastructure
 
             if (!pointer.press.isPressed)
             {
+                // Kaydırmadan bırakıldıysa dokunuştur; iki hızlı dokunuş aksesuarı kullanır.
+                if (_tracking && pointer.press.wasReleasedThisFrame) RegisterTap();
                 _tracking = false;
                 return;
             }
@@ -71,6 +76,20 @@ namespace OutOfOffice.Infrastructure
             _tracking = false;
             if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y)) Move(delta.x > 0f ? MoveDirection.Right : MoveDirection.Left);
             else Move(delta.y > 0f ? MoveDirection.Up : MoveDirection.Down);
+        }
+
+        void RegisterTap()
+        {
+            float now = Time.unscaledTime;
+            if (now - _lastTapTime <= DoubleTapSeconds)
+            {
+                _lastTapTime = -1f;
+                _bus.Fire<AccessoryUseRequestedSignal>();
+            }
+            else
+            {
+                _lastTapTime = now;
+            }
         }
 
         void Move(MoveDirection direction)

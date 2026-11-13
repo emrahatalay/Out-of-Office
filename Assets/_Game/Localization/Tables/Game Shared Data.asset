@@ -131,6 +131,74 @@ MonoBehaviour:
     m_Key: char.intern
     m_Metadata:
       m_Items: []
+  - m_Id: 26079732424704
+    m_Key: powerup.drone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26079736619008
+    m_Key: powerup.magnet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26079736619009
+    m_Key: powerup.overtime
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26079736619010
+    m_Key: powerup.espresso
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26079736619011
+    m_Key: acc.chair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28458477412352
+    m_Key: powerup.package
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28458481606656
+    m_Key: ui.continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28458481606657
+    m_Key: ui.giveup
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28458481606658
+    m_Key: ui.revive.hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28458481606659
+    m_Key: ui.rewards
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29019759173632
+    m_Key: ui.store
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29019763367936
+    m_Key: ui.close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29019763367937
+    m_Key: item.key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31519346253824
+    m_Key: ui.tab.home
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31519346253825
+    m_Key: ui.tab.collection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31519346253826
+    m_Key: ui.collection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31519346253827
+    m_Key: ui.collection.hint
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

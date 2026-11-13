@@ -9,6 +9,8 @@ namespace OutOfOffice.Data
         public string id;
         [Tooltip("Game tablosundaki çeviri anahtarı.")]
         public string nameKey;
+        [Tooltip("Koleksiyon kartındaki rengi.")]
+        public Color themeColor = new Color(0.3f, 0.55f, 1f);
         [Tooltip("Yalnızca görsel. Çarpışma ve hareket kodu prefab'a bağlı değildir.")]
         public GameObject prefab;
         [Tooltip("Boş bırakılabilir (ör. Stajyer).")]

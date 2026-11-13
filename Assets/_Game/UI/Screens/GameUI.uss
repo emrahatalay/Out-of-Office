@@ -433,8 +433,13 @@
 
 .hud-bottom {
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: flex-end;
     align-self: stretch;
+}
+
+.hud-left {
+    flex-direction: row;
 }
 
 .ability-button {
@@ -547,6 +552,317 @@
     margin-left: 12px;
     font-size: 40px;
     -unity-font-definition: var(--font-bold);
+}
+
+/* ---------------------------------------------------------------- Anahtar, paket ve ödüller */
+
+.icon-key {
+    background-image: url("project://database/Assets/_Game/UI/Icons/key.svg");
+    -unity-background-image-tint-color: var(--color-tech);
+}
+
+.icon-key-dark {
+    margin-left: 22px;
+    -unity-background-image-tint-color: #04222e;
+}
+
+.icon-package {
+    background-image: url("project://database/Assets/_Game/UI/Icons/package.svg");
+    -unity-background-image-tint-color: var(--color-muted);
+}
+
+.chip-group {
+    flex-direction: row;
+}
+
+.chip--next {
+    margin-left: var(--space-sm);
+}
+
+.dialog-group {
+    align-self: stretch;
+    align-items: center;
+}
+
+.dialog-hint {
+    margin: 0 0 var(--space-sm) 0;
+    padding: 0;
+    color: var(--color-muted);
+    font-size: 36px;
+    -unity-font-definition: var(--font-medium);
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.rewards-block {
+    align-self: stretch;
+    align-items: center;
+    margin-bottom: var(--space-xs);
+}
+
+.rewards-title {
+    flex-direction: row;
+    align-items: center;
+}
+
+.eyebrow--left {
+    margin-left: 10px;
+}
+
+.rewards-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: var(--space-xs);
+}
+
+.reward {
+    margin-top: var(--space-xs);
+    background-color: rgba(78, 227, 255, 0.12);
+}
+
+/* ---------------------------------------------------------------- Sayfalar ve sekme çubuğu */
+
+.page {
+    flex-grow: 1;
+    align-self: stretch;
+    align-items: center;
+}
+
+.page--panel {
+    margin: var(--space-md) -20px 0 -20px;
+    padding: 64px 56px 72px 56px;
+    background-image: url("project://database/Assets/_Game/UI/Sprites/card.png");
+    -unity-slice-left: 128;
+    -unity-slice-top: 128;
+    -unity-slice-right: 128;
+    -unity-slice-bottom: 128;
+    -unity-slice-scale: 0.5px;
+}
+
+.tab-bar {
+    flex-direction: row;
+    align-self: stretch;
+    height: 156px;
+    margin-top: var(--space-sm);
+    padding: 10px;
+    background-color: var(--color-surface-strong);
+    border-width: 2px;
+    border-color: var(--color-border);
+    border-radius: 44px;
+}
+
+.tab {
+    flex-grow: 1;
+    flex-basis: 0;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-radius: 34px;
+    transition-duration: 0.12s;
+}
+
+.tab:hover,
+.tab:focus {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.tab:active {
+    scale: 0.94 0.94;
+}
+
+.tab-icon {
+    width: 56px;
+    height: 56px;
+    -unity-background-image-tint-color: var(--color-muted);
+}
+
+.tab-label {
+    margin: 4px 0 0 0;
+    padding: 0;
+    color: var(--color-muted);
+    font-size: 28px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.tab--active,
+.tab--active:hover,
+.tab--active:focus {
+    background-color: var(--color-accent);
+}
+
+.tab--active > .tab-icon {
+    -unity-background-image-tint-color: #1a1405;
+}
+
+.tab--active > .tab-label {
+    color: #1a1405;
+}
+
+.icon-person {
+    background-image: url("project://database/Assets/_Game/UI/Icons/person.svg");
+}
+
+.icon-lock {
+    background-image: url("project://database/Assets/_Game/UI/Icons/lock.svg");
+}
+
+/* ---------------------------------------------------------------- Koleksiyon kartları */
+
+.card-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    margin-top: var(--space-sm);
+}
+
+.char-card {
+    align-items: center;
+    width: 46%;
+    margin: 2%;
+    padding: 26px 16px 22px 16px;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-width: 5px;
+    border-color: rgba(160, 180, 255, 0.28);
+    border-radius: 44px;
+    transition-duration: 0.12s;
+}
+
+.char-card:hover,
+.char-card:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(160, 180, 255, 0.28);
+}
+
+.char-card:active {
+    scale: 0.96 0.96;
+}
+
+.char-card--selected,
+.char-card--selected:hover,
+.char-card--selected:focus {
+    background-color: rgba(255, 200, 61, 0.14);
+    border-color: var(--color-accent);
+}
+
+.char-avatar {
+    align-items: center;
+    justify-content: center;
+    width: 190px;
+    height: 190px;
+    margin-bottom: var(--space-sm);
+    border-width: 6px;
+    border-color: rgba(255, 255, 255, 0.35);
+    border-radius: 95px;
+}
+
+.char-avatar--locked {
+    border-color: rgba(255, 77, 95, 0.7);
+}
+
+.char-avatar-icon {
+    width: 110px;
+    height: 110px;
+}
+
+.char-name {
+    margin: 0;
+    padding: 0;
+    color: var(--color-text);
+    font-size: 44px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.char-sub {
+    margin: 4px 0 0 0;
+    padding: 0;
+    color: var(--color-tech);
+    font-size: 30px;
+}
+
+.char-sub--locked {
+    color: var(--color-primary);
+}
+
+.char-price {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.char-price-value {
+    margin: 0 0 0 8px;
+    padding: 0;
+    color: var(--color-text);
+    font-size: 34px;
+    -unity-font-definition: var(--font-bold);
+}
+
+/* ---------------------------------------------------------------- Mağaza */
+
+.icon-light {
+    -unity-background-image-tint-color: var(--color-text);
+}
+
+.store-list {
+    align-self: stretch;
+    margin: var(--space-md) 0 var(--space-xs) 0;
+}
+
+.store-row {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+    padding: 14px 14px 14px 24px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 34px;
+}
+
+.store-name {
+    flex-grow: 1;
+    margin: 0 0 0 16px;
+    padding: 0;
+    font-size: 40px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.store-amount {
+    margin: 0 var(--space-md) 0 0;
+    padding: 0;
+    color: var(--color-tech);
+    font-size: 40px;
+    -unity-font-definition: var(--font-bold);
+}
+
+/* ---------------------------------------------------------------- Aksesuar */
+
+.icon-chair {
+    background-image: url("project://database/Assets/_Game/UI/Icons/chair.svg");
+    -unity-background-image-tint-color: var(--color-tech);
+}
+
+.icon-gap {
+    margin-left: 14px;
+}
+
+.chip-value--first {
+    margin-left: 0;
+}
+
+.accessory-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    align-self: stretch;
+    margin-top: var(--space-sm);
+}
+
+.chip-button:disabled {
+    opacity: 0.45;
 }
 
 /* ---------------------------------------------------------------- Otomasyon */

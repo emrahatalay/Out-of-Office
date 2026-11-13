@@ -134,6 +134,74 @@ MonoBehaviour:
     m_Localized: Intern
     m_Metadata:
       m_Items: []
+  - m_Id: 26079732424704
+    m_Localized: Cargo Drone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26079736619008
+    m_Localized: Salary Magnet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26079736619009
+    m_Localized: Overtime x2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26079736619010
+    m_Localized: Double Espresso
+    m_Metadata:
+      m_Items: []
+  - m_Id: 26079736619011
+    m_Localized: Chair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28458477412352
+    m_Localized: Surprise Package
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28458481606656
+    m_Localized: CONTINUE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28458481606657
+    m_Localized: GIVE UP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28458481606658
+    m_Localized: Use a key to continue where you fell.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28458481606659
+    m_Localized: FROM YOUR PACKAGES
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29019759173632
+    m_Localized: STORE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29019763367936
+    m_Localized: CLOSE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 29019763367937
+    m_Localized: Key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31519346253824
+    m_Localized: HOME
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31519346253825
+    m_Localized: COLLECTION
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31519346253826
+    m_Localized: PROFESSIONS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31519346253827
+    m_Localized: Pick the profession you want to play.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

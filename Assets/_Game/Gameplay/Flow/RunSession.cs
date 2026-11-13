@@ -15,6 +15,10 @@ namespace OutOfOffice.Gameplay
         public float Difficulty;
         public int Coins;
         public int Score;
+        /// <summary>Bu koşuda toplanan, oyun sonunda açılacak sürpriz paketler.</summary>
+        public int Packages;
+        /// <summary>Bu koşuda kaç kez anahtarla devam edildi.</summary>
+        public int Revives;
 
         public void Begin(WorldDefinition world, CharacterDefinition character, float startSpeed)
         {
@@ -26,6 +30,8 @@ namespace OutOfOffice.Gameplay
             Difficulty = 0f;
             Coins = 0;
             Score = 0;
+            Packages = 0;
+            Revives = 0;
         }
     }
 }

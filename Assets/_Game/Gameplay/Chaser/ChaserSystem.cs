@@ -84,6 +84,14 @@ namespace OutOfOffice.Gameplay
             _threatTimer = _definition.threatSeconds;
         }
 
+        public void Retreat()
+        {
+            if (_definition == null) return;
+            _threatTimer = 0f;
+            _introTimer = 0f;
+            _gap = _definition.restGap;
+        }
+
         public void BeginStun()
         {
             _stunCount++;

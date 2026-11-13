@@ -15,6 +15,7 @@ namespace OutOfOffice.Gameplay
         const float SpinDegreesPerSecond = 180f;
         const float BobSpeed = 3.2f;
         const float BobHeight = 0.12f;
+        const float MagnetSpeed = 60f;
 
         readonly IPoolService _pool;
         readonly PlayerStatus _player;
@@ -43,6 +44,7 @@ namespace OutOfOffice.Gameplay
             if (!instance.TryGetComponent<PickupView>(out var view)) view = instance.AddComponent<PickupView>();
 
             view.Bind(powerUp);
+            view.BaseY = position.y;
             _active.Add(view);
         }
 
@@ -60,18 +62,34 @@ namespace OutOfOffice.Gameplay
             float cullZ = _player.Position.z - _config.despawnBehind;
             float time = Time.time * BobSpeed;
 
+            float magnet = _player.MagnetRadius;
+            var playerPosition = _player.Position;
+            float step = MagnetSpeed * Time.deltaTime;
+
             for (int i = _active.Count - 1; i >= 0; i--)
             {
-                var transform = _active[i].transform;
-                if (transform.position.z < cullZ)
+                var view = _active[i];
+                var transform = view.transform;
+                var position = transform.position;
+                if (position.z < cullZ)
                 {
                     RemoveAt(i);
                     continue;
                 }
 
-                // Dönme + hafif süzülme. Faz, konumdan gelir; nesne başına durum tutulmaz.
-                var position = transform.position;
-                position.y = Mathf.Sin(time + position.z * 0.6f) * BobHeight;
+                // Mıknatıs: menzildeki altınlar oyuncuya uçar, toplama yine çarpışmayla olur.
+                if (magnet > 0f && view.PowerUp == null)
+                {
+                    float ahead = position.z - playerPosition.z;
+                    if (ahead < magnet && ahead > -2f && Mathf.Abs(position.x - playerPosition.x) < magnet)
+                    {
+                        transform.position = Vector3.MoveTowards(position, playerPosition, step);
+                        continue;
+                    }
+                }
+
+                // Dönme + hafif süzülme. Faz, konumdan gelir.
+                position.y = view.BaseY + Mathf.Sin(time + position.z * 0.6f) * BobHeight;
                 transform.SetPositionAndRotation(position, transform.rotation * Quaternion.Euler(0f, spin, 0f));
             }
         }

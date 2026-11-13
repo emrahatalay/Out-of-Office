@@ -37,6 +37,7 @@ namespace OutOfOffice.Gameplay
             _bus.Subscribe<PauseToggleRequestedSignal>(_ => TogglePause()).AddTo(_subscriptions);
             _bus.Subscribe<ReturnToMenuRequestedSignal>(_ => _machine.TryGo(GameState.Menu)).AddTo(_subscriptions);
             _bus.Subscribe<PlayerCaughtSignal>(_ => _machine.TryGo(GameState.GameOver)).AddTo(_subscriptions);
+            _bus.Subscribe<RunRevivedSignal>(_ => _machine.TryGo(GameState.Running)).AddTo(_subscriptions);
         }
 
         // Tüm sistemler kurulup arayüz bağlandıktan sonra menüye geçilir.

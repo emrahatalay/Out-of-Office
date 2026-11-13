@@ -8,5 +8,11 @@ namespace OutOfOffice.Data
     {
         public CharacterDefinition[] characters;
         public WorldDefinition[] worlds;
+        [Tooltip("Altınla alınıp koşuda kullanılan aksesuarlar. İlk sıradaki aktif aksesuardır.")]
+        public AccessoryDefinition[] accessories;
+        [Tooltip("Sürpriz paketlerden ne çıkacağı.")]
+        public LootTable packageLoot;
+        [Tooltip("Mağazada satılan ürünler, görünme sırasıyla.")]
+        public StoreItemDefinition[] storeItems;
     }
 }

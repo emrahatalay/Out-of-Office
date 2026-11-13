@@ -34,6 +34,7 @@ namespace OutOfOffice.Gameplay
             _index = Math.Max(0, Array.FindIndex(_catalog.characters, c => c != null && c.id == savedId));
 
             _bus.Subscribe<CharacterCycleRequestedSignal>(OnCycle).AddTo(_subscriptions);
+            _bus.Subscribe<CharacterSelectRequestedSignal>(OnSelectRequested).AddTo(_subscriptions);
             _bus.Subscribe<BuybackRequestedSignal>(_ => OnBuyback()).AddTo(_subscriptions);
             _bus.Subscribe<ProfessionAutomatedSignal>(_ => Announce()).AddTo(_subscriptions);
         }
@@ -69,6 +70,14 @@ namespace OutOfOffice.Gameplay
             Select(((_index + signal.Step) % count + count) % count);
         }
 
+        void OnSelectRequested(CharacterSelectRequestedSignal signal)
+        {
+            if (_state.Current != GameState.Menu) return;
+
+            int index = Array.FindIndex(_catalog.characters, c => c != null && c.id == signal.Id);
+            if (index >= 0 && index != _index) Select(index);
+        }
+
         void OnBuyback()
         {
             if (_state.Current == GameState.Menu && _workforce.TryBuyback(Current)) Announce();
@@ -92,6 +101,22 @@ namespace OutOfOffice.Gameplay
                 abilityKey,
                 _workforce.IsAutomated(character),
                 _workforce.GetBuybackCost(character)));
+
+            // Koleksiyon ızgarası için tüm kartların güncel hali.
+            for (int i = 0; i < _catalog.characters.Length; i++)
+            {
+                var card = _catalog.characters[i];
+                if (card == null) continue;
+
+                _bus.Fire(new CharacterCardSignal(
+                    card.id,
+                    card.nameKey,
+                    card.ability != null ? card.ability.nameKey : string.Empty,
+                    card.themeColor,
+                    _workforce.IsAutomated(card),
+                    _workforce.GetBuybackCost(card),
+                    i == _index));
+            }
         }
 
         public void Dispose()

@@ -50,7 +50,8 @@ namespace OutOfOffice.UI
             Show(_gameOver, state == GameState.GameOver);
         }
 
-        static void Show(VisualElement screen, bool visible)
+        /// <summary>Bir ekranı geçiş animasyonuyla gösterir ya da gizler.</summary>
+        public static void Show(VisualElement screen, bool visible)
         {
             if (screen == null) return;
 

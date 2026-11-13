@@ -18,3 +18,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0da7a91407d4a464187b89b8639238fd, type: 2}
   worlds:
   - {fileID: 11400000, guid: 52dcc8039493f44deba49f1fe2ea8263, type: 2}
+  accessories:
+  - {fileID: 11400000, guid: d63e074af26a94ffcaae79e191d16f01, type: 2}
+  packageLoot: {fileID: 11400000, guid: 196e9e4962bc24f72a745b4c792fc9ca, type: 2}
+  storeItems:
+  - {fileID: 11400000, guid: e9f7cd95a257044f29fc311c7a7eae48, type: 2}
+  - {fileID: 11400000, guid: 22bbadb9ca879441ab053d6f8e657048, type: 2}
+  - {fileID: 11400000, guid: b2fad0cb6ad5747f28745f83601262ea, type: 2}
+  - {fileID: 11400000, guid: 7c16f66ac32004e3cbb22dcc5b87af0d, type: 2}

@@ -24,7 +24,6 @@ namespace OutOfOffice.Gameplay
             _state = state;
 
             bus.Subscribe<PlayerStumbledSignal>(_ => Slow(_config.stumbleTimeScale, _config.stumbleSlowSeconds)).AddTo(_subscriptions);
-            bus.Subscribe<RunEndedSignal>(_ => Slow(_config.caughtTimeScale, _config.caughtSlowSeconds)).AddTo(_subscriptions);
             bus.Subscribe<GameStateChangedSignal>(OnStateChanged).AddTo(_subscriptions);
         }
 
@@ -37,6 +36,12 @@ namespace OutOfOffice.Gameplay
 
         void OnStateChanged(GameStateChangedSignal signal)
         {
+            if (signal.To == GameState.GameOver)
+            {
+                Slow(_config.caughtTimeScale, _config.caughtSlowSeconds);
+                return;
+            }
+
             // Menü ve duraklatma kendi zaman ölçeğini GameFlow'dan alır.
             if (signal.To == GameState.Menu || signal.To == GameState.Paused || signal.To == GameState.Running) _remaining = 0f;
         }

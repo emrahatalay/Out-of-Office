@@ -37,6 +37,30 @@ namespace OutOfOffice.Gameplay
             _bus.Subscribe<RunStartedSignal>(_ => StopAll()).AddTo(_subscriptions);
             _bus.Subscribe<RunClearedSignal>(_ => StopAll()).AddTo(_subscriptions);
             _bus.Subscribe<RunEndedSignal>(_ => StopAll()).AddTo(_subscriptions);
+            _bus.Subscribe<ShieldBrokenSignal>(_ => EndShieldBound()).AddTo(_subscriptions);
+        }
+
+        public bool IsRunning(string id)
+        {
+            for (int i = 0; i < _active.Count; i++)
+                if (_active[i].Id == id) return true;
+            return false;
+        }
+
+        // Kalkan kırılınca ona bağlı süreli etkiler (ör. sandalye) hemen biter.
+        void EndShieldBound()
+        {
+            for (int i = _active.Count - 1; i >= 0; i--)
+            {
+                var entry = _active[i];
+                bool bound = false;
+                foreach (var effect in entry.Effects)
+                    if (effect != null && effect.EndsWhenShieldBreaks) bound = true;
+                if (!bound) continue;
+
+                _active.RemoveAt(i);
+                End(entry);
+            }
         }
 
         /// <param name="duration">0 ise etkiler anlıktır ve geri alınmaz.</param>

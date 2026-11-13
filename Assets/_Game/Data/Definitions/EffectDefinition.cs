@@ -14,5 +14,8 @@ namespace OutOfOffice.Data
 
         /// <summary>Süre dolunca çağrılır. Anlık etkiler bunu ezmek zorunda değildir.</summary>
         public virtual void Remove(EffectContext context) { }
+
+        /// <summary>Kalkan kırıldığında bu etkiyi içeren süreli etki de biter (ör. sandalye kırılır).</summary>
+        public virtual bool EndsWhenShieldBreaks => false;
     }
 }

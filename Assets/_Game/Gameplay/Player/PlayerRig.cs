@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using OutOfOffice.Core.Run;
 using OutOfOffice.Data;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -10,8 +12,9 @@ namespace OutOfOffice.Gameplay
     /// Karakter prefab'ı yalnızca görseldir; geçici mesh yerine gerçek model
     /// konduğunda bu sınıfta ve hareket kodunda hiçbir şey değişmez.
     /// </summary>
-    public sealed class PlayerRig : IDisposable
+    public sealed class PlayerRig : IPlayerAttachments, IDisposable
     {
+        readonly Dictionary<GameObject, GameObject> _attachments = new Dictionary<GameObject, GameObject>();
         readonly GameConfig _config;
         readonly CapsuleCollider _collider;
         GameObject _visual;
@@ -89,6 +92,24 @@ namespace OutOfOffice.Gameplay
 
             _visual = Object.Instantiate(prefab, VisualRoot, false);
             foreach (var collider in _visual.GetComponentsInChildren<Collider>()) collider.enabled = false;
+        }
+
+        public void Attach(GameObject prefab, Vector3 localOffset)
+        {
+            if (prefab == null || _attachments.ContainsKey(prefab)) return;
+
+            var instance = Object.Instantiate(prefab, Root, false);
+            instance.transform.localPosition = localOffset;
+            foreach (var collider in instance.GetComponentsInChildren<Collider>()) collider.enabled = false;
+            _attachments.Add(prefab, instance);
+        }
+
+        public void Detach(GameObject prefab)
+        {
+            if (prefab == null || !_attachments.TryGetValue(prefab, out var instance)) return;
+
+            _attachments.Remove(prefab);
+            if (instance != null) Object.Destroy(instance);
         }
 
         public void Dispose()

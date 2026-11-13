@@ -9,6 +9,8 @@ namespace OutOfOffice.Gameplay
         bool _initialized;
 
         public PowerUpDefinition PowerUp { get; private set; }
+        /// <summary>Doğduğu yükseklik; süzülme bunun etrafında olur.</summary>
+        public float BaseY { get; set; }
 
         public void Bind(PowerUpDefinition powerUp)
         {

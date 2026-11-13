@@ -15,6 +15,7 @@ namespace OutOfOffice.UI
         Label _bestValue;
         Label _coinsValue;
         Label _buybackCost;
+        Label _keysValue;
         VisualElement _abilityChip;
         VisualElement _automatedChip;
         Button _playButton;
@@ -38,6 +39,7 @@ namespace OutOfOffice.UI
             _bestValue = screen.Q<Label>("menuBestValue");
             _coinsValue = screen.Q<Label>("menuCoinsValue");
             _buybackCost = screen.Q<Label>("buybackCost");
+            _keysValue = screen.Q<Label>("menuKeysValue");
             _abilityChip = screen.Q("abilityChip");
             _automatedChip = screen.Q("automatedChip");
             _playButton = screen.Q<Button>("playButton");
@@ -75,6 +77,7 @@ namespace OutOfOffice.UI
             _coins = signal.TotalCoins;
             _bestValue.text = signal.BestScore.ToString();
             _coinsValue.text = signal.TotalCoins.ToString();
+            _keysValue.text = signal.Keys.ToString();
             RefreshBuyback();
         }
 

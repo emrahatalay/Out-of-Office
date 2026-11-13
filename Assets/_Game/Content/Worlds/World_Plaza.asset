@@ -27,4 +27,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 75c40e422dcba4bb484dc06f4520fd07, type: 2}
   - {fileID: 11400000, guid: 9438361fa79e74daf88a96ae8cd21550, type: 2}
   - {fileID: 11400000, guid: b145875dab8f74ecba6f874fd79060a4, type: 2}
+  - {fileID: 11400000, guid: 8a218e7f975d64cf4bb73a731ebfa856, type: 2}
+  - {fileID: 11400000, guid: a356c4ce48fd54e05978a93234d206b9, type: 2}
+  - {fileID: 11400000, guid: 1e9e29e3d1f02492198359385a667c35, type: 2}
+  - {fileID: 11400000, guid: 4a773388f9e5b4c6d80d1a08c5a6084c, type: 2}
+  - {fileID: 11400000, guid: e6d5a7d4d242347e3b1df760c93ab6d6, type: 2}
   coinPrefab: {fileID: 369921303611913871, guid: 93ae97885982c497a9a33d79573076e4, type: 3}

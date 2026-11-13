@@ -65,6 +65,8 @@ namespace OutOfOffice.Data
         public float cameraSmoothTime = 0.08f;
         [Tooltip("Kamera zıplamanın ne kadarını takip eder.")]
         [Range(0f, 1f)] public float cameraJumpFollow = 0.3f;
+        [Tooltip("Uçarken kamera yüksekliğin ne kadarını takip eder; oyuncu kadrajda kalsın diye yüksektir.")]
+        [Range(0f, 1f)] public float cameraFlightFollow = 0.8f;
         public float baseFieldOfView = 60f;
         [Tooltip("En yüksek hızdaki görüş açısı; hız hissini artırır.")]
         public float maxFieldOfView = 74f;
@@ -90,6 +92,14 @@ namespace OutOfOffice.Data
         [Min(0)] public int prewarmPerObstacle = 4;
         [Min(0)] public int prewarmCoins = 40;
         [Min(0)] public int prewarmPerVfx = 3;
+
+        [Header("Anahtarla devam")]
+        [Tooltip("İlk devam kaç anahtar. Aynı koşuda her devamda ikiye katlanır.")]
+        [Min(1)] public int reviveBaseKeys = 1;
+        [Tooltip("Devam teklifinin ekranda kalma süresi (sn).")]
+        public float reviveOfferSeconds = 6f;
+        [Tooltip("Devam edince önündeki bu kadar metre engelden temizlenir.")]
+        public float reviveClearDistance = 45f;
 
         [Header("Puan")]
         public int coinScore = 10;

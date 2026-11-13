@@ -18,6 +18,14 @@ namespace OutOfOffice.EditorTools
             destroy.range = 45f;
             EditorUtility.SetDirty(destroy);
 
+            var flight = LoadOrCreate<FlightEffect>($"{DataDir}/Effects/Effect_Flight.asset");
+            var magnet = LoadOrCreate<MagnetEffect>($"{DataDir}/Effects/Effect_Magnet.asset");
+            var scoreX2 = LoadOrCreate<ScoreMultiplierEffect>($"{DataDir}/Effects/Effect_ScoreX2.asset");
+            var collectPackage = LoadOrCreate<CollectPackageEffect>($"{DataDir}/Effects/Effect_CollectPackage.asset");
+            var jumpBoost = LoadOrCreate<JumpBoostEffect>($"{DataDir}/Effects/Effect_JumpBoost.asset");
+            var attachDrone = Attach("Effect_AttachDrone", prefabs.CargoDrone, new Vector3(0f, 0.55f, 0f));
+            var attachChair = Attach("Effect_AttachChair", prefabs.OfficeChair, Vector3.zero);
+
             // ---- Yetenekler
             var debug = Ability("Ability_Debug", "debug", "ability.debug", 18f, 0f, destroy);
             // Yeni kod yazmadan: var olan "hayalet" etkisini kısa süreli kullanan ikinci yetenek.
@@ -41,6 +49,9 @@ namespace OutOfOffice.EditorTools
             var developer = Character("Character_Developer", "developer", "char.developer", prefabs.Developer, debug, true, 100, devBot);
             var designer = Character("Character_Designer", "designer", "char.designer", prefabs.Designer, redraw, true, 100, designBot);
             var intern = Character("Character_Intern", "intern", "char.intern", prefabs.Intern, null, false, 0, null);
+            SetThemeColor(developer, new Color(0.2f, 0.5f, 0.95f));
+            SetThemeColor(designer, new Color(0.9f, 0.3f, 0.7f));
+            SetThemeColor(intern, new Color(0.5f, 0.55f, 0.62f));
 
             // ---- Kovalayan
             var chaser = LoadOrCreate<ChaserDefinition>($"{DataDir}/Chasers/Chaser_HR9000.asset");
@@ -75,6 +86,13 @@ namespace OutOfOffice.EditorTools
                 PowerUp("PowerUp_Captcha", "captcha", "powerup.captcha", prefabs.Captcha, 6f, stun),
                 PowerUp("PowerUp_Hallucination", "hallucination", "powerup.hallucination", prefabs.Hallucination, 5f, ghost),
                 PowerUp("PowerUp_Shield", "shield", "powerup.shield", prefabs.Shield, 12f, shield),
+                // Jetpack karşılığı: uçuş + tepede dron görseli. Daha nadir çıkar.
+                PowerUp("PowerUp_Drone", "drone", "powerup.drone", prefabs.DronePickup, 8f, 0.5f, flight, attachDrone),
+                PowerUp("PowerUp_Magnet", "magnet", "powerup.magnet", prefabs.Magnet, 10f, magnet),
+                PowerUp("PowerUp_Overtime", "overtime", "powerup.overtime", prefabs.Overtime, 12f, scoreX2),
+                PowerUp("PowerUp_Espresso", "espresso", "powerup.espresso", prefabs.Espresso, 10f, jumpBoost),
+                // Sürpriz paket: süresi 0, anında sayılır; içeriği oyun sonunda açılır.
+                PowerUp("PowerUp_Package", "package", "powerup.package", prefabs.Package, 0f, 2f, collectPackage),
             };
 
             // ---- Dünya
@@ -95,6 +113,36 @@ namespace OutOfOffice.EditorTools
             var catalog = LoadOrCreate<ContentCatalog>(CatalogPath);
             catalog.characters = new[] { developer, designer, intern };
             catalog.worlds = new[] { world };
+
+            // ---- Aksesuar: kaykay karşılığı. Kalkan + sandalye görseli; çarpınca sandalye kırılır.
+            var chair = LoadOrCreate<AccessoryDefinition>($"{DataDir}/Accessories/Accessory_OfficeChair.asset");
+            chair.id = "office_chair";
+            chair.nameKey = "acc.chair";
+            chair.price = 150;
+            chair.duration = 20f;
+            chair.effects = new EffectDefinition[] { shield, attachChair };
+            EditorUtility.SetDirty(chair);
+            catalog.accessories = new[] { chair };
+
+            // ---- Sürpriz paket ödülleri: ağırlık arttıkça çıkma olasılığı artar.
+            var loot = LoadOrCreate<LootTable>($"{DataDir}/LootTable_Package.asset");
+            loot.entries = new[]
+            {
+                new LootEntry { kind = OutOfOffice.Core.Run.RewardKind.Coins, min = 40, max = 150, weight = 5f },
+                new LootEntry { kind = OutOfOffice.Core.Run.RewardKind.Accessory, min = 1, max = 2, weight = 3f },
+                new LootEntry { kind = OutOfOffice.Core.Run.RewardKind.Key, min = 1, max = 1, weight = 2f },
+            };
+            EditorUtility.SetDirty(loot);
+            catalog.packageLoot = loot;
+
+            // ---- Mağaza ürünleri
+            catalog.storeItems = new[]
+            {
+                StoreItem("Store_Chair1", "chair_1", "acc.chair", OutOfOffice.Core.Run.RewardKind.Accessory, 1, 150),
+                StoreItem("Store_Chair3", "chair_3", "acc.chair", OutOfOffice.Core.Run.RewardKind.Accessory, 3, 400),
+                StoreItem("Store_Key1", "key_1", "item.key", OutOfOffice.Core.Run.RewardKind.Key, 1, 300),
+                StoreItem("Store_Key3", "key_3", "item.key", OutOfOffice.Core.Run.RewardKind.Key, 3, 800),
+            };
             EditorUtility.SetDirty(catalog);
 
             AssetDatabase.SaveAssets();
@@ -140,7 +188,39 @@ namespace OutOfOffice.EditorTools
             return obstacle;
         }
 
+        static void SetThemeColor(CharacterDefinition character, Color color)
+        {
+            character.themeColor = color;
+            EditorUtility.SetDirty(character);
+        }
+
+        static StoreItemDefinition StoreItem(string file, string id, string nameKey, OutOfOffice.Core.Run.RewardKind kind, int amount, int price)
+        {
+            var item = LoadOrCreate<StoreItemDefinition>($"{DataDir}/Store/{file}.asset");
+            item.id = id;
+            item.nameKey = nameKey;
+            item.kind = kind;
+            item.amount = amount;
+            item.price = price;
+            EditorUtility.SetDirty(item);
+            return item;
+        }
+
+        static AttachVisualEffect Attach(string file, GameObject prefab, Vector3 offset)
+        {
+            var effect = LoadOrCreate<AttachVisualEffect>($"{DataDir}/Effects/{file}.asset");
+            effect.prefab = prefab;
+            effect.localOffset = offset;
+            EditorUtility.SetDirty(effect);
+            return effect;
+        }
+
         static PowerUpDefinition PowerUp(string file, string id, string nameKey, GameObject pickup, float duration, params EffectDefinition[] effects)
+        {
+            return PowerUp(file, id, nameKey, pickup, duration, 1f, effects);
+        }
+
+        static PowerUpDefinition PowerUp(string file, string id, string nameKey, GameObject pickup, float duration, float weight, params EffectDefinition[] effects)
         {
             var powerUp = LoadOrCreate<PowerUpDefinition>($"{DataDir}/PowerUps/{file}.asset");
             powerUp.id = id;
@@ -148,7 +228,7 @@ namespace OutOfOffice.EditorTools
             powerUp.pickupPrefab = pickup;
             powerUp.duration = duration;
             powerUp.effects = effects;
-            powerUp.spawnWeight = 1f;
+            powerUp.spawnWeight = weight;
             EditorUtility.SetDirty(powerUp);
             return powerUp;
         }

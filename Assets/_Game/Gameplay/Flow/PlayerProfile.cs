@@ -1,3 +1,4 @@
+using System;
 using OutOfOffice.Core.Services;
 using OutOfOffice.Core.Signals;
 using VContainer.Unity;
@@ -9,12 +10,14 @@ namespace OutOfOffice.Gameplay
     {
         const string BestKey = "best_score";
         const string CoinsKey = "total_coins";
+        const string KeysKey = "keys";
 
         readonly ISaveService _save;
         readonly ISignalBus _bus;
 
         public int BestScore { get; private set; }
         public int TotalCoins { get; private set; }
+        public int Keys { get; private set; }
 
         public PlayerProfile(ISaveService save, ISignalBus bus)
         {
@@ -22,6 +25,7 @@ namespace OutOfOffice.Gameplay
             _bus = bus;
             BestScore = _save.GetInt(BestKey);
             TotalCoins = _save.GetInt(CoinsKey);
+            Keys = _save.GetInt(KeysKey);
         }
 
         public void PostStart()
@@ -47,8 +51,29 @@ namespace OutOfOffice.Gameplay
             return true;
         }
 
+        public void AddCoins(int amount)
+        {
+            TotalCoins += Math.Max(0, amount);
+            Persist();
+        }
+
+        public void AddKeys(int amount)
+        {
+            Keys += Math.Max(0, amount);
+            Persist();
+        }
+
+        public bool TrySpendKeys(int amount)
+        {
+            if (amount < 0 || amount > Keys) return false;
+            Keys -= amount;
+            Persist();
+            return true;
+        }
+
         void Persist()
         {
+            _save.SetInt(KeysKey, Keys);
             _save.SetInt(BestKey, BestScore);
             _save.SetInt(CoinsKey, TotalCoins);
             _save.Flush();
@@ -57,7 +82,7 @@ namespace OutOfOffice.Gameplay
 
         void Announce()
         {
-            _bus.Fire(new ProfileChangedSignal(BestScore, TotalCoins));
+            _bus.Fire(new ProfileChangedSignal(BestScore, TotalCoins, Keys));
         }
     }
 }
