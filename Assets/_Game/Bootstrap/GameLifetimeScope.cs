@@ -62,6 +62,7 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<SpawnDirector>();
             builder.RegisterEntryPoint<EffectRunner>().AsSelf();
             builder.RegisterEntryPoint<CameraFollowSystem>();
+            builder.RegisterEntryPoint<WorldCurveSystem>(); // kameradan sonra çalışmalı
             builder.RegisterEntryPoint<PoolWarmupSystem>();
             builder.RegisterEntryPoint<AccessorySystem>().AsSelf();
             RegisterAlwaysOn<RewardSystem>(builder);

@@ -236,19 +236,19 @@ namespace OutOfOffice.EditorTools
             const float width = 8.5f;
 
             var root = new GameObject("Ground_Office");
-            Part(root.transform, PrimitiveType.Cube, "Floor", new Vector3(0f, -0.25f, length * 0.5f), new Vector3(width, 0.5f, length), floor);
+            SlicedPart(root.transform, "Floor", new Vector3(0f, -0.25f, length * 0.5f), new Vector3(width, 0.5f, length), floor);
 
             // Hız hissi için enine şeritler, şerit çizgileri ve kolonlar.
             for (int i = 0; i < 6; i++)
                 Part(root.transform, PrimitiveType.Cube, "Stripe" + i, new Vector3(0f, 0.005f, 2.5f + i * 5f), new Vector3(width, 0.01f, 0.3f), stripe);
 
-            Part(root.transform, PrimitiveType.Cube, "LaneLineLeft", new Vector3(-1.25f, 0.012f, length * 0.5f), new Vector3(0.08f, 0.01f, length), line);
-            Part(root.transform, PrimitiveType.Cube, "LaneLineRight", new Vector3(1.25f, 0.012f, length * 0.5f), new Vector3(0.08f, 0.01f, length), line);
+            SlicedPart(root.transform, "LaneLineLeft", new Vector3(-1.25f, 0.012f, length * 0.5f), new Vector3(0.08f, 0.01f, length), line);
+            SlicedPart(root.transform, "LaneLineRight", new Vector3(1.25f, 0.012f, length * 0.5f), new Vector3(0.08f, 0.01f, length), line);
 
             for (int side = -1; side <= 1; side += 2)
             {
                 string suffix = side < 0 ? "Left" : "Right";
-                Part(root.transform, PrimitiveType.Cube, "Wall" + suffix, new Vector3(side * 4.6f, 0.6f, length * 0.5f), new Vector3(0.4f, 1.2f, length), wall);
+                SlicedPart(root.transform, "Wall" + suffix, new Vector3(side * 4.6f, 0.6f, length * 0.5f), new Vector3(0.4f, 1.2f, length), wall);
 
                 for (int i = 0; i < 3; i++)
                 {

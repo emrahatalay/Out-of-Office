@@ -77,6 +77,27 @@ namespace OutOfOffice.Data
         [Tooltip("Menü ile koşu kamerası arasındaki geçiş süresi (sn).")]
         public float cameraBlendSeconds = 0.7f;
 
+        [Header("Kıvrımlı dünya (yalnızca görsel; oynanış düz kalır)")]
+        public bool curveEnabled = true;
+        [Tooltip("Kıvrımın ölçüldüğü uzaklık (m, kameradan). Aşağıdaki iki değer bu uzaklıktaki kaymadır.")]
+        [Min(10f)] public float curveDistance = 80f;
+        [Tooltip("Yol en çok bu kadar (m) sağa ya da sola kıvrılır.")]
+        public float curveSideMeters = 9f;
+        [Tooltip("Yol uzakta bu kadar (m) aşağı eğilir; ufuk hissi verir.")]
+        public float curveDownMeters = 3f;
+        [Tooltip("Kameradan bu kadar ileriye (m) kadar yol düz kalır; oyuncunun çevresi bükülmez.")]
+        [Min(0f)] public float curveFlatDistance = 7f;
+        [Tooltip("Bir kıvrımın sürdüğü yol (m): en az / en çok.")]
+        public Vector2 curveSegmentMeters = new Vector2(110f, 240f);
+        [Tooltip("Koşunun başında yol bu kadar (m) düz gider.")]
+        public float curveFirstStraightMeters = 45f;
+        [Tooltip("Bir kıvrımdan diğerine geçiş yumuşaklığı (sn).")]
+        public float curveBlendSeconds = 1.4f;
+        [Tooltip("Kıvrımdan sonra yolun düzleşme olasılığı. Kalanı ters yöne kıvrılır.")]
+        [Range(0f, 1f)] public float curveStraightChance = 0.3f;
+        [Tooltip("Her kıvrım, en büyük değerin en az bu oranı kadar güçlü olur.")]
+        [Range(0f, 1f)] public float curveMinStrength = 0.55f;
+
         [Header("Sarsıntı ve ağır çekim")]
         public float shakeSeconds = 0.35f;
         public float stumbleShake = 0.35f;

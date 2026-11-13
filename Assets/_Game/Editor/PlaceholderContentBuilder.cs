@@ -125,12 +125,13 @@ namespace OutOfOffice.EditorTools
             return asset;
         }
 
-        static Shader LitShader()
+        const string WorldShaderPath = Root + "/Shaders/CurvedLit.shader";
+
+        /// <summary>Oyun dünyasındaki tüm yüzeylerin shader'ı: URP ışıklandırması + kıvrımlı dünya bükmesi.</summary>
+        static Shader WorldShader()
         {
-            var pipeline = GraphicsSettings.currentRenderPipeline;
-            var shader = pipeline != null && pipeline.defaultMaterial != null ? pipeline.defaultMaterial.shader : null;
-            if (shader == null) shader = Shader.Find("Universal Render Pipeline/Lit");
-            if (shader == null) throw new System.InvalidOperationException("URP Lit shader bulunamadı.");
+            var shader = AssetDatabase.LoadAssetAtPath<Shader>(WorldShaderPath);
+            if (shader == null) throw new System.InvalidOperationException("Kıvrımlı dünya shader'ı bulunamadı: " + WorldShaderPath);
             return shader;
         }
 
@@ -140,25 +141,20 @@ namespace OutOfOffice.EditorTools
             EnsureFolder(MaterialDir);
             string path = $"{MaterialDir}/{name}.mat";
 
+            var shader = WorldShader();
             var material = AssetDatabase.LoadAssetAtPath<Material>(path);
             if (material == null)
             {
-                material = new Material(LitShader());
+                material = new Material(shader);
                 AssetDatabase.CreateAsset(material, path);
             }
 
+            // Eski içerik URP/Lit ile üretilmiş olabilir; her seferinde doğru shader'a alınır.
+            if (material.shader != shader) material.shader = shader;
+            material.shaderKeywords = System.Array.Empty<string>();
             material.SetColor("_BaseColor", color);
             material.SetFloat("_Smoothness", smoothness);
-            if (emission > 0f)
-            {
-                material.EnableKeyword("_EMISSION");
-                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
-                material.SetColor("_EmissionColor", color * emission);
-            }
-            else
-            {
-                material.DisableKeyword("_EMISSION");
-            }
+            material.SetColor("_EmissionColor", emission > 0f ? color * emission : Color.black);
 
             EditorUtility.SetDirty(material);
             return material;
@@ -177,6 +173,20 @@ namespace OutOfOffice.EditorTools
             part.transform.localScale = scale;
             part.GetComponent<Renderer>().sharedMaterial = material;
             return part;
+        }
+
+        /// <summary>
+        /// Z boyunca uzun bir kutuyu kısa dilimler halinde kurar. Kıvrımlı dünya yalnızca köşe
+        /// noktalarını bükebildiği için uzun tek parça düz kalır, üstündeki nesnelerle ayrışırdı.
+        /// </summary>
+        static void SlicedPart(Transform parent, string name, Vector3 position, Vector3 scale, Material material, float sliceLength = 2.5f)
+        {
+            int slices = Mathf.Max(1, Mathf.CeilToInt(scale.z / sliceLength));
+            float step = scale.z / slices;
+            float start = position.z - scale.z * 0.5f;
+
+            for (int i = 0; i < slices; i++)
+                Part(parent, PrimitiveType.Cube, name + i, new Vector3(position.x, position.y, start + step * (i + 0.5f)), new Vector3(scale.x, scale.y, step), material);
         }
 
         /// <summary>

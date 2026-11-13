@@ -10,7 +10,7 @@ namespace OutOfOffice.Data
         public string nameKey;
 
         [Header("Zemin")]
-        [Tooltip("Başlangıcı kendi orijininde olan, +Z yönünde uzanan parça.")]
+        [Tooltip("Başlangıcı kendi orijininde olan, +Z yönünde uzanan parça. Kıvrımlı dünya köşe noktalarını büktüğü için mesh Z boyunca birkaç metrede bir bölünmüş olmalı; tek parça uzun yüzey düz kalır.")]
         public GameObject groundSegmentPrefab;
         [Min(1f)] public float segmentLength = 30f;
 
