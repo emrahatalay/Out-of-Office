@@ -1,0 +1,9 @@
+<linker>
+    <!-- DI kapsayıcısı sınıfları reflection ile kurar; IL2CPP kod budamasında silinmesinler. -->
+    <assembly fullname="OutOfOffice.Core" preserve="all"/>
+    <assembly fullname="OutOfOffice.Data" preserve="all"/>
+    <assembly fullname="OutOfOffice.Gameplay" preserve="all"/>
+    <assembly fullname="OutOfOffice.Infrastructure" preserve="all"/>
+    <assembly fullname="OutOfOffice.UI" preserve="all"/>
+    <assembly fullname="OutOfOffice.Bootstrap" preserve="all"/>
+</linker>

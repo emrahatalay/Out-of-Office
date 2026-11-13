@@ -1,0 +1,21 @@
+{
+    "name": "OutOfOffice.Bootstrap",
+    "rootNamespace": "OutOfOffice.Bootstrap",
+    "references": [
+        "OutOfOffice.Core",
+        "OutOfOffice.Data",
+        "OutOfOffice.Gameplay",
+        "OutOfOffice.Infrastructure",
+        "OutOfOffice.UI",
+        "VContainer"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

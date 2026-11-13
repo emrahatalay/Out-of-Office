@@ -1,11 +1,16 @@
 {
   "dependencies": {
+    "com.unity.ai.assistant": "2.21.0-pre.2",
+    "com.unity.ai.inference": "2.6.1",
     "com.unity.collab-proxy": "2.13.6",
     "com.unity.ide.rider": "3.1.0",
     "com.unity.ide.visualstudio": "2.0.28",
     "com.unity.inputsystem": "1.20.1",
+    "com.unity.localization": "1.5.14",
+    "com.unity.pipeline": "1.0.0",
     "com.unity.render-pipelines.universal": "17.6.0",
     "com.unity.ugui": "2.6.0",
+    "jp.hadashikick.vcontainer": "https://github.com/hadashiA/VContainer.git?path=VContainer/Assets/VContainer#fb24d752968c5cabe0cfb4fcf8861c74772c5b14",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.adaptiveperformance": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
@@ -41,9 +46,6 @@
     "com.unity.modules.vehicles": "1.0.0",
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.unity.ai.assistant": "2.21.0-pre.2",
-    "com.unity.ai.inference": "2.6.1",
-    "com.unity.pipeline": "1.0.0"
+    "com.unity.modules.xr": "1.0.0"
   }
 }

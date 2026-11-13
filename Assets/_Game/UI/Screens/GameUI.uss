@@ -1,0 +1,616 @@
+:root {
+    --color-primary: #ff4d5f;
+    --color-accent: #ffc83d;
+    --color-tech: #4ee3ff;
+    --color-text: #f3f6ff;
+    --color-muted: #93a0c2;
+    --color-surface: rgba(12, 17, 36, 0.74);
+    --color-surface-strong: rgba(18, 25, 52, 0.92);
+    --color-border: rgba(160, 180, 255, 0.22);
+    --color-overlay: rgba(5, 8, 18, 0.78);
+    --space-xs: 8px;
+    --space-sm: 16px;
+    --space-md: 28px;
+    --space-lg: 48px;
+    --font-bold: url("project://database/Assets/_Game/UI/Fonts/ChakraPetch-Bold.ttf");
+    --font-semibold: url("project://database/Assets/_Game/UI/Fonts/ChakraPetch-SemiBold.ttf");
+    --font-medium: url("project://database/Assets/_Game/UI/Fonts/ChakraPetch-Medium.ttf");
+}
+
+.root {
+    flex-grow: 1;
+    color: var(--color-text);
+    -unity-font-definition: var(--font-semibold);
+}
+
+/* ---------------------------------------------------------------- Ekranlar */
+
+.screen {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    transition-duration: 0.22s;
+}
+
+.screen--out {
+    opacity: 0;
+    translate: 0 40px;
+}
+
+.overlay {
+    background-color: var(--color-overlay);
+}
+
+.hidden {
+    display: none;
+}
+
+.safe-area {
+    flex-grow: 1;
+}
+
+.screen-content {
+    flex-grow: 1;
+    align-items: center;
+    padding: var(--space-lg) var(--space-lg) 56px var(--space-lg);
+}
+
+.screen-content--center {
+    justify-content: center;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+.fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 620px;
+}
+
+.fade-top {
+    top: 0;
+    background-image: url("project://database/Assets/_Game/UI/Sprites/fade_top.png");
+}
+
+.fade-hud {
+    height: 360px;
+}
+
+.fade-bottom {
+    bottom: 0;
+    height: 760px;
+    background-image: url("project://database/Assets/_Game/UI/Sprites/fade_bottom.png");
+}
+
+/* ---------------------------------------------------------------- İkonlar */
+
+.icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    -unity-background-image-tint-color: var(--color-text);
+}
+
+.icon-small {
+    width: 32px;
+    height: 32px;
+}
+
+.icon-large {
+    width: 72px;
+    height: 72px;
+}
+
+.icon-coin {
+    background-image: url("project://database/Assets/_Game/UI/Icons/coin.svg");
+    -unity-background-image-tint-color: var(--color-accent);
+}
+
+.icon-trophy {
+    background-image: url("project://database/Assets/_Game/UI/Icons/trophy.svg");
+    -unity-background-image-tint-color: var(--color-accent);
+}
+
+.icon-bolt {
+    background-image: url("project://database/Assets/_Game/UI/Icons/bolt.svg");
+}
+
+.icon-globe {
+    background-image: url("project://database/Assets/_Game/UI/Icons/globe.svg");
+}
+
+.icon-pause {
+    background-image: url("project://database/Assets/_Game/UI/Icons/pause.svg");
+}
+
+.icon-play {
+    background-image: url("project://database/Assets/_Game/UI/Icons/play.svg");
+}
+
+.icon-home {
+    background-image: url("project://database/Assets/_Game/UI/Icons/home.svg");
+}
+
+.icon-retry {
+    background-image: url("project://database/Assets/_Game/UI/Icons/retry.svg");
+}
+
+.icon-chevron-left {
+    background-image: url("project://database/Assets/_Game/UI/Icons/chevron-left.svg");
+}
+
+.icon-chevron-right {
+    background-image: url("project://database/Assets/_Game/UI/Icons/chevron-right.svg");
+}
+
+/* ---------------------------------------------------------------- Üst çubuk ve çipler */
+
+.top-bar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    align-self: stretch;
+}
+
+.chip {
+    flex-direction: row;
+    align-items: center;
+    height: 84px;
+    margin: 0;
+    padding: 0 var(--space-md) 0 20px;
+    background-color: var(--color-surface);
+    border-width: 2px;
+    border-color: var(--color-border);
+    border-radius: 42px;
+    transition-duration: 0.1s;
+}
+
+.chip-button:hover {
+    background-color: var(--color-surface-strong);
+}
+
+.chip-button:active {
+    scale: 0.94 0.94;
+}
+
+.chip-label {
+    margin-left: 12px;
+    color: var(--color-muted);
+    font-size: 34px;
+    -unity-font-definition: var(--font-medium);
+}
+
+.chip-value {
+    margin-left: 12px;
+    color: var(--color-text);
+    font-size: 40px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.chip-best {
+    margin-top: var(--space-md);
+}
+
+.pop {
+    scale: 1.16 1.16;
+}
+
+.icon-button {
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-surface);
+    border-width: 2px;
+    border-color: var(--color-border);
+    border-radius: 48px;
+    transition-duration: 0.1s;
+}
+
+.icon-button:hover {
+    background-color: var(--color-surface-strong);
+}
+
+.icon-button:active {
+    scale: 0.9 0.9;
+}
+
+/* ---------------------------------------------------------------- Logo */
+
+.logo {
+    align-items: center;
+    margin-top: 72px;
+}
+
+.logo-title {
+    margin: 0;
+    padding: 0;
+    color: var(--color-text);
+    font-size: 132px;
+    letter-spacing: 6px;
+    -unity-font-definition: var(--font-bold);
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.logo-rule {
+    width: 160px;
+    height: 8px;
+    margin: var(--space-sm) 0;
+    background-color: var(--color-primary);
+    border-radius: 4px;
+}
+
+.logo-tagline {
+    color: var(--color-muted);
+    font-size: 38px;
+    -unity-font-definition: var(--font-medium);
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.eyebrow {
+    margin: 0;
+    padding: 0;
+    color: var(--color-muted);
+    font-size: 30px;
+    letter-spacing: 5px;
+    -unity-font-definition: var(--font-semibold);
+    -unity-text-align: middle-center;
+}
+
+.eyebrow--danger {
+    color: var(--color-primary);
+}
+
+/* ---------------------------------------------------------------- Kart */
+
+.card {
+    align-self: stretch;
+    align-items: center;
+    margin: 0 -20px;
+    padding: 56px 60px 64px 60px;
+    background-image: url("project://database/Assets/_Game/UI/Sprites/card.png");
+    -unity-slice-left: 128;
+    -unity-slice-top: 128;
+    -unity-slice-right: 128;
+    -unity-slice-bottom: 128;
+    -unity-slice-scale: 0.5px;
+}
+
+.card--dialog {
+    padding-bottom: 44px;
+}
+
+.selector-row {
+    flex-direction: row;
+    align-items: center;
+    align-self: stretch;
+    margin-top: var(--space-sm);
+}
+
+.selector-info {
+    flex-grow: 1;
+    align-items: center;
+}
+
+.selector-name {
+    margin: 0;
+    padding: 0;
+    font-size: 68px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.ability-chip {
+    flex-direction: row;
+    align-items: center;
+    margin-top: var(--space-xs);
+    padding: 6px 22px 6px 14px;
+    background-color: rgba(78, 227, 255, 0.14);
+    border-radius: 26px;
+}
+
+.ability-chip > .icon {
+    -unity-background-image-tint-color: var(--color-tech);
+}
+
+.ability-chip-label {
+    margin-left: 6px;
+    color: var(--color-tech);
+    font-size: 32px;
+}
+
+/* ---------------------------------------------------------------- Butonlar */
+
+.btn {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    height: 150px;
+    margin: var(--space-sm) -8px 0 -8px;
+    padding: 0 0 14px 0;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    -unity-slice-left: 108;
+    -unity-slice-top: 120;
+    -unity-slice-right: 108;
+    -unity-slice-bottom: 116;
+    -unity-slice-scale: 0.5px;
+    transition-duration: 0.1s;
+}
+
+.btn:hover {
+    -unity-background-image-tint-color: #e9edff;
+}
+
+.btn:active {
+    scale: 0.96 0.96;
+    -unity-background-image-tint-color: #c9cfe6;
+}
+
+.btn-primary {
+    background-image: url("project://database/Assets/_Game/UI/Sprites/btn_primary.png");
+}
+
+.btn-secondary {
+    height: 132px;
+    background-image: url("project://database/Assets/_Game/UI/Sprites/btn_secondary.png");
+}
+
+.btn-large {
+    height: 190px;
+    margin-top: var(--space-md);
+}
+
+.btn-label {
+    margin: 0 0 0 16px;
+    padding: 0;
+    color: var(--color-text);
+    font-size: 48px;
+    letter-spacing: 3px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.btn-label-large {
+    font-size: 72px;
+    letter-spacing: 8px;
+}
+
+.btn-large > .icon {
+    width: 60px;
+    height: 60px;
+}
+
+/* ---------------------------------------------------------------- HUD */
+
+.score-block {
+    align-items: center;
+}
+
+.score-value {
+    margin: -8px 0 0 0;
+    padding: 0;
+    font-size: 104px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.effect-badge {
+    flex-direction: row;
+    align-items: center;
+    height: 72px;
+    margin-top: var(--space-md);
+    padding: 0 var(--space-md) 0 18px;
+    background-color: rgba(78, 227, 255, 0.16);
+    border-width: 2px;
+    border-color: rgba(78, 227, 255, 0.55);
+    border-radius: 36px;
+}
+
+.effect-badge > .icon {
+    -unity-background-image-tint-color: var(--color-tech);
+}
+
+.effect-name {
+    margin-left: 8px;
+    color: var(--color-tech);
+    font-size: 36px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.effect-time {
+    margin-left: var(--space-sm);
+    font-size: 36px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.hud-bottom {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-self: stretch;
+}
+
+.ability-button {
+    align-items: center;
+    justify-content: center;
+    width: 220px;
+    height: 220px;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-surface-strong);
+    border-width: 0;
+    border-radius: 110px;
+    transition-duration: 0.1s;
+}
+
+.ability-button:active {
+    scale: 0.92 0.92;
+}
+
+.ability-button:disabled {
+    opacity: 0.75;
+}
+
+.ability-button > .icon {
+    -unity-background-image-tint-color: var(--color-tech);
+}
+
+.ability-button:disabled > .icon {
+    -unity-background-image-tint-color: var(--color-muted);
+}
+
+.ability-ring {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    --ring-width: 12;
+    --ring-track-color: rgba(255, 255, 255, 0.12);
+    --ring-fill-color: #4ee3ff;
+}
+
+.ability-name {
+    margin: 2px 0 0 0;
+    padding: 0;
+    color: var(--color-text);
+    font-size: 28px;
+    -unity-text-align: middle-center;
+}
+
+/* ---------------------------------------------------------------- Diyaloglar */
+
+.dialog-title {
+    margin: var(--space-xs) 0 var(--space-sm) 0;
+    padding: 0;
+    font-size: 76px;
+    letter-spacing: 2px;
+    -unity-font-definition: var(--font-bold);
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.final-score {
+    margin: 0;
+    padding: 0;
+    color: var(--color-accent);
+    font-size: 168px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.new-best {
+    padding: 8px var(--space-md);
+    background-color: var(--color-accent);
+    border-radius: 30px;
+}
+
+.new-best-label {
+    margin: 0;
+    padding: 0;
+    color: #1a1405;
+    font-size: 34px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.stat-row {
+    flex-direction: row;
+    justify-content: center;
+    align-self: stretch;
+    margin: var(--space-md) 0 var(--space-sm) 0;
+}
+
+.stat {
+    flex-direction: row;
+    align-items: center;
+    height: 84px;
+    margin: 0 var(--space-xs);
+    padding: 0 var(--space-md) 0 20px;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 42px;
+}
+
+.stat-label {
+    margin-left: 12px;
+    color: var(--color-muted);
+    font-size: 32px;
+    -unity-font-definition: var(--font-medium);
+}
+
+.stat-value {
+    margin-left: 12px;
+    font-size: 40px;
+    -unity-font-definition: var(--font-bold);
+}
+
+/* ---------------------------------------------------------------- Otomasyon */
+
+.danger-chip {
+    flex-direction: row;
+    align-items: center;
+    margin-top: var(--space-xs);
+    padding: 6px 22px;
+    background-color: rgba(255, 77, 95, 0.16);
+    border-width: 2px;
+    border-color: rgba(255, 77, 95, 0.6);
+    border-radius: 26px;
+}
+
+.danger-chip--row {
+    margin-bottom: var(--space-sm);
+}
+
+.danger-chip-label {
+    margin: 0;
+    padding: 0;
+    color: var(--color-primary);
+    font-size: 30px;
+    letter-spacing: 2px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.danger-chip-suffix {
+    margin-left: 10px;
+}
+
+.btn-accent {
+    background-image: url("project://database/Assets/_Game/UI/Sprites/btn_accent.png");
+}
+
+.btn:disabled {
+    opacity: 0.5;
+}
+
+.btn-label-dark {
+    color: #04222e;
+}
+
+.icon-coin-dark {
+    margin-left: 22px;
+}
+
+/* ---------------------------------------------------------------- Varsayılan buton temasını bastır */
+
+.btn:hover,
+.btn:active,
+.btn:focus {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.ability-button:hover,
+.ability-button:active,
+.ability-button:focus {
+    background-color: var(--color-surface-strong);
+}
+
+.icon-button:focus,
+.chip-button:focus {
+    border-color: var(--color-border);
+    background-color: var(--color-surface);
+}

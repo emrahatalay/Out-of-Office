@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29f38487fb9fd430f85732192cde0ae2, type: 3}
+  m_Name: VfxLibrary
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.VfxLibrary
+  bursts:
+  - trigger: 0
+    prefab: {fileID: 6435254788395331758, guid: 310957ff3d2c3498f81cee8a375cfd89, type: 3}
+    lifetime: 0.6
+    offset: {x: 0, y: 1, z: 0.6}
+  - trigger: 1
+    prefab: {fileID: 5218446540739756905, guid: edf503065481540a5bc5b252946e0f37, type: 3}
+    lifetime: 0.9
+    offset: {x: 0, y: 1, z: 0.6}
+  - trigger: 2
+    prefab: {fileID: 2603572102834024338, guid: 765001d8836f8405da63f0d694d18899, type: 3}
+    lifetime: 0.8
+    offset: {x: 0, y: 0.9, z: 0.8}
+  - trigger: 3
+    prefab: {fileID: 2660425760328917610, guid: 68ba5d932769e4000995af1d618f3c4c, type: 3}
+    lifetime: 0.9
+    offset: {x: 0, y: 1, z: 0}
+  - trigger: 4
+    prefab: {fileID: 9136675541608374416, guid: e7b37109894574ddd866c4a4eeb9e845, type: 3}
+    lifetime: 0.8
+    offset: {x: 0, y: 1, z: 0.4}
+  - trigger: 5
+    prefab: {fileID: 2836737774008539586, guid: f6d45ac41385948139dfa881855bce0a, type: 3}
+    lifetime: 0.5
+    offset: {x: 0, y: 0.05, z: 0}
+  - trigger: 6
+    prefab: {fileID: 2858131831019127770, guid: 90b03498f4ac4454d933e0a13b993532, type: 3}
+    lifetime: 1.2
+    offset: {x: 0, y: 1, z: 0}
+  speedLinesPrefab: {fileID: 663803985077045670, guid: baff4b55d544c4e48987197ccff561e2, type: 3}
+  speedLinesMinSpeed: 17
+  speedLinesMaxRate: 70
+  auraPrefab: {fileID: 928364232719329710, guid: aaf0a17b91efd4eddb49874f53169453, type: 3}

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76eb8f3d2ec1545ee922dfc972afa0dc, type: 3}
+  m_Name: World_Plaza
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.WorldDefinition
+  id: plaza
+  nameKey: world.plaza
+  groundSegmentPrefab: {fileID: 7142449779101452290, guid: 105022e0a60134b648269e7979026545, type: 3}
+  segmentLength: 30
+  chaser: {fileID: 11400000, guid: 49033a05132d94f6d99fd877ce8612bc, type: 2}
+  obstacles:
+  - {fileID: 11400000, guid: 1eabf35524eb74a6cb3d79b35a58f23c, type: 2}
+  - {fileID: 11400000, guid: 0707dfb56957141c89e7d60388805638, type: 2}
+  - {fileID: 11400000, guid: 17f62ea6e5b244c2393157b5a49fa29c, type: 2}
+  - {fileID: 11400000, guid: 8cde404c518c5422eb2d609a3c29264e, type: 2}
+  - {fileID: 11400000, guid: ca1a7fc002cf1407290e7c71b76b17eb, type: 2}
+  powerUps:
+  - {fileID: 11400000, guid: 75c40e422dcba4bb484dc06f4520fd07, type: 2}
+  - {fileID: 11400000, guid: 9438361fa79e74daf88a96ae8cd21550, type: 2}
+  - {fileID: 11400000, guid: b145875dab8f74ecba6f874fd79060a4, type: 2}
+  coinPrefab: {fileID: 369921303611913871, guid: 93ae97885982c497a9a33d79573076e4, type: 3}

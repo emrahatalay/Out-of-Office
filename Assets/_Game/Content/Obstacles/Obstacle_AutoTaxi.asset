@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ec9f4ffe46d54c7a8b8d0bd1bd03e65, type: 3}
+  m_Name: Obstacle_AutoTaxi
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.ObstacleDefinition
+  id: auto_taxi
+  prefab: {fileID: 1862470961768802702, guid: 29bf25e5a08104b1784e95fb06ccb970, type: 3}
+  avoidBy: 0
+  movement: {fileID: 11400000, guid: 21f81a58e857d4ebfb758eac3d99fd5a, type: 2}
+  minDifficulty: 0.35
+  spawnWeight: 0.6

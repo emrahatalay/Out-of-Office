@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60e9f457d2cad4f6bac497be0059a142, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.GameConfig
+  laneCount: 3
+  laneWidth: 2.5
+  laneSmoothTime: 0.055
+  maxLeanDegrees: 16
+  startSpeed: 13
+  maxSpeed: 30
+  acceleration: 0.16
+  difficultyRampSeconds: 120
+  jumpHeight: 2
+  gravity: 46
+  fastFallSpeed: 34
+  slideDuration: 0.65
+  inputBufferSeconds: 0.15
+  standingHeight: 1.8
+  slidingHeight: 0.8
+  bodyRadius: 0.4
+  spawnAhead: 70
+  trackAhead: 130
+  despawnBehind: 14
+  firstRowDistance: 30
+  reactionTimeEasy: 1.25
+  reactionTimeHard: 0.72
+  breatherChance: 0.12
+  breatherMultiplier: 1.8
+  coinTrailChance: 0.7
+  coinsPerTrail: 5
+  coinSpacing: 1.6
+  powerUpChance: 0.08
+  adaptiveStrength: 0.6
+  adaptiveMemorySeconds: 45
+  cameraOffset: {x: 0, y: 4.3, z: -6.2}
+  cameraLookAhead: 9
+  cameraLookHeight: 1.3
+  cameraSideFollow: 0.6
+  cameraSmoothTime: 0.08
+  cameraJumpFollow: 0.3
+  baseFieldOfView: 60
+  maxFieldOfView: 74
+  menuCameraOffset: {x: 3.4, y: 1.7, z: 2.8}
+  menuLookAt: {x: 0, y: 1.15, z: 0.2}
+  cameraBlendSeconds: 0.7
+  shakeSeconds: 0.35
+  stumbleShake: 0.35
+  shieldShake: 0.25
+  caughtShake: 0.6
+  stumbleTimeScale: 0.4
+  stumbleSlowSeconds: 0.12
+  caughtTimeScale: 0.25
+  caughtSlowSeconds: 0.7
+  prewarmGround: 6
+  prewarmPerObstacle: 4
+  prewarmCoins: 40
+  prewarmPerVfx: 3
+  coinScore: 10

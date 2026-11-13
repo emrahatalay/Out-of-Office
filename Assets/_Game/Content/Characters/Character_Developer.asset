@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 686b6fc2d4f0c4c66be2b4bc3ac1acf0, type: 3}
+  m_Name: Character_Developer
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.CharacterDefinition
+  id: developer
+  nameKey: char.developer
+  prefab: {fileID: 8588009992615254153, guid: a4eb0bc6affd94a72ad6eb8102f95333, type: 3}
+  ability: {fileID: 11400000, guid: 0b6169e645aba446584de0e3142f1930, type: 2}
+  canBeAutomated: 1
+  buybackCost: 100
+  automatedObstacle: {fileID: 11400000, guid: f0c30d1ae9e4d405faa3ccdc3426bcff, type: 2}

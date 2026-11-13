@@ -1,0 +1,102 @@
+using UnityEngine;
+
+namespace OutOfOffice.Data
+{
+    /// <summary>Oyunun tüm ayar sayıları. Kod değiştirmeden Inspector'dan dengelenir.</summary>
+    [CreateAssetMenu(menuName = "Out of Office/Game Config", fileName = "GameConfig")]
+    public sealed class GameConfig : ScriptableObject
+    {
+        [Header("Şeritler")]
+        [Min(1)] public int laneCount = 3;
+        public float laneWidth = 2.5f;
+        [Tooltip("Şerit değiştirme yumuşaklığı (sn). Küçük = daha keskin.")]
+        public float laneSmoothTime = 0.055f;
+        [Tooltip("Şerit değiştirirken gövdenin en fazla yatma açısı.")]
+        public float maxLeanDegrees = 16f;
+
+        [Header("Hız ve zorluk")]
+        public float startSpeed = 13f;
+        public float maxSpeed = 30f;
+        [Tooltip("Saniyede kazanılan hız.")]
+        public float acceleration = 0.16f;
+        [Tooltip("Zorluğun 0'dan 1'e çıkması kaç saniye sürer.")]
+        public float difficultyRampSeconds = 120f;
+
+        [Header("Zıplama ve kayma")]
+        public float jumpHeight = 2f;
+        public float gravity = 46f;
+        public float fastFallSpeed = 34f;
+        public float slideDuration = 0.65f;
+        [Tooltip("Yere inmeden bu kadar önce basılan zıplama, inince uygulanır.")]
+        public float inputBufferSeconds = 0.15f;
+        public float standingHeight = 1.8f;
+        public float slidingHeight = 0.8f;
+        public float bodyRadius = 0.4f;
+
+        [Header("Üretim")]
+        [Tooltip("Engeller oyuncunun bu kadar önünde doğar.")]
+        public float spawnAhead = 70f;
+        [Tooltip("Zemin bu kadar ileriye kadar döşenir.")]
+        public float trackAhead = 130f;
+        public float despawnBehind = 14f;
+        public float firstRowDistance = 30f;
+        [Tooltip("Kolay seviyede iki engel sırası arasındaki tepki süresi (sn).")]
+        public float reactionTimeEasy = 1.25f;
+        public float reactionTimeHard = 0.72f;
+        [Tooltip("Bir sıradan sonra nefes payı bırakma olasılığı.")]
+        [Range(0f, 1f)] public float breatherChance = 0.12f;
+        public float breatherMultiplier = 1.8f;
+        [Range(0f, 1f)] public float coinTrailChance = 0.7f;
+        [Min(1)] public int coinsPerTrail = 5;
+        public float coinSpacing = 1.6f;
+        [Range(0f, 1f)] public float powerUpChance = 0.08f;
+
+        [Header("Öğrenen yönetmen")]
+        [Tooltip("0: engeller rastgele. 1: engeller tamamen oyuncunun sevdiği şeritlere gider.")]
+        [Range(0f, 1f)] public float adaptiveStrength = 0.6f;
+        [Tooltip("Alışkanlık hafızası. Daha eski şerit tercihleri bu süreyle unutulur.")]
+        public float adaptiveMemorySeconds = 45f;
+
+        [Header("Kamera: koşu")]
+        public Vector3 cameraOffset = new Vector3(0f, 4.3f, -6.2f);
+        public float cameraLookAhead = 9f;
+        public float cameraLookHeight = 1.3f;
+        [Range(0f, 1f)] public float cameraSideFollow = 0.6f;
+        public float cameraSmoothTime = 0.08f;
+        [Tooltip("Kamera zıplamanın ne kadarını takip eder.")]
+        [Range(0f, 1f)] public float cameraJumpFollow = 0.3f;
+        public float baseFieldOfView = 60f;
+        [Tooltip("En yüksek hızdaki görüş açısı; hız hissini artırır.")]
+        public float maxFieldOfView = 74f;
+
+        [Header("Kamera: menü")]
+        public Vector3 menuCameraOffset = new Vector3(3.4f, 1.7f, 2.8f);
+        public Vector3 menuLookAt = new Vector3(0f, 1.15f, 0.2f);
+        [Tooltip("Menü ile koşu kamerası arasındaki geçiş süresi (sn).")]
+        public float cameraBlendSeconds = 0.7f;
+
+        [Header("Sarsıntı ve ağır çekim")]
+        public float shakeSeconds = 0.35f;
+        public float stumbleShake = 0.35f;
+        public float shieldShake = 0.25f;
+        public float caughtShake = 0.6f;
+        [Range(0.05f, 1f)] public float stumbleTimeScale = 0.4f;
+        public float stumbleSlowSeconds = 0.12f;
+        [Range(0.05f, 1f)] public float caughtTimeScale = 0.25f;
+        public float caughtSlowSeconds = 0.7f;
+
+        [Header("Havuz ön ısıtma (yükleme anında üretilir, koşu sırasında takılma olmaz)")]
+        [Min(0)] public int prewarmGround = 6;
+        [Min(0)] public int prewarmPerObstacle = 4;
+        [Min(0)] public int prewarmCoins = 40;
+        [Min(0)] public int prewarmPerVfx = 3;
+
+        [Header("Puan")]
+        public int coinScore = 10;
+
+        public float LaneToX(int lane)
+        {
+            return (lane - (laneCount - 1) * 0.5f) * laneWidth;
+        }
+    }
+}
