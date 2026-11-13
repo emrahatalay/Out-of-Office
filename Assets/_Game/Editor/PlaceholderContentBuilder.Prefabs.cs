@@ -10,7 +10,7 @@ namespace OutOfOffice.EditorTools
             public GameObject DevBot, DesignBot;
             public GameObject ServerRack, CookieWall, RobotVacuum, CargoDrone, AutoTaxi;
             public GameObject Coin, Captcha, Hallucination, Shield;
-            public GameObject DronePickup, Magnet, Overtime, Espresso, OfficeChair, Package;
+            public GameObject DronePickup, Magnet, Overtime, Espresso, OfficeChair, Package, CarrierDrone;
             public GameObject Ground;
         }
 
@@ -32,9 +32,12 @@ namespace OutOfOffice.EditorTools
             var cyan = Mat("ShieldCyan", new Color(0.25f, 0.85f, 0.95f), 0.6f, 1.5f);
             var espresso = Mat("EspressoBrown", new Color(0.55f, 0.33f, 0.18f), 0.5f, 1.2f);
             var internGrey = Mat("InternGrey", new Color(0.62f, 0.66f, 0.72f));
-            var floor = Mat("Floor", new Color(0.3f, 0.33f, 0.4f), 0.1f);
-            var floorStripe = Mat("FloorStripe", new Color(0.25f, 0.28f, 0.34f), 0.1f);
-            var wall = Mat("Wall", new Color(0.2f, 0.23f, 0.32f), 0.1f);
+            // Zemin koyu ve soğuktur; üstündeki her şey ondan parlaktır (docs/GORSEL_DIL.md).
+            // Parlak zemin gökyüzünün ufuk ışığını yansıtır (ıslak asfalt hissi).
+            var floor = Mat("Floor", new Color(0.15f, 0.17f, 0.25f), 0.78f);
+            var floorStripe = Mat("FloorStripe", new Color(0.11f, 0.13f, 0.2f), 0.6f);
+            var wall = Mat("Wall", new Color(0.13f, 0.15f, 0.24f), 0.3f);
+            var laneGlow = Mat("LaneGlow", new Color(0.3f, 0.88f, 1f), 0.6f, 1.3f);
 
             return new PlaceholderPrefabs
             {
@@ -42,26 +45,37 @@ namespace OutOfOffice.EditorTools
                 Developer = CharacterModelBuilder.PrefabOr("Character_Developer", BuildCharacter("Character_Developer", blue, white, dark, false)),
                 Designer = CharacterModelBuilder.PrefabOr("Character_Designer", BuildCharacter("Character_Designer", magenta, white, yellow, true)),
                 Intern = CharacterModelBuilder.PrefabOr("Character_Intern", BuildIntern(internGrey, white, orange)),
-                Chaser = BuildChaser(steel, red, glowWhite),
-                DevBot = BuildProfessionBot("Obstacle_DevBot", steel, blue, green),
-                DesignBot = BuildProfessionBot("Obstacle_DesignBot", steel, magenta, yellow),
+                Chaser = CharacterModelBuilder.PrefabOr("Chaser_HR9000", BuildChaser(steel, red, glowWhite)),
+                DevBot = BuildProfessionBot("Obstacle_DevBot", "DevBot", steel, blue, green),
+                DesignBot = BuildProfessionBot("Obstacle_DesignBot", "DesignBot", steel, magenta, yellow),
                 ServerRack = BuildServerRack(dark, green),
                 CookieWall = BuildCookieWall(orange, steel),
                 RobotVacuum = BuildRobotVacuum(steel, red),
                 CargoDrone = BuildCargoDrone(white, dark, orange),
                 AutoTaxi = BuildAutoTaxi(yellow, dark),
                 Coin = BuildCoin(yellow),
-                Captcha = BuildPowerUp("Pickup_Captcha", green, white),
-                Hallucination = BuildPowerUp("Pickup_Hallucination", purple, white),
-                Shield = BuildPowerUp("Pickup_Shield", cyan, white),
-                DronePickup = BuildPowerUp("Pickup_Drone", orange, white),
-                Magnet = BuildPowerUp("Pickup_Magnet", red, white),
-                Overtime = BuildPowerUp("Pickup_Overtime", yellow, white),
-                Espresso = BuildPowerUp("Pickup_Espresso", espresso, white),
+                Captcha = BuildPowerUp("Pickup_Captcha", "Captcha", green, white),
+                Hallucination = BuildPowerUp("Pickup_Hallucination", "Hallucination", purple, white),
+                Shield = BuildPowerUp("Pickup_Shield", "Shield", cyan, white),
+                DronePickup = BuildPowerUp("Pickup_Drone", "DronePickup", orange, white),
+                Magnet = BuildPowerUp("Pickup_Magnet", "Magnet", red, white),
+                Overtime = BuildPowerUp("Pickup_Overtime", "Overtime", yellow, white),
+                Espresso = BuildPowerUp("Pickup_Espresso", "Espresso", espresso, white),
                 OfficeChair = BuildOfficeChair(dark, steel),
+                CarrierDrone = BuildCarrierDrone(white, dark),
                 Package = BuildPackage(espresso, yellow),
-                Ground = BuildGround(floor, floorStripe, white, wall, dark),
+                Ground = BuildGround(floor, floorStripe, laneGlow, wall, dark),
             };
+        }
+
+        /// <summary>
+        /// Gerçek modeli kuruluysa (PropModelBuilder) köke görsel olarak ekler ve true döner.
+        /// Dönen değer false ise çağıran geçici parçaları kurar. Çarpışma şekli her iki
+        /// durumda da aynıdır; oynanış modele göre değişmez.
+        /// </summary>
+        static bool Model(GameObject root, string prop, bool castShadows)
+        {
+            return PropModelBuilder.TryAddModel(root.transform, prop, castShadows);
         }
 
         // Karakter ve kovalayan prefab'ları yalnızca görseldir (+Z ileri bakar).
@@ -90,16 +104,20 @@ namespace OutOfOffice.EditorTools
         }
 
         // Otomatikleşen mesleğin robotu: mesleğin renginde gövde, parlayan ekran.
-        static GameObject BuildProfessionBot(string name, Material frame, Material body, Material screen)
+        static GameObject BuildProfessionBot(string name, string prop, Material frame, Material body, Material screen)
         {
             var root = new GameObject(name);
-            Part(root.transform, PrimitiveType.Cube, "Base", new Vector3(0f, 0.25f, 0f), new Vector3(1.5f, 0.5f, 1.1f), frame);
-            Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 1.2f, 0f), new Vector3(1.2f, 1.4f, 0.8f), body);
-            Part(root.transform, PrimitiveType.Cube, "Screen", new Vector3(0f, 1.35f, -0.41f), new Vector3(0.9f, 0.7f, 0.03f), screen);
-            Part(root.transform, PrimitiveType.Cube, "Head", new Vector3(0f, 2.15f, 0f), new Vector3(0.7f, 0.4f, 0.6f), frame);
+            bool real = Model(root, prop, castShadows: true);
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Base", new Vector3(0f, 0.25f, 0f), new Vector3(1.5f, 0.5f, 1.1f), frame);
+                Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 1.2f, 0f), new Vector3(1.2f, 1.4f, 0.8f), body);
+                Part(root.transform, PrimitiveType.Cube, "Screen", new Vector3(0f, 1.35f, -0.41f), new Vector3(0.9f, 0.7f, 0.03f), screen);
+                Part(root.transform, PrimitiveType.Cube, "Head", new Vector3(0f, 2.15f, 0f), new Vector3(0.7f, 0.4f, 0.6f), frame);
+            }
 
             BoxTrigger(root, new Vector3(0f, 1.2f, 0f), new Vector3(1.5f, 2.4f, 1.1f));
-            CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: true);
             return SavePrefab(root);
         }
 
@@ -107,10 +125,34 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildOfficeChair(Material seat, Material metal)
         {
             var root = new GameObject("Accessory_OfficeChair");
-            Part(root.transform, PrimitiveType.Cylinder, "Base", new Vector3(0f, 0.06f, 0f), new Vector3(1.1f, 0.05f, 1.1f), metal);
-            Part(root.transform, PrimitiveType.Cylinder, "Stem", new Vector3(0f, 0.25f, 0f), new Vector3(0.12f, 0.2f, 0.12f), metal);
-            Part(root.transform, PrimitiveType.Cube, "Seat", new Vector3(0f, 0.48f, 0f), new Vector3(0.95f, 0.14f, 0.9f), seat);
-            Part(root.transform, PrimitiveType.Cube, "Back", new Vector3(0f, 1.05f, -0.48f), new Vector3(0.9f, 1.1f, 0.12f), seat);
+            if (!Model(root, "OfficeChair", castShadows: true))
+            {
+                Part(root.transform, PrimitiveType.Cylinder, "Base", new Vector3(0f, 0.06f, 0f), new Vector3(1.1f, 0.05f, 1.1f), metal);
+                Part(root.transform, PrimitiveType.Cylinder, "Stem", new Vector3(0f, 0.25f, 0f), new Vector3(0.12f, 0.2f, 0.12f), metal);
+                Part(root.transform, PrimitiveType.Cube, "Seat", new Vector3(0f, 0.48f, 0f), new Vector3(0.95f, 0.14f, 0.9f), seat);
+                Part(root.transform, PrimitiveType.Cube, "Back", new Vector3(0f, 1.05f, -0.48f), new Vector3(0.9f, 1.1f, 0.12f), seat);
+            }
+
+            return SavePrefab(root);
+        }
+
+        // Jetpack'in karşılığı: oyuncuyu taşıyan dron. Yalnızca görsel; oyuncu tutamağına asılır.
+        // Tutamak, asılma pozundaki ellerin yüksekliğindedir (model hattında "lift").
+        static GameObject BuildCarrierDrone(Material body, Material rotor)
+        {
+            var root = new GameObject("Attachment_CarrierDrone");
+            if (!Model(root, "CarrierDrone", castShadows: true))
+            {
+                Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 2.5f, 0f), new Vector3(1f, 0.3f, 1f), body);
+                Part(root.transform, PrimitiveType.Cube, "Handle", new Vector3(0f, 2.15f, 0f), new Vector3(0.7f, 0.06f, 0.06f), rotor);
+                for (int i = 0; i < 4; i++)
+                {
+                    float x = i % 2 == 0 ? -0.65f : 0.65f;
+                    float z = i < 2 ? -0.65f : 0.65f;
+                    Part(root.transform, PrimitiveType.Cylinder, "Rotor" + i, new Vector3(x, 2.7f, z), new Vector3(0.6f, 0.03f, 0.6f), rotor);
+                }
+            }
+
             return SavePrefab(root);
         }
 
@@ -118,12 +160,16 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildPackage(Material box, Material ribbon)
         {
             var root = new GameObject("Pickup_Package");
-            Part(root.transform, PrimitiveType.Cube, "Box", new Vector3(0f, 1.05f, 0f), new Vector3(0.9f, 0.9f, 0.9f), box);
-            Part(root.transform, PrimitiveType.Cube, "RibbonA", new Vector3(0f, 1.05f, 0f), new Vector3(0.94f, 0.94f, 0.2f), ribbon);
-            Part(root.transform, PrimitiveType.Cube, "RibbonB", new Vector3(0f, 1.05f, 0f), new Vector3(0.2f, 0.94f, 0.94f), ribbon);
+            bool real = Model(root, "Package", castShadows: false);
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Box", new Vector3(0f, 1.05f, 0f), new Vector3(0.9f, 0.9f, 0.9f), box);
+                Part(root.transform, PrimitiveType.Cube, "RibbonA", new Vector3(0f, 1.05f, 0f), new Vector3(0.94f, 0.94f, 0.2f), ribbon);
+                Part(root.transform, PrimitiveType.Cube, "RibbonB", new Vector3(0f, 1.05f, 0f), new Vector3(0.2f, 0.94f, 0.94f), ribbon);
+            }
 
             SphereTrigger(root, new Vector3(0f, 1.05f, 0f), 0.85f);
-            CombineByMaterial(root, castShadows: false);
+            if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 
@@ -144,12 +190,16 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildServerRack(Material body, Material led)
         {
             var root = new GameObject("Obstacle_ServerRack");
-            Part(root.transform, PrimitiveType.Cube, "Rack", new Vector3(0f, 1.3f, 0f), new Vector3(1.8f, 2.6f, 1.2f), body);
-            for (int i = 0; i < 4; i++)
-                Part(root.transform, PrimitiveType.Cube, "Led" + i, new Vector3(0f, 0.6f + i * 0.5f, -0.61f), new Vector3(1.4f, 0.08f, 0.02f), led);
+            bool real = Model(root, "ServerRack", castShadows: true);
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Rack", new Vector3(0f, 1.3f, 0f), new Vector3(1.8f, 2.6f, 1.2f), body);
+                for (int i = 0; i < 4; i++)
+                    Part(root.transform, PrimitiveType.Cube, "Led" + i, new Vector3(0f, 0.6f + i * 0.5f, -0.61f), new Vector3(1.4f, 0.08f, 0.02f), led);
+            }
 
             BoxTrigger(root, new Vector3(0f, 1.3f, 0f), new Vector3(1.7f, 2.6f, 1.1f));
-            CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: true);
             return SavePrefab(root);
         }
 
@@ -157,12 +207,16 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildCookieWall(Material banner, Material post)
         {
             var root = new GameObject("Obstacle_CookieWall");
-            Part(root.transform, PrimitiveType.Cube, "Banner", new Vector3(0f, 1.9f, 0f), new Vector3(2.3f, 1.6f, 0.3f), banner);
-            Part(root.transform, PrimitiveType.Cube, "PostLeft", new Vector3(-1.1f, 0.55f, 0f), new Vector3(0.12f, 1.1f, 0.12f), post);
-            Part(root.transform, PrimitiveType.Cube, "PostRight", new Vector3(1.1f, 0.55f, 0f), new Vector3(0.12f, 1.1f, 0.12f), post);
+            bool real = Model(root, "CookieWall", castShadows: true);
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Banner", new Vector3(0f, 1.9f, 0f), new Vector3(2.3f, 1.6f, 0.3f), banner);
+                Part(root.transform, PrimitiveType.Cube, "PostLeft", new Vector3(-1.1f, 0.55f, 0f), new Vector3(0.12f, 1.1f, 0.12f), post);
+                Part(root.transform, PrimitiveType.Cube, "PostRight", new Vector3(1.1f, 0.55f, 0f), new Vector3(0.12f, 1.1f, 0.12f), post);
+            }
 
             BoxTrigger(root, new Vector3(0f, 1.9f, 0f), new Vector3(2.3f, 1.6f, 0.8f));
-            CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: true);
             return SavePrefab(root);
         }
 
@@ -170,11 +224,15 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildRobotVacuum(Material body, Material light)
         {
             var root = new GameObject("Obstacle_RobotVacuum");
-            Part(root.transform, PrimitiveType.Cylinder, "Body", new Vector3(0f, 0.22f, 0f), new Vector3(1.7f, 0.22f, 1.7f), body);
-            Part(root.transform, PrimitiveType.Cylinder, "Sensor", new Vector3(0f, 0.5f, 0f), new Vector3(0.5f, 0.07f, 0.5f), light);
+            bool real = Model(root, "RobotVacuum", castShadows: true);
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cylinder, "Body", new Vector3(0f, 0.22f, 0f), new Vector3(1.7f, 0.22f, 1.7f), body);
+                Part(root.transform, PrimitiveType.Cylinder, "Sensor", new Vector3(0f, 0.5f, 0f), new Vector3(0.5f, 0.07f, 0.5f), light);
+            }
 
             BoxTrigger(root, new Vector3(0f, 0.35f, 0f), new Vector3(1.6f, 0.7f, 1.4f));
-            CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: true);
             return SavePrefab(root);
         }
 
@@ -182,17 +240,21 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildCargoDrone(Material body, Material rotor, Material cargo)
         {
             var root = new GameObject("Obstacle_CargoDrone");
-            Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 1.95f, 0f), new Vector3(1f, 0.3f, 1f), body);
-            Part(root.transform, PrimitiveType.Cube, "Cargo", new Vector3(0f, 1.5f, 0f), new Vector3(0.7f, 0.6f, 0.7f), cargo);
-            for (int i = 0; i < 4; i++)
+            bool real = Model(root, "CargoDrone", castShadows: true);
+            if (!real)
             {
-                float x = i % 2 == 0 ? -0.65f : 0.65f;
-                float z = i < 2 ? -0.65f : 0.65f;
-                Part(root.transform, PrimitiveType.Cylinder, "Rotor" + i, new Vector3(x, 2.15f, z), new Vector3(0.6f, 0.03f, 0.6f), rotor);
+                Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 1.95f, 0f), new Vector3(1f, 0.3f, 1f), body);
+                Part(root.transform, PrimitiveType.Cube, "Cargo", new Vector3(0f, 1.5f, 0f), new Vector3(0.7f, 0.6f, 0.7f), cargo);
+                for (int i = 0; i < 4; i++)
+                {
+                    float x = i % 2 == 0 ? -0.65f : 0.65f;
+                    float z = i < 2 ? -0.65f : 0.65f;
+                    Part(root.transform, PrimitiveType.Cylinder, "Rotor" + i, new Vector3(x, 2.15f, z), new Vector3(0.6f, 0.03f, 0.6f), rotor);
+                }
             }
 
             BoxTrigger(root, new Vector3(0f, 1.75f, 0f), new Vector3(1.5f, 1.1f, 1.3f));
-            CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: true);
             return SavePrefab(root);
         }
 
@@ -200,37 +262,50 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildAutoTaxi(Material body, Material glass)
         {
             var root = new GameObject("Obstacle_AutoTaxi");
-            Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 0.6f, 0f), new Vector3(1.8f, 0.9f, 3.6f), body);
-            Part(root.transform, PrimitiveType.Cube, "Cabin", new Vector3(0f, 1.35f, 0.2f), new Vector3(1.6f, 0.7f, 1.8f), glass);
-            Part(root.transform, PrimitiveType.Cube, "Sensor", new Vector3(0f, 1.85f, 0.2f), new Vector3(0.4f, 0.3f, 0.4f), body);
+            bool real = Model(root, "AutoTaxi", castShadows: true);
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 0.6f, 0f), new Vector3(1.8f, 0.9f, 3.6f), body);
+                Part(root.transform, PrimitiveType.Cube, "Cabin", new Vector3(0f, 1.35f, 0.2f), new Vector3(1.6f, 0.7f, 1.8f), glass);
+                Part(root.transform, PrimitiveType.Cube, "Sensor", new Vector3(0f, 1.85f, 0.2f), new Vector3(0.4f, 0.3f, 0.4f), body);
+            }
 
-            BoxTrigger(root, new Vector3(0f, 1f, 0f), new Vector3(1.7f, 2f, 3.5f));
-            CombineByMaterial(root, castShadows: true);
+            // Gerçek model kısa ve yüksek bir robotaksidir (2,5 m); kutu görselden uzun olmasın.
+            BoxTrigger(root, new Vector3(0f, 1f, 0f), new Vector3(1.7f, 2f, real ? 2.4f : 3.5f));
+            if (!real) CombineByMaterial(root, castShadows: true);
             return SavePrefab(root);
         }
 
         static GameObject BuildCoin(Material material)
         {
             var root = new GameObject("Pickup_Coin");
-            Part(root.transform, PrimitiveType.Cylinder, "Disc", new Vector3(0f, 1f, 0f), new Vector3(0.7f, 0.05f, 0.7f), material, new Vector3(90f, 0f, 0f));
+            bool real = Model(root, "Coin", castShadows: false);
+            if (!real)
+                Part(root.transform, PrimitiveType.Cylinder, "Disc", new Vector3(0f, 1f, 0f), new Vector3(0.7f, 0.05f, 0.7f), material, new Vector3(90f, 0f, 0f));
 
             SphereTrigger(root, new Vector3(0f, 1f, 0f), 0.7f);
-            CombineByMaterial(root, castShadows: false);
+            if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 
-        static GameObject BuildPowerUp(string name, Material core, Material ring)
+        static GameObject BuildPowerUp(string name, string prop, Material core, Material ring)
         {
             var root = new GameObject(name);
-            Part(root.transform, PrimitiveType.Sphere, "Core", new Vector3(0f, 1.1f, 0f), new Vector3(0.8f, 0.8f, 0.8f), core);
-            Part(root.transform, PrimitiveType.Cylinder, "Ring", new Vector3(0f, 1.1f, 0f), new Vector3(1.15f, 0.03f, 1.15f), ring, new Vector3(90f, 0f, 0f));
+            bool real = Model(root, prop, castShadows: false);
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Sphere, "Core", new Vector3(0f, 1.1f, 0f), new Vector3(0.8f, 0.8f, 0.8f), core);
+                Part(root.transform, PrimitiveType.Cylinder, "Ring", new Vector3(0f, 1.1f, 0f), new Vector3(1.15f, 0.03f, 1.15f), ring, new Vector3(90f, 0f, 0f));
+            }
 
             SphereTrigger(root, new Vector3(0f, 1.1f, 0f), 0.8f);
-            CombineByMaterial(root, castShadows: false);
+            if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 
-        // 30 m'lik ofis koridoru. Orijin parçanın başında, +Z yönünde uzanır.
+        // 30 m'lik plaza parçası. Orijin parçanın başında, +Z yönünde uzanır.
+        // Zemin ve bariyer koddan kurulur (dilimli ve ek yeri kusursuz olmalı); dekor gerçek
+        // modellerdir. Hepsi materyal başına tek mesh'te birleşir.
         static GameObject BuildGround(Material floor, Material stripe, Material line, Material wall, Material desk)
         {
             const float length = 30f;
@@ -239,17 +314,26 @@ namespace OutOfOffice.EditorTools
             var root = new GameObject("Ground_Office");
             SlicedPart(root.transform, "Floor", new Vector3(0f, -0.25f, length * 0.5f), new Vector3(width, 0.5f, length), floor);
 
-            // Hız hissi için enine şeritler, şerit çizgileri ve kolonlar.
+            // Hız hissi için enine şeritler ve şerit çizgileri.
             for (int i = 0; i < 6; i++)
                 Part(root.transform, PrimitiveType.Cube, "Stripe" + i, new Vector3(0f, 0.005f, 2.5f + i * 5f), new Vector3(width, 0.01f, 0.3f), stripe);
 
             SlicedPart(root.transform, "LaneLineLeft", new Vector3(-1.25f, 0.012f, length * 0.5f), new Vector3(0.08f, 0.01f, length), line);
             SlicedPart(root.transform, "LaneLineRight", new Vector3(1.25f, 0.012f, length * 0.5f), new Vector3(0.08f, 0.01f, length), line);
 
+            bool realDecor = PropModelBuilder.Exists("Column");
             for (int side = -1; side <= 1; side += 2)
             {
                 string suffix = side < 0 ? "Left" : "Right";
                 SlicedPart(root.transform, "Wall" + suffix, new Vector3(side * 4.6f, 0.6f, length * 0.5f), new Vector3(0.4f, 1.2f, length), wall);
+                // Bariyerin üstünde ışıyan şerit: yolun kenarı karanlıkta da okunur.
+                SlicedPart(root.transform, "WallGlow" + suffix, new Vector3(side * 4.6f, 1.23f, length * 0.5f), new Vector3(0.14f, 0.06f, length), line);
+
+                if (realDecor)
+                {
+                    BuildDecor(root.transform, side);
+                    continue;
+                }
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -261,6 +345,26 @@ namespace OutOfOffice.EditorTools
 
             CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
+        }
+
+        // Yolun bir yanındaki dekor. Modeller gelen oyuncuya (-Z) bakar; yan dekor yola doğru çevrilir.
+        // İki yan aynı dizilmez: sol ve sağ yarım parça kaydırılır, kuleler yer değiştirir.
+        static void BuildDecor(Transform root, int side)
+        {
+            float shift = side < 0 ? 0f : 5f;
+            float inward = side * 55f;
+
+            for (int i = 0; i < 3; i++)
+                PropModelBuilder.TryAddModel(root, "Column", false, new Vector3(side * 5.7f, 0f, 5f + i * 10f));
+
+            PropModelBuilder.TryAddModel(root, "Kiosk", false, new Vector3(side * 7.6f, 0f, 9f + shift), inward);
+            PropModelBuilder.TryAddModel(root, "Billboard", false, new Vector3(side * 7.2f, 0f, 19f + shift), side * 30f);
+
+            // Uzak dekor: siluet ve pencere ışıkları. Sisin içinde durur.
+            string near = side < 0 ? "TowerA" : "TowerB";
+            string far = side < 0 ? "TowerB" : "TowerA";
+            PropModelBuilder.TryAddModel(root, near, false, new Vector3(side * 13.5f, 0f, 7f + shift), side * 90f);
+            PropModelBuilder.TryAddModel(root, far, false, new Vector3(side * 16f, 0f, 22f - shift), side * 90f);
         }
     }
 }

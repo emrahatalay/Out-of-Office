@@ -32,11 +32,13 @@ Assets/_Game/
 │  ├─ Theme/          GameTheme.tss, GamePanelSettings.asset
 │  └─ Fonts/ Icons/ Sprites/
 ├─ Bootstrap/         GameLifetimeScope.cs (composition root)
-├─ Shaders/           CurvedLit.shader + CurvedWorld.hlsl (kıvrımlı dünya)
-├─ Editor/            PlaceholderContentBuilder (parçalı sınıf), CharacterModelBuilder, PerfProbe
+├─ Shaders/           CurvedLit.shader + CurvedWorld.hlsl (kıvrımlı dünya), NightSky.shader (gökyüzü)
+├─ Editor/            PlaceholderContentBuilder (parçalı sınıf), CharacterModelBuilder, PropModelBuilder, PerfProbe
 ├─ Content/           üretilen tanım asset'leri (GameConfig, ContentCatalog, Characters/...)
 ├─ Art/Placeholder/   üretilen materyal ve mesh'ler
-├─ Art/Characters/    gerçek karakter modelleri: <Ad>/<Ad>.fbx + doku + materyal, Animations/ (klipler, denetleyici)
+├─ Art/Characters/    gerçek karakter modelleri: <Ad>/<Ad>.fbx + doku + materyal, Animations/ (klipler, denetleyiciler)
+├─ Art/Props/         gerçek engel, eşya ve dekor modelleri: <Ad>.fbx + <Ad>_BaseColor.png + <Ad>.mat
+├─ Art/Atmosphere/    üretilen gökyüzü materyali, yansıma küp haritası, post-processing profili
 ├─ Prefabs/Placeholder/  üretilen prefab'lar
 ├─ Prefabs/Characters/   CharacterModelBuilder'ın ürettiği gerçek karakter prefab'ları
 ├─ Localization/      çeviri ayarları ve "Game" tablosu
@@ -135,11 +137,12 @@ builder.Register<Impl>(Lifetime.Singleton).As<IService>();   // servis
 - `Shaders/CurvedWorld.hlsl`: `BendWorldPosition`, köşe noktasını kameradan uzaklığın karesiyle yana ve aşağı kaydırır.
 - `Shaders/CurvedLit.shader` ("Out of Office/Curved Lit"): URP PBR aydınlatması + bükme; ileri, gölge, derinlik ve derinlik-normal geçişlerinin hepsi aynı bükmeyi uygular.
 - `WorldCurveSystem`: kıvrımı koşu boyunca değiştirir, global shader değerlerini yazar, bükülen nesneler erken elenmesin diye kameranın eleme alanını genişletir.
+- `CurvedLit` ayrıca dokunun alfasındaki maskeyle neon bölgeleri ışıtır (`_GlowStrength`; "Eşya ve çevre modelleri").
 - Yeni bir shader (ör. saydam yüzey, parçacık) dünyada kullanılacaksa `CurvedWorld.hlsl`'i dahil edip aynı işlevi çağırmalıdır. Parçacıklar şu an bükülmüyor.
 
 ## Karakter modelleri ve animasyon
 
-Üç meslek (Yazılımcı, Grafiker, Stajyer) Meshy ile üretilmiş, iskeletli gerçek modellerdir. Kovalayan, engeller ve diğer her şey hâlâ geçici küptür.
+Üç meslek (Yazılımcı, Grafiker, Stajyer) ve kovalayan İK-9000, Meshy ile üretilmiş iskeletli gerçek modellerdir. Görsel kural: `docs/GORSEL_DIL.md`.
 
 **Dosyalar**
 
@@ -149,18 +152,21 @@ Art/Characters/<Ad>/<Ad>_BaseColor.png  1024 doku (mobilde ASTC 6x6)
 Art/Characters/<Ad>/<Ad>.mat            Curved Lit materyali (araç üretir)
 Art/Characters/Animations/Run.fbx       koşu klibi
 Art/Characters/Animations/Actions.fbx   bekleme, zıplama, kayma klipleri
-Art/Characters/Animations/Character.controller   ortak Animator denetleyicisi (araç üretir)
+Art/Characters/Animations/Actions2.fbx  tökezleme, yakalanma, oturma, asılma klipleri
+Art/Characters/Animations/Character.controller   oyuncunun Animator denetleyicisi (araç üretir)
+Art/Characters/Animations/Chaser.controller      kovalayanın denetleyicisi: koşu ve bekleme (araç üretir)
 Prefabs/Characters/Character_<Ad>.prefab          oyunun kullandığı prefab (araç üretir)
+Prefabs/Characters/Chaser_HR9000.prefab           kovalayan (araç üretir)
 ```
 
 **Kurulum aracı:** `CharacterModelBuilder` (menü: Out of Office > Karakter Modellerini Kur). Tekrar çalıştırmak güvenlidir. Yaptıkları:
 
 - Model: Humanoid iskelet, kemik Transform'ları sahneye çıkmaz (`optimizeGameObjects`), mesh sıkıştırma, köşe başına 2 kemik, teğet yok, okunamaz mesh. Boy `Characters` tablosundaki değere ölçeklenir.
-- Doku: en fazla 1024, mipmap'li, Android ve iOS'ta ASTC 6x6.
+- Doku: en fazla 1024, mipmap'li, Android ve iOS'ta ASTC 6x6. Alfası ışıma maskesidir (aşağıda "Eşya ve çevre modelleri").
 - Klipler: `Clips` tablosundaki kare aralıkları ve kök hareketi ayarlarıyla kesilir. Klip dosyaları T pozunda açılmadığı için duruş pozu Yazılımcı modelinden kopyalanır (`CopyRestPose`); yoksa bütün klipler kayık oynar.
 - Prefab: boş kök + `Model` çocuğu (Animator, avatar, denetleyici).
 
-Klipler Humanoid'dir; **tek klip seti üç karakterde de oynar**. Yeni karakter için klip üretmek gerekmez.
+Klipler Humanoid'dir; **tek klip seti bütün karakterlerde oynar** (İK-9000 dahil: oyuncunun koşu ve bekleme kliplerini kullanır). Yeni karakter için klip üretmek gerekmez.
 
 **Animator sözleşmesi.** Parametreleri yalnızca `PlayerRig` yazar; `PlayerSystem` ve diğer sistemler Animator'ı bilmez.
 
@@ -171,12 +177,42 @@ Klipler Humanoid'dir; **tek klip seti üç karakterde de oynar**. Yeni karakter 
 | `Sliding` | bool | Kayıyor mu |
 | `RunRate` | float | Koşu klibinin oynatma hızı (koşu hızına göre, `GameConfig` sınırlarıyla) |
 | `AirPhase` | float | Zıplama klibinin konumu: kalkış 0, tepe 0,5, iniş 1 |
+| `Pose` | int | Takılı görselin istediği duruş: 0 yok, 1 oturuyor (sandalye), 2 asılı (dron) |
+| `Caught` | bool | Yakalandı; geriye düşer ve yerde kalır |
+| `Stumble` | tetik | Engele çarpıp sendeledi |
+
+Duruşu takılan görsel belirler: `AttachVisualEffect.pose` alanı `IPlayerAttachments.Attach` ile `PlayerRig`'e ulaşır. Yeni bir binek ya da taşıyıcı için kod gerekmez; etki asset'inde `pose` seçilir. Tökezleme ve yakalanmayı `PlayerSystem` sinyallerden (`PlayerStumbledSignal`, `GameStateChangedSignal`) alıp `PlayerRig.Stumble()` ve `SetCaught()` ile iletir.
+
+Kovalayanın tek parametresi `Caught`'tır; `ChaserSystem` yazar (oyuncuyu yakalayıp `ChaserDefinition.catchGap` kadar gerisine gelince koşmayı bırakır).
 
 Zıplama klibi süreyle değil `AirPhase` ile ilerler; değer dikey hızdan hesaplanır. Bu yüzden zıplama çarpanı, hızlı iniş ve uçuş (tepe pozunda süzülür) ayrıca ele alınmaz. Zıplama klibinde dikey kök hareketi pozdan çıkarılmıştır: yüksekliği oynanış verir.
 
 Prefab'da Animator yoksa (geçici küp modeller) `PlayerRig` eski elle esnetme yoluna düşer; iki yol aynı `Animate` çağrısını kullanır.
 
-**Kaynak (Meshy görev kimlikleri, yeniden indirme ya da yeni klip için):** rig görevleri Yazılımcı `01a1d695-5eaa-72b3-89bd-e34ed2e843b5`, Grafiker `01a1d695-6d47-7278-8789-c43b52745ff5`, Stajyer `01a1d695-7ae6-7453-ac6e-24c7350d7fec`. Klipler Yazılımcı rig'inden: koşu rig'le birlikte gelir; bekleme (0), zıplama (466) ve kayma (516) tek animasyon görevindedir.
+**Kaynak (Meshy görev kimlikleri, yeniden indirme ya da yeni klip için):** rig görevleri `Tools/ModelPipeline/props.json` içinde "characters" altındadır. Klipler Yazılımcı rig'inden üretildi: koşu rig'le birlikte gelir; bekleme (0), zıplama (466), kayma (516) bir animasyon görevinde, tökezleme (416), düşme (366), oturma (33), asılma (478) ikinci görevdedir (parantez içi Meshy animasyon kimliği).
+
+## Eşya ve çevre modelleri
+
+Engeller, toplananlar, aksesuar ve dekor da Meshy ile üretildi (23 model). Altın tek istisnadır: 160 üçgenlik diski betik kurar, yüz dokusu konsept görselden kesilir.
+
+**Hat (depo kökünde `Tools/ModelPipeline`, Blender gerekir):**
+
+| Dosya | İşi |
+|---|---|
+| `props.json` | Her modelin Meshy görevi, hedef ölçüsü (metre), yönü, doku boyutu, üçgen bütçesi, ışıma kuralı |
+| `convert_prop.py` | Meshy GLB → yön, ölçek, orijin, dilimleme (Z boyunca 4 m'den uzunsa), doku, dokusuz FBX |
+| `make_coin.py` | Altının mesh'i ve dokusu |
+| `convert_character_texture.py` | Rig'li karakterin gömülü dokusunu ayrı dosyaya çıkarır |
+| `pipeline_common.py` | Doku işleri: UV adaları arasındaki boşluğu doldurma, küçültme, ışıma maskesi |
+| `run_all.sh` | Bütün eşyaları kaynak GLB klasöründen yeniden üretir |
+
+Kaynak GLB'ler depoda tutulmaz; `props.json`'daki görev kimliğiyle Meshy'den yeniden indirilir.
+
+**Işıma maskesi.** Meshy yalnızca taban rengi verir. Hat, dokudaki parlak neon pikselleri (ton, doygunluk, parlaklık kuralıyla) bulur ve maskeyi dokunun alfa kanalına yazar: alfa 1 = ışımaz, alfa 0 = tam ışır. `Curved Lit` shader'ı `_GlowStrength` ile bu bölgeleri ışıtır; ayrı ışıma dokusu gerekmez. Alfasız dokuda alfa 1 okunduğu için eski materyaller etkilenmez.
+
+**Unity tarafı.** `PropModelBuilder` (menü: Out of Office > Eşya ve Çevre Modellerini Kur) içe aktarma ayarlarını ve materyalleri kurar. Prefab kurmaz: içerik üretici her prefab'da `Model(root, "<Ad>", ...)` ile gerçek modeli ister, yoksa geçici küpleri kurar; çarpışma kutusu iki durumda da aynıdır. Zemin parçasında dekor modelleri materyal başına tek mesh'te birleşir (parça başına 9 draw call, ~13.000 üçgen).
+
+**Yön kuralı.** Hat, modelin önünü gelen oyuncuya (Unity'de -Z) çevirir; oyuncuyla aynı yöne bakması gerekenler (`"face": "forward"`: sandalye, taşıyıcı dron) +Z'ye bakar. Blender'da -Y, FBX'ten sonra Unity'de +Z olur.
 
 ## Performans kuralları
 
@@ -197,7 +233,7 @@ Geçici içerik döneminde tanım asset'lerini `PlaceholderContentBuilder.Data.c
 4. Çeviri satırı (`char.<id>`). Kod yok.
 
 **Yeni engel / düşman**
-1. Prefab. Collider yoksa görsel sınırlarına göre kendiliğinden eklenir.
+1. Prefab. Collider yoksa görsel sınırlarına göre kendiliğinden eklenir. Gerçek model için: `docs/GORSEL_DIL.md`'deki reçeteyle üret, `Tools/ModelPipeline/props.json`'a satır ekle, hattı çalıştırıp çıktıyı `Art/Props` altına koy, `PropModelBuilder.Props` tablosuna ekle, üreticideki prefab işlevinde `Model(root, "<Ad>", ...)` çağır.
 2. `ObstacleDefinition`: `avoidBy` (ChangeLane / Jump / Slide), `movement` (boşsa sabit), `minDifficulty`, `spawnWeight`.
 3. `WorldDefinition.obstacles` listesine ekle. Kod yok.
 
@@ -237,7 +273,8 @@ Etki yalnızca `EffectContext` üzerinden çalışır (oyuncu, kovalayan, engel 
 
 ## Editör araçları
 
-- `PlaceholderContentBuilder` (parçalı): `.cs` (ortak yardımcılar, `Mat`, `Part`, `SlicedPart`, `CombineByMaterial`), `.Prefabs`, `.Data`, `.Vfx`, `.Localization`, `.Scene`.
+- `PlaceholderContentBuilder` (parçalı): `.cs` (ortak yardımcılar, `Mat`, `Part`, `SlicedPart`, `CombineByMaterial`), `.Prefabs`, `.Data`, `.Vfx`, `.Localization`, `.Scene`, `.Atmosphere` (gökyüzü, ışık, sis, yansıma, post-processing, yağmur; görünüm kuralı `docs/GORSEL_DIL.md`).
 - `CharacterModelBuilder`: gerçek karakter modellerini kurar (yukarıda "Karakter modelleri ve animasyon"). Çalıştırdıktan sonra tanım asset'leri yeni prefab'ı görsün diye içerik üreticiyi de çalıştır.
+- `PropModelBuilder`: eşya ve çevre modellerinin içe aktarma ayarlarını ve materyallerini kurar (yukarıda "Eşya ve çevre modelleri").
 - **Out of Office > Oyun Ayarlarını Varsayılana Döndür:** `GameConfig`'i koddaki değerlere çeker (elle yapılan dengeleme silinir).
-- `PerfProbe`: Play modunda kare başına bellek ayırma, çizim çağrısı ve kare süresini örnekler (`PerfProbe.Start()`, sonra `PerfProbe.Report()`). Önce/sonra karşılaştırması içindir; editör değerleri cihazdakinden farklıdır.
+- `PerfProbe`: Play modunda kare başına bellek ayırma, çizim çağrısı ve kare süresini örnekler (`PerfProbe.Start()`, sonra `PerfProbe.Report()`). Önce/sonra karşılaştırması içindir; editör değerleri cihazdakinden farklıdır. Editörün kendisi menüde bile kare başına ~45 KB ayırır; oyunun payını görmek için aynı ölçümü menüde de alıp farka bak, ortancayı (`med`) oku.

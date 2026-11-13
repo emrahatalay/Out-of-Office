@@ -47,15 +47,23 @@ namespace OutOfOffice.EditorTools
             int count = recorder.Count;
             if (count == 0) { text.Append(" | ").Append(label).Append("=n/a"); return; }
 
+            // Ortanca da yazılır: editörün kendi işleri (derleme, pencere çizimi) tek tük dev
+            // sıçramalar yapar ve ortalamayı bozar; oyunun olağan karesini ortanca gösterir.
+            var values = new double[count];
             double sum = 0, max = 0;
             for (int i = 0; i < count; i++)
             {
                 double value = recorder.GetSample(i).Value * scale;
+                values[i] = value;
                 sum += value;
                 if (value > max) max = value;
             }
 
-            text.Append(" | ").Append(label).Append(" avg=").Append((sum / count).ToString("F2")).Append(" max=").Append(max.ToString("F2"));
+            System.Array.Sort(values);
+            text.Append(" | ").Append(label)
+                .Append(" med=").Append(values[count / 2].ToString("F2"))
+                .Append(" avg=").Append((sum / count).ToString("F2"))
+                .Append(" max=").Append(max.ToString("F2"));
         }
 
         static void Stop()

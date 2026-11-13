@@ -11,6 +11,7 @@ CBUFFER_START(UnityPerMaterial)
     half4 _EmissionColor;
     half _Smoothness;
     half _Metallic;
+    half _GlowStrength;
 CBUFFER_END
 
 TEXTURE2D(_BaseMap);

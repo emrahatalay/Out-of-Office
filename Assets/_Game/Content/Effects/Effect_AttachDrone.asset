@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19a7c962b900c4d2e9eadee3b2b93670, type: 3}
   m_Name: Effect_AttachDrone
   m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.Effects.AttachVisualEffect
-  prefab: {fileID: 218120482409041455, guid: a3b18698b8e954a578ec543ff8faf96b, type: 3}
-  localOffset: {x: 0, y: 0.55, z: 0}
+  prefab: {fileID: 5913870391733784980, guid: fb9778674ca4d4986827a55b827aeeb8, type: 3}
+  localOffset: {x: 0, y: 0, z: 0}
+  pose: 2

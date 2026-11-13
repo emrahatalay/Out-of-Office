@@ -14,8 +14,6 @@ namespace OutOfOffice.EditorTools
 {
     public static partial class PlaceholderContentBuilder
     {
-        static readonly Color BackgroundColor = new Color(0.07f, 0.09f, 0.16f);
-
         static void BuildScene()
         {
             EnsureFolder(SceneDir);
@@ -29,44 +27,33 @@ namespace OutOfOffice.EditorTools
             if (config == null || catalog == null || vfxLibrary == null)
                 throw new System.InvalidOperationException("GameConfig, ContentCatalog ya da VfxLibrary bulunamadı.");
 
-            // ---- Işık ve atmosfer
-            var lightObject = new GameObject("Directional Light");
-            var light = lightObject.AddComponent<Light>();
-            light.type = LightType.Directional;
-            light.color = new Color(1f, 0.96f, 0.9f);
-            light.intensity = 1.4f;
-            light.shadows = LightShadows.Soft;
-            lightObject.transform.rotation = Quaternion.Euler(52f, -32f, 0f);
-
-            RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.5f, 0.55f, 0.68f);
-            RenderSettings.fog = true;
-            RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = BackgroundColor;
-            RenderSettings.fogStartDistance = 45f;
-            RenderSettings.fogEndDistance = 125f;
+            // ---- Işık, gökyüzü, sis, yansıma (PlaceholderContentBuilder.Atmosphere.cs)
+            BuildAtmosphere();
 
             // ---- Kamera
             var cameraObject = new GameObject("Main Camera") { tag = "MainCamera" };
             var camera = cameraObject.AddComponent<Camera>();
-            camera.clearFlags = CameraClearFlags.SolidColor;
-            camera.backgroundColor = BackgroundColor;
+            camera.clearFlags = CameraClearFlags.Skybox;
+            camera.backgroundColor = FogColor;
             camera.fieldOfView = config.baseFieldOfView;
             // Sis 125 m'de tamamen kapanır; ötesini çizmeye gerek yok.
             camera.farClipPlane = 140f;
+            camera.allowHDR = true;
             cameraObject.AddComponent<AudioListener>();
             cameraObject.transform.position = config.menuCameraOffset;
             cameraObject.transform.LookAt(config.menuLookAt);
-            camera.GetUniversalAdditionalCameraData().renderPostProcessing = true;
 
-            // ---- Post-processing: şablonun hazır profili
-            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>("Assets/Settings/SampleSceneProfile.asset");
-            if (profile != null)
-            {
-                var volume = new GameObject("Global Volume").AddComponent<Volume>();
-                volume.isGlobal = true;
-                volume.sharedProfile = profile;
-            }
+            var cameraData = camera.GetUniversalAdditionalCameraData();
+            cameraData.renderPostProcessing = true;
+            // FXAA: render ölçeği düşük mobilde kenar tırtıklarını ucuza yumuşatır.
+            cameraData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
+
+            BuildRain(cameraObject.transform);
+
+            // ---- Post-processing
+            var volume = new GameObject("Global Volume").AddComponent<Volume>();
+            volume.isGlobal = true;
+            volume.sharedProfile = BuildVolumeProfile();
 
             // ---- Arayüz (UI Toolkit)
             var panel = AssetDatabase.LoadAssetAtPath<PanelSettings>(PanelSettingsPath);

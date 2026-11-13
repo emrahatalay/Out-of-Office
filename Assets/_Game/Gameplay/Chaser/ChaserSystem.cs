@@ -16,7 +16,9 @@ namespace OutOfOffice.Gameplay
     public sealed class ChaserSystem : IChaser, ITickable, IDisposable
     {
         const float IntroSeconds = 2f;
-        const float CatchGap = 0.9f;
+
+        // Kovalayanın Animator parametresi. Denetleyici: CharacterModelBuilder üretir.
+        static readonly int CaughtParam = Animator.StringToHash("Caught");
 
         readonly RunSession _session;
         readonly PlayerStatus _player;
@@ -25,6 +27,7 @@ namespace OutOfOffice.Gameplay
 
         ChaserDefinition _definition;
         GameObject _visual;
+        Animator _animator;
         float _gap;
         float _x;
         float _threatTimer;
@@ -51,12 +54,14 @@ namespace OutOfOffice.Gameplay
                 _definition = definition;
                 if (_visual != null) Object.Destroy(_visual);
                 _visual = null;
+                _animator = null;
 
                 if (definition != null && definition.prefab != null)
                 {
                     _visual = Object.Instantiate(definition.prefab);
                     _visual.name = "Chaser";
                     foreach (var collider in _visual.GetComponentsInChildren<Collider>()) collider.enabled = false;
+                    _animator = _visual.GetComponentInChildren<Animator>();
                 }
             }
 
@@ -116,7 +121,7 @@ namespace OutOfOffice.Gameplay
 
             if (state == GameState.GameOver)
             {
-                target = CatchGap;
+                target = _definition.catchGap;
                 speed = _definition.closeInSpeed;
             }
             else if (_stunCount > 0)
@@ -143,6 +148,8 @@ namespace OutOfOffice.Gameplay
             }
 
             _gap = Mathf.MoveTowards(_gap, target, speed * dt);
+            // Yakaladıktan sonra oyuncunun başına gelince koşmayı bırakır.
+            if (_animator != null) _animator.SetBool(CaughtParam, state == GameState.GameOver && Mathf.Abs(_gap - target) < 0.05f);
             // Yaklaştıkça oyuncunun yanına (pistin ortasına doğru) kayar; kamerayı kapatmaz.
             float playerX = _player.Position.x;
             float closeness = Mathf.InverseLerp(_definition.restGap, _definition.closeGap, _gap);
@@ -154,8 +161,8 @@ namespace OutOfOffice.Gameplay
         void Place()
         {
             if (_visual == null) return;
-            // Geçici görsel için koşma zıplaması; gerçek modelde animasyon yapar.
-            float bob = Mathf.Abs(Mathf.Sin(Time.time * 10f)) * 0.12f;
+            // Geçici görsel için koşma zıplaması; gerçek modelde bunu animasyon yapar.
+            float bob = _animator != null ? 0f : Mathf.Abs(Mathf.Sin(Time.time * 10f)) * 0.12f;
             _visual.transform.position = new Vector3(_x, bob, _player.Position.z - _gap);
         }
 

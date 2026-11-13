@@ -23,8 +23,8 @@ namespace OutOfOffice.EditorTools
             var scoreX2 = LoadOrCreate<ScoreMultiplierEffect>($"{DataDir}/Effects/Effect_ScoreX2.asset");
             var collectPackage = LoadOrCreate<CollectPackageEffect>($"{DataDir}/Effects/Effect_CollectPackage.asset");
             var jumpBoost = LoadOrCreate<JumpBoostEffect>($"{DataDir}/Effects/Effect_JumpBoost.asset");
-            var attachDrone = Attach("Effect_AttachDrone", prefabs.CargoDrone, new Vector3(0f, 0.55f, 0f));
-            var attachChair = Attach("Effect_AttachChair", prefabs.OfficeChair, Vector3.zero);
+            var attachDrone = Attach("Effect_AttachDrone", prefabs.CarrierDrone, Vector3.zero, OutOfOffice.Core.Run.PlayerPose.Hanging);
+            var attachChair = Attach("Effect_AttachChair", prefabs.OfficeChair, Vector3.zero, OutOfOffice.Core.Run.PlayerPose.Seated);
 
             // ---- Yetenekler
             var debug = Ability("Ability_Debug", "debug", "ability.debug", 18f, 0f, destroy);
@@ -206,11 +206,12 @@ namespace OutOfOffice.EditorTools
             return item;
         }
 
-        static AttachVisualEffect Attach(string file, GameObject prefab, Vector3 offset)
+        static AttachVisualEffect Attach(string file, GameObject prefab, Vector3 offset, OutOfOffice.Core.Run.PlayerPose pose)
         {
             var effect = LoadOrCreate<AttachVisualEffect>($"{DataDir}/Effects/{file}.asset");
             effect.prefab = prefab;
             effect.localOffset = offset;
+            effect.pose = pose;
             EditorUtility.SetDirty(effect);
             return effect;
         }

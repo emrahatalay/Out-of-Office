@@ -8,6 +8,7 @@ Bu dosya projede çalışan her yapay zekâ ajanı (Claude Code, Codex vb.) içi
 |---|---|
 | `docs/HIKAYE.md` | Hikâye, oynanış kuralları, içerik listesi. Yeni içerik ya da metin eklerken. |
 | `docs/TASARIM.md` | Arayüz ve görsel dil, renkler, yazı tonu. Arayüze ya da görsele dokunurken. |
+| `docs/GORSEL_DIL.md` | 3B modellerin tasarım kuralı, bütçeleri ve üretim reçetesi. Model üretirken ya da değiştirirken. |
 | `docs/MIMARI.md` | Kod yapısı, kalıplar, "şunu nasıl eklerim" tarifleri. Kod yazarken. |
 | `docs/DURUM.md` | Yapılanlar, eksikler, bilinen sorunlar. Sıradaki işi seçerken. |
 
@@ -53,8 +54,9 @@ Editor          içerik üretici ve araçlar
 6. **Sinyaller `readonly struct`'tır**, adları olaysa geçmiş zaman (`PlayerJumpedSignal`), istekse `...RequestedSignal`.
 7. **Abonelikler bırakılır.** `SubscriptionBag` kullan, `Dispose`'da boşalt.
 8. **Kod dili:** tanımlayıcılar İngilizce, yorumlar ve `[Tooltip]` metinleri Türkçe. C# 9 (dosya kapsamlı namespace yok). Namespace `OutOfOffice.*`.
-9. **Dünyadaki her yüzey `Out of Office/Curved Lit` shader'ını kullanır.** Yoksa kıvrılan yolun üstünde düz kalır. Z boyunca uzun mesh'ler birkaç metrede bir bölünmüş olmalı.
-10. **Geçici içerik koddan üretilir.** Prefab, materyal, tanım asset'i, çeviri tablosu ve sahne `PlaceholderContentBuilder` ile kurulur. Bunları değiştirmek için üreticiyi değiştir, sonra yeniden çalıştır (aşağıya bak).
+9. **Dünyadaki her yüzey `Out of Office/Curved Lit` shader'ını kullanır** (gökyüzü hariç; o `Night Sky`). Yoksa kıvrılan yolun üstünde düz kalır. Z boyunca uzun mesh'ler birkaç metrede bir bölünmüş olmalı.
+10. **Her 3B model `docs/GORSEL_DIL.md`'ye uyar:** tombul ve renkli koşu oyunu çizgisi + neon cyberpunk, üç renk, ışıyan parça, dokuda yazı yok, tek materyal, bütçe içinde.
+11. **Geçici içerik koddan üretilir.** Prefab, materyal, tanım asset'i, çeviri tablosu ve sahne `PlaceholderContentBuilder` ile kurulur. Bunları değiştirmek için üreticiyi değiştir, sonra yeniden çalıştır (aşağıya bak).
 
 ## Yasaklar
 
@@ -64,7 +66,7 @@ Editor          içerik üretici ve araçlar
 - Oyun sistemleri için `MonoBehaviour` yazma. Sistemler düz C# sınıfıdır ve VContainer giriş noktasıdır. `MonoBehaviour` yalnızca sahnedeki nesneye yapışması gereken küçük görünümler içindir (`ObstacleView`, `PickupView`, `TriggerRelay`).
 - `Packages/manifest.json` dosyasını elle düzenleme. Paketleri Unity'nin paket yöneticisiyle ekle.
 - `.meta` dosyalarını silme ya da elle yazma; asset taşırken `.meta`'sıyla birlikte taşı.
-- `Assets/_Game/Art/Placeholder`, `Prefabs/Placeholder`, `Content`, `Localization/Tables` ve `Scenes/Game.unity` içinde elle kalıcı değişiklik yapma: üretici yeniden çalışınca üzerine yazar. (`GameConfig.asset` istisna; ayarları korunur.)
+- `Assets/_Game/Art/Placeholder`, `Art/Atmosphere`, `Prefabs/Placeholder`, `Prefabs/Characters`, `Content`, `Localization/Tables`, `Scenes/Game.unity` ve `Art/Props` ile `Art/Characters` altındaki materyal ve denetleyicilerde elle kalıcı değişiklik yapma: üretici ya da model araçları yeniden çalışınca üzerine yazar. (`GameConfig.asset` istisna; ayarları korunur.)
 - Kaydı (PlayerPrefs, `ooo.` önekli) testlerde kalıcı bozma. Test öncesi değerleri sakla, sonra geri yükle.
 - Proje sahibinin e-posta adresini, API anahtarlarını ya da kişisel bilgilerini koda, belgeye ya da dış servislere yazma.
 - Subway Surfers'ın ya da başka bir oyunun karakterini, adını, görselini, arayüz çizimini kopyalama. Tür aynı, içerik özgün.
@@ -77,7 +79,12 @@ Sırasıyla arayüz görsellerini ayarlar, prefab'ları, tanım asset'lerini, ef
 
 Açık sahnede kaydedilmemiş değişiklik varken ya da Play modundayken çalıştırma.
 
-**Gerçek karakter modelleri** ayrı bir araçla kurulur: **Out of Office > Karakter Modellerini Kur** (`CharacterModelBuilder.BuildAll()`). Kaynak FBX ve dokular `Assets/_Game/Art/Characters` altındadır; araç içe aktarma ayarlarını, materyali, ortak Animator denetleyicisini ve `Assets/_Game/Prefabs/Characters` altındaki prefab'ları üretir. Bunları elle değil araçtan değiştir. İçerik üretici, gerçek prefab'ı olan karakterde geçici küp yerine onu bağlar. Ayrıntı: `docs/MIMARI.md`, "Karakter modelleri ve animasyon".
+**Gerçek modeller** iki araçla kurulur; ikisi de içe aktarma ayarlarını ve materyalleri üretir, elle değil araçtan değiştirilir:
+
+- **Out of Office > Karakter Modellerini Kur** (`CharacterModelBuilder.BuildAll()`): üç meslek ve İK-9000. Kaynak `Assets/_Game/Art/Characters`; Animator denetleyicilerini ve `Prefabs/Characters` altındaki prefab'ları da üretir.
+- **Out of Office > Eşya ve Çevre Modellerini Kur** (`PropModelBuilder.BuildAll()`): engeller, toplananlar, aksesuar, dekor. Kaynak `Assets/_Game/Art/Props`.
+
+Sıra: önce bu iki araç, sonra içerik üretici. Üretici çarpışma kutularını kendi koyar, görsel olarak gerçek modeli (yoksa geçici küpü) kullanır. Kaynak FBX ve dokuları `Tools/ModelPipeline` betikleri Meshy çıktısından üretir. Ayrıntı: `docs/MIMARI.md`, "Karakter modelleri ve animasyon" ile "Eşya ve çevre modelleri".
 
 ## Doğrulama
 

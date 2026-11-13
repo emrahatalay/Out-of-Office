@@ -11,6 +11,7 @@ Shader "Out of Office/Curved Lit"
         _Smoothness("Parlaklık", Range(0, 1)) = 0.25
         _Metallic("Metalik", Range(0, 1)) = 0
         [HDR] _EmissionColor("Işıma", Color) = (0, 0, 0, 1)
+        _GlowStrength("Doku ışıması (alfa maskesi: 0 = ışır)", Range(0, 8)) = 0
     }
 
     SubShader

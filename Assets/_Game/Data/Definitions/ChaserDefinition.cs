@@ -20,6 +20,8 @@ namespace OutOfOffice.Data
         public float closeSideOffset = 1.3f;
         [Tooltip("Sersemlediğinde ne kadar geride kalır.")]
         public float stunnedGap = 22f;
+        [Tooltip("Oyuncuyu yakalayınca ne kadar gerisinde durur. Yere düşen oyuncunun üstüne basmasın.")]
+        public float catchGap = 1.9f;
 
         [Header("Davranış")]
         [Tooltip("Tökezlemeden sonra kaç saniye ensede kalır. Bu sürede ikinci çarpışma yakalanmaktır.")]

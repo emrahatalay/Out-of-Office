@@ -75,14 +75,18 @@ half4 CurvedLitFragment(Varyings input) : SV_Target
     UNITY_SETUP_INSTANCE_ID(input);
     UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-    half4 albedo = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv) * _BaseColor;
+    half4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv);
+    half4 albedo = baseMap * _BaseColor;
+    // Işıma maskesi dokunun alfasındadır (1 = ışımaz, 0 = tam ışır): neon çizgiler ayrı doku
+    // olmadan parlar. Alfasız dokuda alfa 1 okunur, yani ışıma olmaz.
+    half3 glow = baseMap.rgb * ((1.0h - baseMap.a) * _GlowStrength);
 
     SurfaceData surfaceData = (SurfaceData)0;
     surfaceData.albedo = albedo.rgb;
     surfaceData.metallic = _Metallic;
     surfaceData.smoothness = _Smoothness;
     surfaceData.normalTS = half3(0, 0, 1);
-    surfaceData.emission = _EmissionColor.rgb;
+    surfaceData.emission = _EmissionColor.rgb + glow;
     surfaceData.occlusion = 1;
     surfaceData.alpha = 1;
 

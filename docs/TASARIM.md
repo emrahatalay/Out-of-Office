@@ -20,7 +20,7 @@ Arayüz renkleri `Assets/_Game/UI/Screens/GameUI.uss` başındaki değişkenlerd
 
 Anlam sabittir: kırmızı = tehlike / ana eylem, sarı = para ve ödül, camgöbeği = teknoloji ve yetenek. Aynı rengi başka anlamda kullanma.
 
-Sahne arka planı ve sis rengi: `#121729` (koyu lacivert). Sis 45 m'de başlar, 125 m'de kapanır.
+Sahne: gece gökyüzü (koyu lacivertten mor ufka), sis mor (`#2B1A4F` dolayı), 40 m'de başlar, 125 m'de kapanır. Ayrıntı `docs/GORSEL_DIL.md`, "Sahnenin havası".
 
 ## Yazı
 
@@ -70,7 +70,7 @@ Kısa, büyük harfli, emir kipinde düğmeler: OYNA, TEKRAR DENE, VAZGEÇ. Duru
 
 ## 3B görünüm
 
-Üç meslek gerçek modeldir; geri kalan her şey geçici, küp ve silindirlerden kurulu şekillerdir ve gerçek modellerle değişecek.
+Karakterler, İK-9000, engeller, toplananlar ve dekor gerçek modeldir; yalnızca zemin ve bariyer koddan kurulur. Modellerin bağlayıcı kuralı, bütçeleri ve üretim reçetesi `docs/GORSEL_DIL.md`'dedir; aşağısı özetidir.
 
 **Karakter dili:** renkli, stilize mobil koşu oyunu çizgisi ile cyberpunk karışımı. İri baş, büyük ayakkabı, sade ve okunaklı biçimler; doygun tek bir ana renk (mesleğin tema rengi) ve üstünde neon ayrıntılar (devre çizgisi, parlayan taban, AR gözlük, kimlik kartı). Gerçekçi oran, kirli ya da karanlık "distopya" dokusu yok; karakter koyu sahnede en parlak şeydir. Her meslek kıyafetinden tanınır: Yazılımcı mavi kapüşonlu, kulaklık ve sırt çantası; Grafiker macenta ceket, sarı bere ve sırtında çizim tableti; Stajyer bol gri gömlek, turuncu kravat, boyun askısında kimlik kartı ve kahve bardağı. Yeni karakter aynı reçeteyle üretilir (T pozu, boş eller, tek parça gövde).
 
@@ -80,6 +80,7 @@ Geçerken korunacak dil:
 - Oyuncunun kaçması ya da toplaması gereken her şey ışıldar (emisyon + bloom): robotun kırmızısı, altının sarısı, güçlendirmelerin kendi rengi.
 - Her nesne siluetinden tanınır. Engelin nasıl geçileceği (zıpla, kay, şerit değiştir) biçiminden anlaşılmalı.
 - Mesleklerin birer tema rengi vardır (Yazılımcı mavi, Grafiker macenta, Stajyer gri); robotları aynı rengi taşır.
+- Zemin koyu lacivert, şerit çizgileri ve bariyerin üst kenarı ışıyan camgöbeğidir. Yolun iki yanında neon kolonlar, terk edilmiş çalışma masaları, hologram panolar; arkada pencereleri yanan kuleler.
 - İçinden geçilebilir (hayalet) engeller açık camgöbeğine boyanır.
 
 ## His
@@ -87,6 +88,8 @@ Geçerken korunacak dil:
 - Kamera arkadan takip eder, hız arttıkça görüş açısı 60°'den 74°'ye açılır.
 - Çarpışmada kısa sarsıntı ve ağır çekim; yakalanmada daha uzun.
 - Toplama, tökezleme, iniş, kalkan kırılması ve yakalanma parçacık efektiyle vurgulanır.
+- Karakter animasyonları: bekleme, koşu, zıplama, kayma, tökezleme, yakalanınca düşme, sandalyede oturma, drona asılma.
+- Bloom, renk tonlaması, kenar karartması, parlak zemin ve ince yağmur sahneye derinlik verir.
 - Ses henüz yok.
 
 Bütün bu sayılar `GameConfig`'dedir.

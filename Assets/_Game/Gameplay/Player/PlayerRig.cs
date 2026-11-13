@@ -15,6 +15,7 @@ namespace OutOfOffice.Gameplay
     public sealed class PlayerRig : IPlayerAttachments, IDisposable
     {
         readonly Dictionary<GameObject, GameObject> _attachments = new Dictionary<GameObject, GameObject>();
+        readonly Dictionary<GameObject, PlayerPose> _attachmentPoses = new Dictionary<GameObject, PlayerPose>();
         readonly GameConfig _config;
         readonly CapsuleCollider _collider;
         GameObject _visual;
@@ -23,6 +24,9 @@ namespace OutOfOffice.Gameplay
         bool _sliding;
         float _stridePhase;
         float _takeoffSpeed;
+        int _seatedCount;
+        int _hangingCount;
+        bool _caught;
 
         // Karakter Animator'ının parametreleri. Denetleyici: CharacterModelBuilder üretir.
         static readonly int MovingParam = Animator.StringToHash("Moving");
@@ -30,6 +34,9 @@ namespace OutOfOffice.Gameplay
         static readonly int SlidingParam = Animator.StringToHash("Sliding");
         static readonly int RunRateParam = Animator.StringToHash("RunRate");
         static readonly int AirPhaseParam = Animator.StringToHash("AirPhase");
+        static readonly int PoseParam = Animator.StringToHash("Pose");
+        static readonly int CaughtParam = Animator.StringToHash("Caught");
+        static readonly int StumbleParam = Animator.StringToHash("Stumble");
 
         public Transform Root { get; }
         public Transform VisualRoot { get; }
@@ -123,6 +130,35 @@ namespace OutOfOffice.Gameplay
             _animator.SetBool(SlidingParam, _sliding && grounded);
             _animator.SetFloat(RunRateParam, runRate);
             _animator.SetFloat(AirPhaseParam, airPhase, _config.animationDampTime, deltaTime);
+            _animator.SetInteger(PoseParam, (int)CurrentPose);
+            _animator.SetBool(CaughtParam, _caught);
+        }
+
+        /// <summary>Takılı görsellerin istediği duruş. Asılma oturmayı ezer (dron sandalyeyi de kaldırır).</summary>
+        PlayerPose CurrentPose => _hangingCount > 0 ? PlayerPose.Hanging : _seatedCount > 0 ? PlayerPose.Seated : PlayerPose.None;
+
+        /// <summary>Engele çarpıp sendeleme. Animator'ı olmayan görselde etkisizdir.</summary>
+        public void Stumble()
+        {
+            // Otururken ya da asılıyken sendelemez; tetik sonraya kalıp yersiz oynamasın.
+            if (_animator != null && !_caught && CurrentPose == PlayerPose.None) _animator.SetTrigger(StumbleParam);
+        }
+
+        /// <summary>
+        /// Yakalanma duruşu. Havadayken yakalanırsa görsel yere indirilir; koşu sürmediği için
+        /// konumu oynanış değil bu çağrı belirler.
+        /// </summary>
+        public void SetCaught(bool caught)
+        {
+            _caught = caught;
+            if (_animator == null) return;
+
+            _animator.SetBool(CaughtParam, caught);
+            if (caught)
+            {
+                _animator.ResetTrigger(StumbleParam);
+                VisualRoot.localPosition = new Vector3(0f, -Root.position.y, 0f);
+            }
         }
 
         public void SetVisual(GameObject prefab)
@@ -136,10 +172,15 @@ namespace OutOfOffice.Gameplay
 
             _visual = Object.Instantiate(prefab, VisualRoot, false);
             _animator = _visual.GetComponentInChildren<Animator>();
+            if (_animator != null)
+            {
+                _animator.SetInteger(PoseParam, (int)CurrentPose);
+                _animator.SetBool(CaughtParam, _caught);
+            }
             foreach (var collider in _visual.GetComponentsInChildren<Collider>()) collider.enabled = false;
         }
 
-        public void Attach(GameObject prefab, Vector3 localOffset)
+        public void Attach(GameObject prefab, Vector3 localOffset, PlayerPose pose = PlayerPose.None)
         {
             if (prefab == null || _attachments.ContainsKey(prefab)) return;
 
@@ -147,6 +188,8 @@ namespace OutOfOffice.Gameplay
             instance.transform.localPosition = localOffset;
             foreach (var collider in instance.GetComponentsInChildren<Collider>()) collider.enabled = false;
             _attachments.Add(prefab, instance);
+            _attachmentPoses.Add(prefab, pose);
+            CountPose(pose, 1);
         }
 
         public void Detach(GameObject prefab)
@@ -154,7 +197,19 @@ namespace OutOfOffice.Gameplay
             if (prefab == null || !_attachments.TryGetValue(prefab, out var instance)) return;
 
             _attachments.Remove(prefab);
+            if (_attachmentPoses.TryGetValue(prefab, out var pose))
+            {
+                _attachmentPoses.Remove(prefab);
+                CountPose(pose, -1);
+            }
+
             if (instance != null) Object.Destroy(instance);
+        }
+
+        void CountPose(PlayerPose pose, int delta)
+        {
+            if (pose == PlayerPose.Seated) _seatedCount = Mathf.Max(0, _seatedCount + delta);
+            else if (pose == PlayerPose.Hanging) _hangingCount = Mathf.Max(0, _hangingCount + delta);
         }
 
         public void Dispose()

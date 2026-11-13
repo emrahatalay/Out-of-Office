@@ -22,6 +22,7 @@ namespace OutOfOffice.EditorTools
         const string ArtDir = "Assets/_Game/Art/Characters";
         const string AnimationDir = ArtDir + "/Animations";
         const string ControllerPath = AnimationDir + "/Character.controller";
+        const string ChaserControllerPath = AnimationDir + "/Chaser.controller";
         const string PrefabDir = "Assets/_Game/Prefabs/Characters";
         const string WorldShaderPath = "Assets/_Game/Shaders/CurvedLit.shader";
 
@@ -35,15 +36,30 @@ namespace OutOfOffice.EditorTools
         {
             public readonly string Name;
             public readonly float Height;
-            public CharacterSpec(string name, float height) { Name = name; Height = height; }
+            /// <summary>Üretilen prefab'ın adı (Prefabs/Characters altında).</summary>
+            public readonly string PrefabName;
+            /// <summary>Kovalayan mı? Öyleyse oyuncununki yerine kovalayan denetleyicisini alır.</summary>
+            public readonly bool Chaser;
+            /// <summary>Dokudaki neon bölgelerin ışıma gücü (maske dokunun alfasındadır).</summary>
+            public readonly float Glow;
+
+            public CharacterSpec(string name, float height, float glow, string prefabName = null, bool chaser = false)
+            {
+                Name = name;
+                Height = height;
+                Glow = glow;
+                PrefabName = prefabName ?? "Character_" + name;
+                Chaser = chaser;
+            }
         }
 
         // Boylar metre. Çarpışma kapsülü GameConfig'den gelir; bunlar yalnızca görseldir.
         static readonly CharacterSpec[] Characters =
         {
-            new CharacterSpec("Developer", 1.75f),
-            new CharacterSpec("Designer", 1.7f),
-            new CharacterSpec("Intern", 1.55f),
+            new CharacterSpec("Developer", 1.75f, 2.5f),
+            new CharacterSpec("Designer", 1.7f, 2.5f),
+            new CharacterSpec("Intern", 1.55f, 2f),
+            new CharacterSpec("HR9000", 2.3f, 3f, "Chaser_HR9000", chaser: true),
         };
 
         readonly struct ClipSpec
@@ -75,12 +91,19 @@ namespace OutOfOffice.EditorTools
         // Kare aralıkları kaynak kayıtlardan ölçüldü:
         // - Zıplama: yalnızca havadaki bölüm (16-32). Çömelme ve iniş atılır; klip AirPhase ile sürülür.
         // - Kayma: alçalma ve yerde kayma (6-21). Son karede bekler, kalkışı Koşu'ya geçiş yapar.
+        // - Tökezleme: sırttan darbe yiyip sendeleme ve toparlanma (3-40); ileri gidişi oynanış verir.
+        // - Yakalanma: geriye düşüş (3-68); yerde kalır.
+        // - Oturma ve asılma: döngü; sandalyenin oturağı ve dronun tutamağı bu pozlara göre ölçülüdür.
         static readonly ClipSpec[] Clips =
         {
             new ClipSpec("Idle", "Actions", "Idle", true, 0, 0, true, true),
             new ClipSpec("Run", "Run", "running", true, 0, 0, true, true),
             new ClipSpec("Jump", "Actions", "Regular_Jump", false, 16, 32, false, true),
             new ClipSpec("Slide", "Actions", "slide_light", false, 6, 21, true, false),
+            new ClipSpec("Stumble", "Actions2", "Hit_in_Back", false, 3, 40, true, false),
+            new ClipSpec("Caught", "Actions2", "falling_down", false, 3, 68, true, true),
+            new ClipSpec("Seated", "Actions2", "Chair_Sit", true, 0, 0, true, true),
+            new ClipSpec("Hanging", "Actions2", "Bar_Hang", true, 0, 0, true, true),
         };
 
         /// <summary>Gerçek prefab kuruluysa onu, değilse verilen geçici prefab'ı döndürür.</summary>
@@ -101,11 +124,13 @@ namespace OutOfOffice.EditorTools
             // Sıra önemli: önce modeller (avatarlar oluşsun), sonra klipler, en son prefab'lar.
             foreach (var spec in Characters) ImportCharacter(spec);
 
-            var controller = BuildController((ModelImporter)AssetImporter.GetAtPath(ModelPath(ClipSourceCharacter)));
+            var clips = ImportClips((ModelImporter)AssetImporter.GetAtPath(ModelPath(ClipSourceCharacter)));
+            var controller = BuildController(clips);
+            var chaserController = BuildChaserController(clips);
 
             int built = 0;
             foreach (var spec in Characters)
-                if (BuildPrefab(spec, controller)) built++;
+                if (BuildPrefab(spec, spec.Chaser ? chaserController : controller)) built++;
 
             AssetDatabase.SaveAssets();
             return $"Karakter modelleri hazır: {built}/{Characters.Length}. Klip: {controller.animationClips.Length}. " +
@@ -142,11 +167,11 @@ namespace OutOfOffice.EditorTools
             if (avatar == null || !avatar.isValid || !avatar.isHuman)
                 Debug.LogWarning($"{spec.Name}: Humanoid avatar kurulamadı; klipler oynamaz. Modelin iskeletini kontrol et.");
 
-            var material = BuildMaterial($"{dir}/{spec.Name}.mat", texturePath);
+            var material = BuildMaterial($"{dir}/{spec.Name}.mat", texturePath, spec.Glow);
 
             // Kök boş nesnedir; model onun çocuğudur. Yön ya da ölçek düzeltmesi gerekirse
             // FBX'e dokunmadan burada yapılır.
-            var root = new GameObject($"Character_{spec.Name}");
+            var root = new GameObject(spec.PrefabName);
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(model, root.transform);
             instance.name = "Model";
 
@@ -187,7 +212,9 @@ namespace OutOfOffice.EditorTools
             importer.mipmapEnabled = true;
             importer.streamingMipmaps = false;
             importer.isReadable = false;
-            importer.alphaSource = TextureImporterAlphaSource.None;
+            // Alfa saydamlık değil ışıma maskesidir (model hattı yazar).
+            importer.alphaSource = TextureImporterAlphaSource.FromInput;
+            importer.alphaIsTransparency = false;
             importer.wrapMode = TextureWrapMode.Clamp;
             importer.filterMode = FilterMode.Bilinear;
             importer.anisoLevel = 1;
@@ -286,7 +313,7 @@ namespace OutOfOffice.EditorTools
             return max > min ? max - min : 0f;
         }
 
-        static Material BuildMaterial(string path, string texturePath)
+        static Material BuildMaterial(string path, string texturePath, float glow)
         {
             var shader = AssetDatabase.LoadAssetAtPath<Shader>(WorldShaderPath);
             if (shader == null) throw new System.InvalidOperationException("Kıvrımlı dünya shader'ı bulunamadı: " + WorldShaderPath);
@@ -304,6 +331,7 @@ namespace OutOfOffice.EditorTools
             material.SetFloat("_Smoothness", 0.15f);
             material.SetFloat("_Metallic", 0f);
             material.SetColor("_EmissionColor", Color.black);
+            material.SetFloat("_GlowStrength", glow);
             material.enableInstancing = false;
             EditorUtility.SetDirty(material);
             return material;
@@ -420,39 +448,33 @@ namespace OutOfOffice.EditorTools
         }
 
         /// <summary>
-        /// Parametreleri PlayerRig yazar: Moving, Grounded, Sliding, RunRate (koşu klibinin hızı),
-        /// AirPhase (zıplama klibinin konumu: kalkış 0, tepe 0.5, iniş 1).
+        /// Oyuncu denetleyicisi. Parametreleri yalnızca PlayerRig yazar:
+        /// Moving, Grounded, Sliding, RunRate (koşu klibinin hızı), AirPhase (zıplama klibinin
+        /// konumu: kalkış 0, tepe 0.5, iniş 1), Pose (0 yok, 1 oturuyor, 2 asılı), Caught, Stumble (tetik).
         /// </summary>
-        static AnimatorController BuildController(ModelImporter restPoseSource)
+        static AnimatorController BuildController(Dictionary<string, AnimationClip> clips)
         {
-            EnsureFolder(AnimationDir);
-
-            var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(ControllerPath);
-            if (controller == null) controller = AnimatorController.CreateAnimatorControllerAtPath(ControllerPath);
-
-            for (int i = controller.parameters.Length - 1; i >= 0; i--) controller.RemoveParameter(i);
+            var controller = ResetController(ControllerPath);
             controller.AddParameter("Moving", AnimatorControllerParameterType.Bool);
             // Varsayılan "yerde": PlayerRig ilk değeri yazana kadar karakter zıplama pozuna girmesin.
             controller.AddParameter(new AnimatorControllerParameter { name = "Grounded", type = AnimatorControllerParameterType.Bool, defaultBool = true });
             controller.AddParameter("Sliding", AnimatorControllerParameterType.Bool);
             controller.AddParameter(new AnimatorControllerParameter { name = "RunRate", type = AnimatorControllerParameterType.Float, defaultFloat = 1f });
             controller.AddParameter("AirPhase", AnimatorControllerParameterType.Float);
+            controller.AddParameter("Pose", AnimatorControllerParameterType.Int);
+            controller.AddParameter("Caught", AnimatorControllerParameterType.Bool);
+            controller.AddParameter("Stumble", AnimatorControllerParameterType.Trigger);
 
             var machine = controller.layers[0].stateMachine;
-            foreach (var child in machine.states) machine.RemoveState(child.state);
-            foreach (var transition in machine.anyStateTransitions) machine.RemoveAnyStateTransition(transition);
-
-            var idle = machine.AddState("Idle", new Vector3(260f, 0f));
-            var run = machine.AddState("Run", new Vector3(260f, 90f));
-            var jump = machine.AddState("Jump", new Vector3(520f, 90f));
-            var slide = machine.AddState("Slide", new Vector3(260f, 180f));
+            var idle = State(machine, clips, "Idle", 260f, 0f);
+            var run = State(machine, clips, "Run", 260f, 90f);
+            var jump = State(machine, clips, "Jump", 520f, 90f);
+            var slide = State(machine, clips, "Slide", 260f, 180f);
+            var stumble = State(machine, clips, "Stumble", 520f, 180f);
+            var caught = State(machine, clips, "Caught", 520f, 0f);
+            var seated = State(machine, clips, "Seated", 0f, 90f);
+            var hanging = State(machine, clips, "Hanging", 0f, 180f);
             machine.defaultState = idle;
-
-            var clips = ImportClips(restPoseSource);
-            idle.motion = ClipOrNull(clips, "Idle");
-            run.motion = ClipOrNull(clips, "Run");
-            jump.motion = ClipOrNull(clips, "Jump");
-            slide.motion = ClipOrNull(clips, "Slide");
 
             run.speedParameterActive = true;
             run.speedParameter = "RunRate";
@@ -462,9 +484,28 @@ namespace OutOfOffice.EditorTools
             Link(idle.AddTransition(run), 0.1f).AddCondition(AnimatorConditionMode.If, 0f, "Moving");
             Link(run.AddTransition(idle), 0.15f).AddCondition(AnimatorConditionMode.IfNot, 0f, "Moving");
 
-            var toJump = Link(machine.AddAnyStateTransition(jump), 0.06f);
-            toJump.canTransitionToSelf = false;
+            // "Herhangi bir durumdan" geçişler sırayla denenir; öncelik bu sıradır.
+            var toCaught = FromAny(machine, caught, 0.1f);
+            toCaught.AddCondition(AnimatorConditionMode.If, 0f, "Caught");
+
+            var toHanging = FromAny(machine, hanging, 0.15f);
+            toHanging.AddCondition(AnimatorConditionMode.Equals, 2f, "Pose");
+            toHanging.AddCondition(AnimatorConditionMode.IfNot, 0f, "Caught");
+
+            var toSeated = FromAny(machine, seated, 0.15f);
+            toSeated.AddCondition(AnimatorConditionMode.Equals, 1f, "Pose");
+            toSeated.AddCondition(AnimatorConditionMode.IfNot, 0f, "Caught");
+
+            var toStumble = FromAny(machine, stumble, 0.08f);
+            toStumble.AddCondition(AnimatorConditionMode.If, 0f, "Stumble");
+            toStumble.AddCondition(AnimatorConditionMode.Equals, 0f, "Pose");
+            toStumble.AddCondition(AnimatorConditionMode.If, 0f, "Grounded");
+            toStumble.AddCondition(AnimatorConditionMode.IfNot, 0f, "Caught");
+
+            var toJump = FromAny(machine, jump, 0.06f);
             toJump.AddCondition(AnimatorConditionMode.IfNot, 0f, "Grounded");
+            toJump.AddCondition(AnimatorConditionMode.Equals, 0f, "Pose");
+            toJump.AddCondition(AnimatorConditionMode.IfNot, 0f, "Caught");
 
             var jumpToSlide = Link(jump.AddTransition(slide), 0.06f);
             jumpToSlide.AddCondition(AnimatorConditionMode.If, 0f, "Grounded");
@@ -479,6 +520,7 @@ namespace OutOfOffice.EditorTools
             jumpToIdle.AddCondition(AnimatorConditionMode.IfNot, 0f, "Moving");
 
             Link(run.AddTransition(slide), 0.08f).AddCondition(AnimatorConditionMode.If, 0f, "Sliding");
+            Link(stumble.AddTransition(slide), 0.08f).AddCondition(AnimatorConditionMode.If, 0f, "Sliding");
 
             var slideToRun = Link(slide.AddTransition(run), 0.12f);
             slideToRun.AddCondition(AnimatorConditionMode.IfNot, 0f, "Sliding");
@@ -488,8 +530,71 @@ namespace OutOfOffice.EditorTools
             slideToIdle.AddCondition(AnimatorConditionMode.IfNot, 0f, "Sliding");
             slideToIdle.AddCondition(AnimatorConditionMode.IfNot, 0f, "Moving");
 
+            // Sendeleme klibi bitince koşuya döner.
+            var stumbleToRun = stumble.AddTransition(run);
+            stumbleToRun.hasExitTime = true;
+            stumbleToRun.exitTime = 0.85f;
+            stumbleToRun.hasFixedDuration = true;
+            stumbleToRun.duration = 0.15f;
+
+            Link(caught.AddTransition(idle), 0.2f).AddCondition(AnimatorConditionMode.IfNot, 0f, "Caught");
+            Link(seated.AddTransition(run), 0.15f).AddCondition(AnimatorConditionMode.NotEqual, 1f, "Pose");
+            Link(hanging.AddTransition(run), 0.15f).AddCondition(AnimatorConditionMode.NotEqual, 2f, "Pose");
+
             EditorUtility.SetDirty(controller);
             return controller;
+        }
+
+        /// <summary>
+        /// Kovalayanın denetleyicisi: oyuncunun klip setinden koşu ve bekleme. Hep koşar;
+        /// oyuncuyu yakalayıp başına gelince (Caught, ChaserSystem yazar) durur.
+        /// </summary>
+        static AnimatorController BuildChaserController(Dictionary<string, AnimationClip> clips)
+        {
+            var controller = ResetController(ChaserControllerPath);
+            controller.AddParameter("Caught", AnimatorControllerParameterType.Bool);
+
+            var machine = controller.layers[0].stateMachine;
+            var run = State(machine, clips, "Run", 260f, 0f);
+            var idle = State(machine, clips, "Idle", 260f, 90f);
+            machine.defaultState = run;
+
+            Link(run.AddTransition(idle), 0.25f).AddCondition(AnimatorConditionMode.If, 0f, "Caught");
+            Link(idle.AddTransition(run), 0.15f).AddCondition(AnimatorConditionMode.IfNot, 0f, "Caught");
+
+            EditorUtility.SetDirty(controller);
+            return controller;
+        }
+
+        /// <summary>Denetleyiciyi boşaltır (yoksa oluşturur); GUID korunur, prefab bağları kopmaz.</summary>
+        static AnimatorController ResetController(string path)
+        {
+            EnsureFolder(AnimationDir);
+
+            var controller = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
+            if (controller == null) controller = AnimatorController.CreateAnimatorControllerAtPath(path);
+
+            for (int i = controller.parameters.Length - 1; i >= 0; i--) controller.RemoveParameter(i);
+
+            var machine = controller.layers[0].stateMachine;
+            foreach (var child in machine.states) machine.RemoveState(child.state);
+            foreach (var transition in machine.anyStateTransitions) machine.RemoveAnyStateTransition(transition);
+            return controller;
+        }
+
+        static AnimatorState State(AnimatorStateMachine machine, Dictionary<string, AnimationClip> clips, string name, float x, float y)
+        {
+            var state = machine.AddState(name, new Vector3(x, y));
+            state.motion = ClipOrNull(clips, name);
+            if (state.motion == null) Debug.LogWarning($"'{name}' klibi yok; durum boş kaldı.");
+            return state;
+        }
+
+        static AnimatorStateTransition FromAny(AnimatorStateMachine machine, AnimatorState target, float seconds)
+        {
+            var transition = Link(machine.AddAnyStateTransition(target), seconds);
+            transition.canTransitionToSelf = false;
+            return transition;
         }
 
         static AnimationClip ClipOrNull(Dictionary<string, AnimationClip> clips, string name)

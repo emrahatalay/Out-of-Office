@@ -35,10 +35,18 @@ namespace OutOfOffice.Core.Run
         float FlightHeight { get; set; }
     }
 
+    /// <summary>Takılan görselin oyuncuya verdiği duruş (koşmak yerine oturur ya da asılır).</summary>
+    public enum PlayerPose
+    {
+        None,
+        Seated,
+        Hanging
+    }
+
     /// <summary>Oyuncuya geçici görsel takar (ör. altındaki sandalye, tepesindeki dron).</summary>
     public interface IPlayerAttachments
     {
-        void Attach(GameObject prefab, Vector3 localOffset);
+        void Attach(GameObject prefab, Vector3 localOffset, PlayerPose pose = PlayerPose.None);
         void Detach(GameObject prefab);
     }
 

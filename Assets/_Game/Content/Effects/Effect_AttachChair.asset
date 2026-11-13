@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.Effects.AttachVisualEffect
   prefab: {fileID: 6421086460989793370, guid: 2f1ce475d18cb443fa7323c8212b9299, type: 3}
   localOffset: {x: 0, y: 0, z: 0}
+  pose: 1

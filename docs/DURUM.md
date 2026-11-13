@@ -1,6 +1,6 @@
 # Durum
 
-Son güncelleme: 13 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca bu dosyayı güncelle.
+Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca bu dosyayı güncelle.
 
 ## Yapılanlar
 
@@ -14,7 +14,10 @@ Son güncelleme: 13 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 - Arayüz: sekmeli menü (Ana Sayfa, Koleksiyon, Mağaza), HUD, duraklatma, oyun sonu. Türkçe ve İngilizce.
 - His: kamera takibi, görüş açısı, sarsıntı, ağır çekim, parçacık efektleri.
 - Kıvrımlı dünya (yol sağa/sola kıvrılır, uzakta aşağı eğilir).
-- Üç mesleğin gerçek 3B modeli (Meshy ile üretildi; renkli stilize + cyberpunk): iskeletli, mobil için sıkıştırılmış. Bekleme, koşu, zıplama ve kayma animasyonları; tek klip seti üç karakterde ortak.
+- **Bütün modeller gerçek** (Meshy ile üretildi; kural `docs/GORSEL_DIL.md`): üç meslek ve İK-9000 iskeletli; 5 engel, 2 meslek robotu, altın, 7 güçlendirme, sürpriz paket, ofis sandalyesi, taşıyıcı dron ve dekor (kolon, masa, pano, iki kule). Yalnızca zemin ve bariyer koddan kurulur.
+- Karakter animasyonları: bekleme, koşu, zıplama, kayma, tökezleme, yakalanınca düşme, sandalyede oturma, drona asılma. Tek klip seti bütün karakterlerde ortak; İK-9000 koşu ve beklemeyi kullanır.
+- Model hattı (`Tools/ModelPipeline`): ölçek, yön, doku boşluğu doldurma, alfada ışıma maskesi, dokusuz FBX.
+- Sahne havası: gece gökyüzü (yıldız, ay, şehir silueti), ay ve kenar ışığı, mor sis, yansıtan zemin, post-processing (bloom, tonlama, kenar karartması), ince yağmur.
 - Performans: havuzlama ve ön üretim, materyal başına birleştirilmiş mesh'ler. Ölçümde oynanış sistemleri koşu sırasında bellek ayırmıyordu (aksesuar, mağaza ve kıvrımlı dünyadan önce ölçüldü).
 
 ## Eksikler
@@ -22,8 +25,8 @@ Son güncelleme: 13 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 Hikâyede ve tasarımda olup yapılmayanlar:
 
 - **Ses ve müzik:** hiç yok.
-- **Gerçek modeller:** üç meslek dışında her şey (İK-9000, meslek robotları, engeller, güçlendirmeler, zemin) hâlâ geçici küp ve silindir.
-- **Eksik karakter animasyonları:** tökezleme, yakalanma, şerit değiştirme, sandalyede oturma, dronla uçma. Şimdilik tökezlemede koşu sürer, yakalanınca bekleme pozuna geçer, uçarken zıplamanın tepe pozunda durur.
+- **Eksik animasyonlar:** şerit değiştirme (yalnızca gövde yatması var), İK-9000'in yakalama hareketi (başına gelip bekler), engellerin kendi hareketi (dron pervanesi, taksi tekerleği dönmüyor).
+- **Zemin ve bariyer** hâlâ düz renkli, koddan kurulan kutular; dokulu gerçek zemin yok.
 - **Güçlendirmeler:** Prompt Injection, Fişi Çek.
 - **Meslek:** Şoför (ve başka meslekler).
 - **Diğer dünyalar** ve dünyalar arası geçiş: otonom şehir, lojistik deposu, veri merkezi, Analog Kasaba.
@@ -43,9 +46,16 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Kıvrımlı dünya:** parçacık efektleri bükülmüyor; ekran kenarında nesnelerin aniden belirip belirmediğine hareket halinde bakılmadı. Zemin dilimlendiği için üçgen sayısı arttı, ölçülmedi.
 - **Giriş kartı** devam ekranında ve İngilizce arayüzde gözle kontrol edilmedi (mağaza ve üst barda Türkçe kontrol edildi).
 
-- **Karakter modelleri** yalnızca editörde, Play modunda denendi (bekleme, koşu, zıplama, kayma; üç karakter). Cihazda, ofis sandalyesi takılıyken ve dron uçuşunda gözle kontrol edilmedi. Animasyon eklendikten sonra kare başına bellek ayırma yeniden ölçülmedi.
+- **Modeller ve animasyonlar** editörde, Play modunda gözle denendi: koşu, zıplama, kayma, tökezleme, yakalanma, sandalye, dron uçuşu, üç karakter. **Gerçek cihazda denenmedi.**
+- **Bellek ayırma (14 Kasım 2026, editör, `PerfProbe`):** kare başına ortanca ~45 KB; animasyonlu gerçek modellerle, animasyonsuz küp modelle ve menüde (koşu yokken) aynı. Yani bu editörün kendi yükü; animasyon ve yeni modeller ölçülebilir ek ayırma yapmıyor. Oyunun payını editörden ayıran ölçüm (build'de profil) yapılmadı.
+- **Çizim yükü (editör):** koşuda ~150-190 draw call, 32 set-pass, ~220-250 bin üçgen (gölge ve derinlik geçişleri dahil). Zemin parçası başına ~13.000 üçgen dekor var; düşük uçlu cihazda ağır gelirse `BuildDecor`'daki dekor sayısı azaltılır.
 - **Kayma pozu** çarpışma kapsülünden (0,8 m) alçak ama yana doğru geniş; Çerez Duvarı'nın altından geçerken görsel taşma olup olmadığına bakılmadı.
-- **Karakter FBX'leri** Meshy'den geldiği gibi duruyor ve içlerinde kullanılmayan 2K doku gömülü (dosya başına ~3,5 MB, toplam ~20 MB depo yükü). Build'e girmez; depoyu küçültmek için Blender'dan dokusuz yeniden dışa aktarılabilir.
+- **Havada yakalanma:** görsel yere indirilir ama düşüş animasyonu yoktur, bir karede iner.
+- **Meslek robotlarının kolları** çarpışma kutusundan (1,5 m) taşar (model ~2,2 m geniş); kola değmek çarpışma sayılmaz.
+- **Taşıyıcı dronun tutamağı** Yazılımcı'nın el yüksekliğine göre ayarlı; daha kısa Stajyer'de eller tutamağın biraz altında kalır.
+- **Yağmur ve diğer parçacıklar** kıvrımlı dünyayla bükülmüyor (kameraya yakın oldukları için göze batmıyor).
+- **Karakter FBX'leri** (4 model + 3 klip dosyası) Meshy'den geldiği gibi duruyor ve içlerinde kullanılmayan 2K doku gömülü (dosya başına ~3,5 MB, toplam ~30 MB depo yükü). Build'e girmez; iskelet bozulmasın diye yeniden dışa aktarılmadı. Eşya modelleri dokusuzdur (toplam ~6 MB).
+- **Kaynak GLB'ler depoda yok;** `Tools/ModelPipeline/props.json`'daki Meshy görev kimlikleriyle yeniden indirilir (Meshy görevleri bir süre sonra silinebilir).
 
 ## Yayın öncesi yapılacaklar
 
@@ -58,9 +68,9 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 
 ## Geçici içerikten gerçek içeriğe geçiş
 
-Karakterler için geçiş yapıldı: `CharacterModelBuilder` gerçek prefab'ı kurar, üretici de gerçek prefab varsa onu bağlar (`CharacterModelBuilder.PrefabOr`). Diğer içerik için durum aşağıdaki gibi.
+Modeller için geçiş yapıldı: `CharacterModelBuilder` ve `PropModelBuilder` gerçek modelleri hazırlar; üretici çarpışma kutusunu koyar ve görsel olarak gerçek modeli kullanır (yoksa geçici küpe düşer). "Placeholder" adı klasörlerde ve sınıfta kaldı; artık yalnızca zemin, bariyer ve yedek küpler geçicidir.
 
-Şu an prefab, materyal, tanım asset'i ve sahne `PlaceholderContentBuilder` ile koddan üretiliyor ve her çalıştırmada katalog ile sahne baştan yazılıyor. Gerçek modeller gelince:
+Prefab, tanım asset'i ve sahne hâlâ `PlaceholderContentBuilder` ile koddan üretiliyor ve her çalıştırmada katalog ile sahne baştan yazılıyor. Bu akıştan çıkıp elle düzenlenen prefab'lara geçilecekse:
 
 1. Modeli içe aktar, materyalini `Out of Office/Curved Lit` shader'ına al, prefab'ını `Assets/_Game/Prefabs` altında (Placeholder dışında) kur.
 2. İlgili tanım asset'indeki `prefab` alanına bağla.

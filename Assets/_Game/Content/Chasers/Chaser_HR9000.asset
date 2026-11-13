@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.ChaserDefinition
   id: hr9000
   nameKey: chaser.hr9000
-  prefab: {fileID: 5673738442088537767, guid: 7f261295b0e35468dbb4dcd2cc7d7570, type: 3}
+  prefab: {fileID: 2053718608811702072, guid: 99c07ee7e287045d7ab1b9e4bcbd63d5, type: 3}
   restGap: 11
   closeGap: 2.4
   closeSideOffset: 1.3
   stunnedGap: 22
+  catchGap: 1.9
   threatSeconds: 5
   closeInSpeed: 14
   fallBackSpeed: 3

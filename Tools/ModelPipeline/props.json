@@ -1,0 +1,34 @@
+{
+  "_aciklama": "Her model için: Meshy görevi (image-to-3d), hedef ölçü (metre), yön, doku boyutu, üçgen bütçesi, ışıma kuralı. Altın bu listede değildir; make_coin.py kurar. Ayrıntı: docs/GORSEL_DIL.md.",
+  "props": {
+    "ServerRack": {"source": "server_rack", "task": "01a1d6ad-2f56-76df-9023-accdd6451aec", "fit": {"height": 2.6, "max_width": 1.8}, "texture": 512, "tris": 1500, "glow": {"hues": [[90, 160]]}},
+    "CookieWall": {"source": "cookie_wall", "task": "01a1d6ad-336b-74f3-9d8f-275af93966f1", "fit": {"height": 2.7, "max_width": 2.4}, "texture": 512, "tris": 1500, "glow": {"v": [0.8, 0.98], "s": [0.6, 0.85], "gain": 0.6}},
+    "RobotVacuum": {"source": "robot_vacuum", "task": "01a1d6ad-3774-755c-a65a-7b3ee6055398", "fit": {"width": 1.7}, "texture": 512, "tris": 1000, "glow": {"hues": [[340, 20]]}},
+    "CargoDrone": {"source": "cargo_drone", "task": "01a1d6ad-3b51-73bc-9782-db8e10b0912c", "fit": {"width": 1.9, "max_depth": 1.9}, "lift": 1.2, "texture": 512, "tris": 2000, "glow": {"hues": [[10, 45], [160, 200]], "s": [0.55, 0.8]}, "yaw": -90},
+    "AutoTaxi": {"source": "auto_taxi", "task": "01a1d6ad-3f62-72fd-82c5-c59d7166dd53", "fit": {"depth": 3.6, "max_width": 1.9}, "texture": 512, "tris": 3000, "slice": 0, "glow": {"hues": [[160, 200]]}, "yaw": 90},
+    "DevBot": {"source": "dev_bot", "task": "01a1d6ad-437c-71ea-9951-ff8916674f31", "fit": {"height": 2.4, "max_width": 2.3}, "texture": 512, "tris": 2500, "glow": {"hues": [[90, 200]]}},
+    "DesignBot": {"source": "design_bot", "task": "01a1d6ad-483d-7218-8d19-b541a849e2d1", "fit": {"height": 2.4, "max_width": 2.3}, "texture": 512, "tris": 2500, "glow": {"hues": [[40, 70]], "s": [0.5, 0.8]}},
+    "Captcha": {"source": "captcha", "task": "01a1d6ad-5093-7781-99e6-36345df6321e", "fit": {"max": 0.85}, "center_z": 1.1, "texture": 256, "tris": 800, "glow": {"hues": [[90, 160]]}, "yaw": -90},
+    "Hallucination": {"source": "hallucination", "task": "01a1d6af-8942-779b-8205-757dfdd3cf37", "fit": {"max": 0.9}, "center_z": 1.1, "texture": 256, "tris": 1000, "glow": {"hues": [[255, 320]], "v": [0.6, 0.9], "gain": 0.7}, "yaw": 45},
+    "Shield": {"source": "shield", "task": "01a1d6af-8ee9-7203-884b-32de8786ba70", "fit": {"max": 0.9}, "center_z": 1.1, "texture": 256, "tris": 800, "glow": {"hues": [[160, 205]]}},
+    "DronePickup": {"source": "drone_pickup", "task": "01a1d6af-92d9-77b7-8084-a0ccafa31ed7", "fit": {"max": 0.95}, "center_z": 1.1, "texture": 256, "tris": 1500, "glow": {"hues": [[160, 205]]}},
+    "CarrierDrone": {"source": "drone_pickup", "task": "01a1d6af-92d9-77b7-8084-a0ccafa31ed7", "fit": {"width": 1.7}, "lift": 2.0, "texture": 256, "tris": 1500, "glow": {"hues": [[160, 205]]}, "shares_texture": "DronePickup", "face": "forward"},
+    "Magnet": {"source": "magnet", "task": "01a1d6af-970d-7776-a262-ed13b27c5cce", "fit": {"max": 0.85}, "center_z": 1.1, "texture": 256, "tris": 600, "glow": {"hues": [[160, 205]]}},
+    "Overtime": {"source": "overtime", "task": "01a1d6af-9bcb-73ca-854a-8083f7b5bc5d", "fit": {"max": 0.9}, "center_z": 1.1, "texture": 256, "tris": 1000, "glow": {"hues": [[35, 70]], "v": [0.85, 1.0], "s": [0.2, 0.5], "gain": 0.8}},
+    "Espresso": {"source": "espresso", "task": "01a1d6af-9ff1-7036-9561-9763fe85938e", "fit": {"max": 0.9}, "center_z": 1.1, "texture": 256, "tris": 1000, "glow": {"hues": [[15, 42]], "v": [0.9, 1.0], "s": [0.45, 0.7]}},
+    "Package": {"source": "package", "task": "01a1d6af-a499-77f6-a55d-af6d63307332", "fit": {"max": 0.95}, "center_z": 1.05, "texture": 256, "tris": 800, "glow": {"hues": [[40, 70], [160, 205]], "v": [0.85, 1.0]}},
+    "OfficeChair": {"source": "office_chair", "task": "01a1d6af-a8c4-7497-a045-e9a1b65fb277", "fit": {"height": 1.15}, "texture": 256, "tris": 1500, "glow": {"hues": [[160, 205]]}, "face": "forward"},
+    "Column": {"source": "column", "task": "01a1d6af-acf5-7191-9685-8cf8816870bc", "fit": {"height": 5.0}, "texture": 512, "tris": 800, "glow": {"hues": [[160, 205], [280, 330]]}},
+    "Kiosk": {"source": "kiosk", "task": "01a1d6af-b0b6-7176-9be7-b849ec7baada", "fit": {"width": 2.0}, "texture": 512, "tris": 1500, "glow": {"hues": [[160, 205], [290, 345]]}},
+    "Billboard": {"source": "billboard", "task": "01a1d6b1-63e2-746b-b4fe-02bd2ce98e42", "fit": {"height": 5.5}, "texture": 512, "tris": 1000, "glow": {"hues": [[160, 205], [280, 345]], "v": [0.6, 0.9]}},
+    "TowerA": {"source": "tower_a", "task": "01a1d6b1-5b0f-757f-9e09-bcea4f632197", "fit": {"height": 26.0}, "texture": 256, "tris": 600, "glow": {"v": [0.55, 0.85], "s": [0.3, 0.6]}},
+    "TowerB": {"source": "tower_b", "task": "01a1d6b1-5f7a-7642-b059-8f42c73b00a8", "fit": {"height": 22.0}, "texture": 256, "tris": 700, "glow": {"v": [0.55, 0.85], "s": [0.3, 0.6]}}
+  },
+  "coin": {"concept_task": "01a1d6aa-47b5-7108-b664-3d0483b58a84"},
+  "characters": {
+    "Developer": {"rig_task": "01a1d695-5eaa-72b3-89bd-e34ed2e843b5", "glow": {"hues": [[160, 200]], "v": [0.8, 0.98], "s": [0.5, 0.8]}},
+    "Designer": {"rig_task": "01a1d695-6d47-7278-8789-c43b52745ff5", "glow": {"hues": [[57, 110], [165, 200]], "v": [0.8, 0.98], "s": [0.3, 0.6]}},
+    "Intern": {"rig_task": "01a1d695-7ae6-7453-ac6e-24c7350d7fec", "glow": {"hues": [[160, 205]], "v": [0.8, 0.98], "s": [0.15, 0.4]}},
+    "HR9000": {"rig_task": "01a1d6b1-6858-76f1-b8b7-d05a12605531", "glow": {"hues": [[345, 15]], "v": [0.85, 1.0], "s": [0.25, 0.5]}}
+  }
+}
