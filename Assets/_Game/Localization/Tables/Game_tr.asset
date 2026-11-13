@@ -167,7 +167,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 28458481606658
-    m_Localized: "Anahtar\u0131nla kald\u0131\u011F\u0131n yerden devam et."
+    m_Localized: "Giri\u015F kart\u0131n\u0131 okut, kald\u0131\u011F\u0131n yerden devam et."
     m_Metadata:
       m_Items: []
   - m_Id: 28458481606659
@@ -183,7 +183,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 29019763367937
-    m_Localized: Anahtar
+    m_Localized: "Giri\u015F Kart\u0131"
     m_Metadata:
       m_Items: []
   - m_Id: 31519346253824

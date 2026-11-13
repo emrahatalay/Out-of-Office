@@ -47,7 +47,7 @@ namespace OutOfOffice.EditorTools
             new[] { "powerup.package", "Sürpriz Paket", "Surprise Package" },
             new[] { "ui.continue", "DEVAM ET", "CONTINUE" },
             new[] { "ui.giveup", "VAZGEÇ", "GIVE UP" },
-            new[] { "ui.revive.hint", "Anahtarınla kaldığın yerden devam et.", "Use a key to continue where you fell." },
+            new[] { "ui.revive.hint", "Giriş kartını okut, kaldığın yerden devam et.", "Swipe your access card to continue where you fell." },
             new[] { "ui.rewards", "PAKETLERDEN ÇIKANLAR", "FROM YOUR PACKAGES" },
             new[] { "ui.store", "MAĞAZA", "STORE" },
             new[] { "ui.tab.home", "ANA SAYFA", "HOME" },
@@ -55,7 +55,8 @@ namespace OutOfOffice.EditorTools
             new[] { "ui.collection", "MESLEKLER", "PROFESSIONS" },
             new[] { "ui.collection.hint", "Oynamak istediğin mesleği seç.", "Pick the profession you want to play." },
             new[] { "ui.close", "KAPAT", "CLOSE" },
-            new[] { "item.key", "Anahtar", "Key" },
+            // Kodda "key" olarak geçen devam hakkı, oyunda Giriş Kartı olarak görünür.
+            new[] { "item.key", "Giriş Kartı", "Access Card" },
             new[] { "acc.chair", "Sandalye", "Chair" },
             new[] { "chaser.hr9000", "İK-9000", "HR-9000" },
             new[] { "world.plaza", "Plaza", "Plaza" },

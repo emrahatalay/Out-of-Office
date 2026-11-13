@@ -554,10 +554,14 @@
     -unity-font-definition: var(--font-bold);
 }
 
-/* ---------------------------------------------------------------- Anahtar, paket ve ödüller */
+/* ---------------------------------------------------------------- Giriş kartı (devam hakkı), paket ve ödüller
+   Not: sınıf adı "icon-key" kaldı; görseli personel giriş kartıdır. */
 
 .icon-key {
     background-image: url("project://database/Assets/_Game/UI/Icons/key.svg");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
     -unity-background-image-tint-color: var(--color-tech);
 }
 

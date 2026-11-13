@@ -167,7 +167,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 28458481606658
-    m_Localized: Use a key to continue where you fell.
+    m_Localized: Swipe your access card to continue where you fell.
     m_Metadata:
       m_Items: []
   - m_Id: 28458481606659
@@ -183,7 +183,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 29019763367937
-    m_Localized: Key
+    m_Localized: Access Card
     m_Metadata:
       m_Items: []
   - m_Id: 31519346253824
