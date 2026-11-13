@@ -15,7 +15,7 @@ MonoBehaviour:
   id: intern
   nameKey: char.intern
   themeColor: {r: 0.5, g: 0.55, b: 0.62, a: 1}
-  prefab: {fileID: 9140222558689045086, guid: caac2d65dd76645658412f44f1ab83d6, type: 3}
+  prefab: {fileID: 232193605846703636, guid: b3eb5f2cdb2924011bcf4121534d4ee1, type: 3}
   ability: {fileID: 0}
   canBeAutomated: 0
   buybackCost: 0

@@ -70,7 +70,11 @@ Kısa, büyük harfli, emir kipinde düğmeler: OYNA, TEKRAR DENE, VAZGEÇ. Duru
 
 ## 3B görünüm
 
-Şu an tüm modeller geçici, küp ve silindirlerden kurulu şekillerdir; gerçek modellerle değişecek. Geçerken korunacak dil:
+Üç meslek gerçek modeldir; geri kalan her şey geçici, küp ve silindirlerden kurulu şekillerdir ve gerçek modellerle değişecek.
+
+**Karakter dili:** renkli, stilize mobil koşu oyunu çizgisi ile cyberpunk karışımı. İri baş, büyük ayakkabı, sade ve okunaklı biçimler; doygun tek bir ana renk (mesleğin tema rengi) ve üstünde neon ayrıntılar (devre çizgisi, parlayan taban, AR gözlük, kimlik kartı). Gerçekçi oran, kirli ya da karanlık "distopya" dokusu yok; karakter koyu sahnede en parlak şeydir. Her meslek kıyafetinden tanınır: Yazılımcı mavi kapüşonlu, kulaklık ve sırt çantası; Grafiker macenta ceket, sarı bere ve sırtında çizim tableti; Stajyer bol gri gömlek, turuncu kravat, boyun askısında kimlik kartı ve kahve bardağı. Yeni karakter aynı reçeteyle üretilir (T pozu, boş eller, tek parça gövde).
+
+Geçerken korunacak dil:
 
 - Koyu, soğuk zemin ve duvarlar; üstünde doygun renkli, okunaklı nesneler.
 - Oyuncunun kaçması ya da toplaması gereken her şey ışıldar (emisyon + bloom): robotun kırmızısı, altının sarısı, güçlendirmelerin kendi rengi.

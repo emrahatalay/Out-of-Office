@@ -77,6 +77,8 @@ Sırasıyla arayüz görsellerini ayarlar, prefab'ları, tanım asset'lerini, ef
 
 Açık sahnede kaydedilmemiş değişiklik varken ya da Play modundayken çalıştırma.
 
+**Gerçek karakter modelleri** ayrı bir araçla kurulur: **Out of Office > Karakter Modellerini Kur** (`CharacterModelBuilder.BuildAll()`). Kaynak FBX ve dokular `Assets/_Game/Art/Characters` altındadır; araç içe aktarma ayarlarını, materyali, ortak Animator denetleyicisini ve `Assets/_Game/Prefabs/Characters` altındaki prefab'ları üretir. Bunları elle değil araçtan değiştir. İçerik üretici, gerçek prefab'ı olan karakterde geçici küp yerine onu bağlar. Ayrıntı: `docs/MIMARI.md`, "Karakter modelleri ve animasyon".
+
 ## Doğrulama
 
 Bir işi "bitti" demeden önce:

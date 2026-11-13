@@ -33,6 +33,16 @@ namespace OutOfOffice.Data
         public float slidingHeight = 0.8f;
         public float bodyRadius = 0.4f;
 
+        [Header("Karakter animasyonu (yalnızca Animator'ı olan modeller)")]
+        [Tooltip("Koşu klibinin 1x hızda oynadığı koşu hızı (m/sn). Oyuncu hızlandıkça adımlar da hızlanır.")]
+        [Min(0.1f)] public float runAnimationReferenceSpeed = 13f;
+        [Tooltip("Koşu klibinin en yavaş oynatma çarpanı.")]
+        [Min(0.1f)] public float runAnimationMinRate = 1f;
+        [Tooltip("Koşu klibinin en hızlı oynatma çarpanı (ayaklar bulanıklaşmasın diye sınırlı).")]
+        [Min(0.1f)] public float runAnimationMaxRate = 1.6f;
+        [Tooltip("Animator parametrelerinin yumuşatma süresi (sn).")]
+        [Min(0f)] public float animationDampTime = 0.08f;
+
         [Header("Üretim")]
         [Tooltip("Engeller oyuncunun bu kadar önünde doğar.")]
         public float spawnAhead = 70f;

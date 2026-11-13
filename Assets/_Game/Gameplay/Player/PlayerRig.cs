@@ -9,8 +9,8 @@ namespace OutOfOffice.Gameplay
 {
     /// <summary>
     /// Oyuncunun sahnedeki gövdesi: çarpışma kapsülü + değiştirilebilir görsel.
-    /// Karakter prefab'ı yalnızca görseldir; geçici mesh yerine gerçek model
-    /// konduğunda bu sınıfta ve hareket kodunda hiçbir şey değişmez.
+    /// Karakter prefab'ı yalnızca görseldir. Prefab'da Animator varsa klipler oynar,
+    /// yoksa (geçici küp modeller) görsel elle esnetilir; hareket kodu ikisini ayırt etmez.
     /// </summary>
     public sealed class PlayerRig : IPlayerAttachments, IDisposable
     {
@@ -19,8 +19,17 @@ namespace OutOfOffice.Gameplay
         readonly CapsuleCollider _collider;
         GameObject _visual;
         GameObject _visualPrefab;
+        Animator _animator;
         bool _sliding;
         float _stridePhase;
+        float _takeoffSpeed;
+
+        // Karakter Animator'ının parametreleri. Denetleyici: CharacterModelBuilder üretir.
+        static readonly int MovingParam = Animator.StringToHash("Moving");
+        static readonly int GroundedParam = Animator.StringToHash("Grounded");
+        static readonly int SlidingParam = Animator.StringToHash("Sliding");
+        static readonly int RunRateParam = Animator.StringToHash("RunRate");
+        static readonly int AirPhaseParam = Animator.StringToHash("AirPhase");
 
         public Transform Root { get; }
         public Transform VisualRoot { get; }
@@ -58,12 +67,23 @@ namespace OutOfOffice.Gameplay
         }
 
         /// <summary>
-        /// Geçici görseli canlandırır: koşma zıplaması, şerit değiştirirken yatma, zıplarken
-        /// uzama, kayarken basılma. Gerçek modele geçildiğinde bu değerler Animator
-        /// parametrelerine bağlanır; çağıran kod değişmez.
+        /// Görseli canlandırır. Modelde Animator varsa durumu ona parametre olarak verir
+        /// (koşu, zıplama, kayma klipleri); yoksa geçici görseli elle esnetir: koşma
+        /// zıplaması, zıplarken uzama, kayarken basılma. Çağıran kod ikisinde de aynıdır.
         /// </summary>
         public void Animate(float deltaTime, float sideSpeed, float verticalSpeed, bool grounded, float runSpeed)
         {
+            float lean = Mathf.Clamp(-sideSpeed * 1.4f, -_config.maxLeanDegrees, _config.maxLeanDegrees);
+
+            if (_animator != null)
+            {
+                DriveAnimator(deltaTime, verticalSpeed, grounded, runSpeed);
+                VisualRoot.localPosition = Vector3.zero;
+                VisualRoot.localRotation = Quaternion.Euler(0f, 0f, lean);
+                VisualRoot.localScale = Vector3.one;
+                return;
+            }
+
             float squash = _sliding ? _config.slidingHeight / _config.standingHeight : 1f;
             float stretch = grounded ? 1f : 1f + Mathf.Clamp(verticalSpeed * 0.012f, -0.1f, 0.16f);
 
@@ -74,12 +94,35 @@ namespace OutOfOffice.Gameplay
                 bob = Mathf.Abs(Mathf.Sin(_stridePhase)) * 0.09f;
             }
 
-            float lean = Mathf.Clamp(-sideSpeed * 1.4f, -_config.maxLeanDegrees, _config.maxLeanDegrees);
             float pitch = _sliding ? -8f : (runSpeed > 0f ? 7f : 0f);
 
             VisualRoot.localPosition = new Vector3(0f, bob, 0f);
             VisualRoot.localRotation = Quaternion.Euler(pitch, 0f, lean);
             VisualRoot.localScale = new Vector3(1f / Mathf.Sqrt(stretch), squash * stretch, 1f / Mathf.Sqrt(stretch));
+        }
+
+        void DriveAnimator(float deltaTime, float verticalSpeed, bool grounded, float runSpeed)
+        {
+            // Havadaki klip süreyle değil yükseklik eğrisiyle ilerler: kalkışta 0, tepede 0.5,
+            // inişte 1. Böylece zıplama çarpanı, hızlı iniş ve uçuş (tepe pozu) kendiliğinden uyar.
+            float airPhase = 0f;
+            if (grounded)
+            {
+                _takeoffSpeed = 0f;
+            }
+            else
+            {
+                _takeoffSpeed = Mathf.Max(_takeoffSpeed, Mathf.Abs(verticalSpeed));
+                airPhase = _takeoffSpeed > 0f ? Mathf.Clamp01(0.5f - 0.5f * verticalSpeed / _takeoffSpeed) : 0.5f;
+            }
+
+            float runRate = Mathf.Clamp(runSpeed / _config.runAnimationReferenceSpeed, _config.runAnimationMinRate, _config.runAnimationMaxRate);
+
+            _animator.SetBool(MovingParam, runSpeed > 0f);
+            _animator.SetBool(GroundedParam, grounded);
+            _animator.SetBool(SlidingParam, _sliding && grounded);
+            _animator.SetFloat(RunRateParam, runRate);
+            _animator.SetFloat(AirPhaseParam, airPhase, _config.animationDampTime, deltaTime);
         }
 
         public void SetVisual(GameObject prefab)
@@ -88,9 +131,11 @@ namespace OutOfOffice.Gameplay
             _visualPrefab = prefab;
 
             if (_visual != null) Object.Destroy(_visual);
+            _animator = null;
             if (prefab == null) return;
 
             _visual = Object.Instantiate(prefab, VisualRoot, false);
+            _animator = _visual.GetComponentInChildren<Animator>();
             foreach (var collider in _visual.GetComponentsInChildren<Collider>()) collider.enabled = false;
         }
 

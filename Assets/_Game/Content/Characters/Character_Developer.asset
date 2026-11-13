@@ -15,7 +15,7 @@ MonoBehaviour:
   id: developer
   nameKey: char.developer
   themeColor: {r: 0.2, g: 0.5, b: 0.95, a: 1}
-  prefab: {fileID: 8588009992615254153, guid: a4eb0bc6affd94a72ad6eb8102f95333, type: 3}
+  prefab: {fileID: 8914341698658555809, guid: c86858137b17a4ab7852d9e747012aee, type: 3}
   ability: {fileID: 11400000, guid: 0b6169e645aba446584de0e3142f1930, type: 2}
   canBeAutomated: 1
   buybackCost: 100

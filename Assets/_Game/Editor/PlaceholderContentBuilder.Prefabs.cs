@@ -38,9 +38,10 @@ namespace OutOfOffice.EditorTools
 
             return new PlaceholderPrefabs
             {
-                Developer = BuildCharacter("Character_Developer", blue, white, dark, false),
-                Designer = BuildCharacter("Character_Designer", magenta, white, yellow, true),
-                Intern = BuildIntern(internGrey, white, orange),
+                // Gerçek modeli kurulmuş karakter (CharacterModelBuilder) geçici küpün yerini alır.
+                Developer = CharacterModelBuilder.PrefabOr("Character_Developer", BuildCharacter("Character_Developer", blue, white, dark, false)),
+                Designer = CharacterModelBuilder.PrefabOr("Character_Designer", BuildCharacter("Character_Designer", magenta, white, yellow, true)),
+                Intern = CharacterModelBuilder.PrefabOr("Character_Intern", BuildIntern(internGrey, white, orange)),
                 Chaser = BuildChaser(steel, red, glowWhite),
                 DevBot = BuildProfessionBot("Obstacle_DevBot", steel, blue, green),
                 DesignBot = BuildProfessionBot("Obstacle_DesignBot", steel, magenta, yellow),

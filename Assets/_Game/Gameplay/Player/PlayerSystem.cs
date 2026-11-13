@@ -54,6 +54,7 @@ namespace OutOfOffice.Gameplay
             _bus.Subscribe<RunClearedSignal>(_ => ResetToStart()).AddTo(_subscriptions);
             _bus.Subscribe<MoveInputSignal>(OnMoveInput).AddTo(_subscriptions);
             _bus.Subscribe<CharacterSelectedSignal>(_ => _rig.SetVisual(_selection.Current.prefab)).AddTo(_subscriptions);
+            _bus.Subscribe<GameStateChangedSignal>(OnStateChanged).AddTo(_subscriptions);
 
             ResetToStart();
         }
@@ -74,6 +75,12 @@ namespace OutOfOffice.Gameplay
             _rig.SetSliding(false);
             _rig.Animate(0f, 0f, 0f, true, 0f);
             Apply();
+        }
+
+        void OnStateChanged(GameStateChangedSignal signal)
+        {
+            // Yakalanınca Tick durur; görsel koşu döngüsünde takılı kalmasın diye durdurulur.
+            if (signal.To == GameState.GameOver) _rig.Animate(0f, 0f, _verticalSpeed, _grounded, 0f);
         }
 
         void OnMoveInput(MoveInputSignal signal)

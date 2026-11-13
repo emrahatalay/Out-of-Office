@@ -33,10 +33,12 @@ Assets/_Game/
 │  └─ Fonts/ Icons/ Sprites/
 ├─ Bootstrap/         GameLifetimeScope.cs (composition root)
 ├─ Shaders/           CurvedLit.shader + CurvedWorld.hlsl (kıvrımlı dünya)
-├─ Editor/            PlaceholderContentBuilder (parçalı sınıf), PerfProbe
+├─ Editor/            PlaceholderContentBuilder (parçalı sınıf), CharacterModelBuilder, PerfProbe
 ├─ Content/           üretilen tanım asset'leri (GameConfig, ContentCatalog, Characters/...)
 ├─ Art/Placeholder/   üretilen materyal ve mesh'ler
+├─ Art/Characters/    gerçek karakter modelleri: <Ad>/<Ad>.fbx + doku + materyal, Animations/ (klipler, denetleyici)
 ├─ Prefabs/Placeholder/  üretilen prefab'lar
+├─ Prefabs/Characters/   CharacterModelBuilder'ın ürettiği gerçek karakter prefab'ları
 ├─ Localization/      çeviri ayarları ve "Game" tablosu
 ├─ Scenes/Game.unity  üretilen tek sahne
 └─ link.xml           IL2CPP'de oyun assembly'lerini budamadan korur
@@ -135,6 +137,47 @@ builder.Register<Impl>(Lifetime.Singleton).As<IService>();   // servis
 - `WorldCurveSystem`: kıvrımı koşu boyunca değiştirir, global shader değerlerini yazar, bükülen nesneler erken elenmesin diye kameranın eleme alanını genişletir.
 - Yeni bir shader (ör. saydam yüzey, parçacık) dünyada kullanılacaksa `CurvedWorld.hlsl`'i dahil edip aynı işlevi çağırmalıdır. Parçacıklar şu an bükülmüyor.
 
+## Karakter modelleri ve animasyon
+
+Üç meslek (Yazılımcı, Grafiker, Stajyer) Meshy ile üretilmiş, iskeletli gerçek modellerdir. Kovalayan, engeller ve diğer her şey hâlâ geçici küptür.
+
+**Dosyalar**
+
+```
+Art/Characters/<Ad>/<Ad>.fbx            iskeletli model (24 kemik, ~8.300 üçgen, tek materyal)
+Art/Characters/<Ad>/<Ad>_BaseColor.png  1024 doku (mobilde ASTC 6x6)
+Art/Characters/<Ad>/<Ad>.mat            Curved Lit materyali (araç üretir)
+Art/Characters/Animations/Run.fbx       koşu klibi
+Art/Characters/Animations/Actions.fbx   bekleme, zıplama, kayma klipleri
+Art/Characters/Animations/Character.controller   ortak Animator denetleyicisi (araç üretir)
+Prefabs/Characters/Character_<Ad>.prefab          oyunun kullandığı prefab (araç üretir)
+```
+
+**Kurulum aracı:** `CharacterModelBuilder` (menü: Out of Office > Karakter Modellerini Kur). Tekrar çalıştırmak güvenlidir. Yaptıkları:
+
+- Model: Humanoid iskelet, kemik Transform'ları sahneye çıkmaz (`optimizeGameObjects`), mesh sıkıştırma, köşe başına 2 kemik, teğet yok, okunamaz mesh. Boy `Characters` tablosundaki değere ölçeklenir.
+- Doku: en fazla 1024, mipmap'li, Android ve iOS'ta ASTC 6x6.
+- Klipler: `Clips` tablosundaki kare aralıkları ve kök hareketi ayarlarıyla kesilir. Klip dosyaları T pozunda açılmadığı için duruş pozu Yazılımcı modelinden kopyalanır (`CopyRestPose`); yoksa bütün klipler kayık oynar.
+- Prefab: boş kök + `Model` çocuğu (Animator, avatar, denetleyici).
+
+Klipler Humanoid'dir; **tek klip seti üç karakterde de oynar**. Yeni karakter için klip üretmek gerekmez.
+
+**Animator sözleşmesi.** Parametreleri yalnızca `PlayerRig` yazar; `PlayerSystem` ve diğer sistemler Animator'ı bilmez.
+
+| Parametre | Tür | Anlamı |
+|---|---|---|
+| `Moving` | bool | Koşuyor mu (Bekleme ↔ Koşu) |
+| `Grounded` | bool | Yerde mi; değilse Zıplama durumuna geçilir (varsayılan: doğru) |
+| `Sliding` | bool | Kayıyor mu |
+| `RunRate` | float | Koşu klibinin oynatma hızı (koşu hızına göre, `GameConfig` sınırlarıyla) |
+| `AirPhase` | float | Zıplama klibinin konumu: kalkış 0, tepe 0,5, iniş 1 |
+
+Zıplama klibi süreyle değil `AirPhase` ile ilerler; değer dikey hızdan hesaplanır. Bu yüzden zıplama çarpanı, hızlı iniş ve uçuş (tepe pozunda süzülür) ayrıca ele alınmaz. Zıplama klibinde dikey kök hareketi pozdan çıkarılmıştır: yüksekliği oynanış verir.
+
+Prefab'da Animator yoksa (geçici küp modeller) `PlayerRig` eski elle esnetme yoluna düşer; iki yol aynı `Animate` çağrısını kullanır.
+
+**Kaynak (Meshy görev kimlikleri, yeniden indirme ya da yeni klip için):** rig görevleri Yazılımcı `01a1d695-5eaa-72b3-89bd-e34ed2e843b5`, Grafiker `01a1d695-6d47-7278-8789-c43b52745ff5`, Stajyer `01a1d695-7ae6-7453-ac6e-24c7350d7fec`. Klipler Yazılımcı rig'inden: koşu rig'le birlikte gelir; bekleme (0), zıplama (466) ve kayma (516) tek animasyon görevindedir.
+
 ## Performans kuralları
 
 - Koşu döngüsünde bellek ayırma yok; listeler alan (field) olarak tutulup yeniden kullanılır.
@@ -148,7 +191,7 @@ builder.Register<Impl>(Lifetime.Singleton).As<IService>();   // servis
 Geçici içerik döneminde tanım asset'lerini `PlaceholderContentBuilder.Data.cs` üretir; aşağıdaki "asset" adımları şimdilik oraya bir satır eklemek demektir. Sonra **Out of Office > Placeholder İçeriği Yeniden Oluştur**.
 
 **Yeni meslek (karakter)**
-1. Prefab (yalnızca görsel; çarpışma koddan gelir).
+1. Prefab (yalnızca görsel; çarpışma koddan gelir). Gerçek model için: Humanoid'e uygun, T pozunda iskeletli FBX'i ve dokusunu `Art/Characters/<Ad>/` altına koy, `CharacterModelBuilder.Characters` tablosuna ad ve boy ekle, aracı çalıştır. Üreticide o karakterin satırını `CharacterModelBuilder.PrefabOr(...)` ile sar.
 2. `CharacterDefinition`: `id`, `nameKey`, `themeColor`, `prefab`, `ability` (boş olabilir), otomasyon alanları, `automatedObstacle`.
 3. `ContentCatalog.characters` listesine ekle.
 4. Çeviri satırı (`char.<id>`). Kod yok.
@@ -162,6 +205,8 @@ Geçici içerik döneminde tanım asset'lerini `PlaceholderContentBuilder.Data.c
 1. Toplanacak nesnenin prefab'ı.
 2. `PowerUpDefinition`: `duration`, `spawnWeight`, `effects` (var olan etkileri birleştir).
 3. `WorldDefinition.powerUps` listesine ekle, çeviri satırı (`powerup.<id>`). Kod yok.
+
+**Yeni karakter animasyonu:** klibi (aynı iskeletle) `Art/Characters/Animations/` altına koy, `CharacterModelBuilder.Clips` tablosuna satır ekle, `BuildController`'da durum ve geçişini tanımla. Yeni parametre gerekiyorsa onu yalnızca `PlayerRig` yazsın; değerini hesaplamak için gereken bilgi `Animate` çağrısına eklenir.
 
 **Yeni yetenek ya da aksesuar:** `AbilityDefinition` (bekleme, süre, etkiler) ya da `AccessoryDefinition` (fiyat, süre, etkiler). Yine var olan etkilerin birleşimi.
 
@@ -193,5 +238,6 @@ Etki yalnızca `EffectContext` üzerinden çalışır (oyuncu, kovalayan, engel 
 ## Editör araçları
 
 - `PlaceholderContentBuilder` (parçalı): `.cs` (ortak yardımcılar, `Mat`, `Part`, `SlicedPart`, `CombineByMaterial`), `.Prefabs`, `.Data`, `.Vfx`, `.Localization`, `.Scene`.
+- `CharacterModelBuilder`: gerçek karakter modellerini kurar (yukarıda "Karakter modelleri ve animasyon"). Çalıştırdıktan sonra tanım asset'leri yeni prefab'ı görsün diye içerik üreticiyi de çalıştır.
 - **Out of Office > Oyun Ayarlarını Varsayılana Döndür:** `GameConfig`'i koddaki değerlere çeker (elle yapılan dengeleme silinir).
 - `PerfProbe`: Play modunda kare başına bellek ayırma, çizim çağrısı ve kare süresini örnekler (`PerfProbe.Start()`, sonra `PerfProbe.Report()`). Önce/sonra karşılaştırması içindir; editör değerleri cihazdakinden farklıdır.
