@@ -41,7 +41,9 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 
 ## Bilinen sorunlar ve doğrulanmamışlar
 
-- **Android / iOS build'i hiç alınmadı.** Her şey yalnızca editörde denendi; mobil render ayarlarıyla da denenmedi.
+- **Android çıktısı alındı (14 Kasım 2026), cihazda henüz çalıştırılmadı.** `AndroidBuild` aracıyla "Android Test" profilinden: IL2CPP, ARM64, 57,5 MB APK, 4,7 dakika, hata yok. Derleme uyarıları oyunun kodundan değil paketlerden geliyor (`com.unity.ai.inference` shader'ı, TextMesh Pro). Açılıyor mu, kare hızı, dokunmatik girdi, çentik, ses: hepsi cihazda denenmeli. iOS çıktısı hiç alınmadı.
+- **Çıktı almak proje ayarlarına dokunuyor:** URP asset'lerindeki ön eleme alanları ve `ProjectSettings` (ön yüklenen asset'ler) güncellenir; bunlar commit edildi. `UnityConnectSettings`'teki `m_Enabled` çıktı sırasında 1'e döndü, geri alındı (servisler kapalı kalsın diye); tekrar dönerse bilerek karar verilmeli.
+- Çıktıdan sonra editörün etkin platformu Android'dir (etkin profil "Android Test").
 - **Yeni butonlar** (mağaza, koleksiyon, devam) testlerde sinyalle tetiklendi; gerçek tıklamayla uçtan uca denenmedi.
 - **Çift dokunuş** (aksesuar) arayüzdeki çift dokunuşlarda da tetiklenebilir.
 - **Uçuş kamerası** (`cameraFlightFollow = 0.8`) görsel olarak doğrulanmadı.

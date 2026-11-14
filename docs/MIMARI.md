@@ -38,7 +38,7 @@ Assets/_Game/
 ├─ Bootstrap/         GameLifetimeScope.cs (composition root)
 ├─ Shaders/           CurvedLit.shader + CurvedWorld.hlsl (kıvrımlı dünya), Sky.shader (gündüz gökyüzü)
 ├─ Editor/            PlaceholderContentBuilder (parçalı sınıf), CharacterModelBuilder, PropModelBuilder,
-│                     PortraitBuilder, ItemIconBuilder, UiKitBuilder, ModelSnapshot, PerfProbe
+│                     PortraitBuilder, ItemIconBuilder, UiKitBuilder, ModelSnapshot, AndroidBuild, PerfProbe
 ├─ Content/           üretilen tanım asset'leri (GameConfig, ContentCatalog, Characters/...)
 ├─ Art/Placeholder/   üretilen materyal ve mesh'ler
 ├─ Art/Characters/    gerçek karakter modelleri: <Ad>/<Ad>.fbx + doku + materyal, Animations/ (klipler, denetleyiciler)
@@ -317,4 +317,5 @@ Etki yalnızca `EffectContext` üzerinden çalışır (oyuncu, kovalayan, engel 
 - `PropModelBuilder`: eşya ve çevre modellerinin içe aktarma ayarlarını, materyallerini ve boyanabilir modellerin renksiz dokusunu kurar (yukarıda "Eşya ve çevre modelleri").
 - **Out of Office > Oyun Ayarlarını Varsayılana Döndür:** `GameConfig`'i koddaki değerlere çeker (elle yapılan dengeleme silinir).
 - `PortraitBuilder`, `ItemIconBuilder`, `UiKitBuilder`: arayüz görselleri (yukarıda "Arayüz görselleri").
+- `AndroidBuild`: Android deneme çıktısı. "Android Test" build profilini (yalnızca oyun sahnesi) oluşturur ve `Builds/Android/SonMesai.apk` üretir (`AGENTS.md`, "Android çıktısı").
 - `PerfProbe`: Play modunda kare başına bellek ayırma, çizim çağrısı ve kare süresini örnekler (`PerfProbe.Start()`, sonra `PerfProbe.Report()`). Önce/sonra karşılaştırması içindir; editör değerleri cihazdakinden farklıdır. Editörün kendisi menüde bile kare başına ~45 KB ayırır; oyunun payını görmek için aynı ölçümü menüde de alıp farka bak, ortancayı (`med`) oku.

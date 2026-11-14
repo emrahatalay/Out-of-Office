@@ -94,6 +94,14 @@ Sıra: önce model araçları, sonra portre ve eşya görselleri, en son içerik
 
 **Ses efektleri** `Tools/Audio/make_sfx.py` ile sentezlenir (`Assets/_Game/Audio/Sfx`); hangi olayda hangisinin çalacağını üretici `SfxLibrary` asset'ine yazar. Ayrıntı: `docs/MIMARI.md`, "Ses".
 
+## Android çıktısı
+
+Menü: **Out of Office > Android Test Profilini Oluştur**, sonra **Out of Office > Android Test Çıktısı Al (APK)** (`AndroidBuild.CreateProfile()`, `AndroidBuild.Build()`).
+
+- Unity 6 build profili kullanılır: `Assets/Settings/Build Profiles/Android Test.asset`. Profil yalnızca oyun sahnesini içerir; IL2CPP + ARM64 proje ayarlarından gelir.
+- Çıktı `Builds/Android/SonMesai.apk` (depoda izlenmez), hata ayıklama anahtarıyla imzalıdır: cihaza elle kurulur (`adb install -r "Builds/Android/SonMesai.apk"`), mağazaya yüklenemez.
+- Çıktı almak editörün platformunu Android'e çevirir (dokular yeniden içe aktarılır) ve dakikalar sürer; proje sahibi editörü kullanıyorsa önce haber ver.
+
 ## Doğrulama
 
 Bir işi "bitti" demeden önce:
