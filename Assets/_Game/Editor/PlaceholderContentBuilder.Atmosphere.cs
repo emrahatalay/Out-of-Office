@@ -20,8 +20,9 @@ namespace OutOfOffice.EditorTools
 
         // Gökyüzünün renkleri. Sis ufuk rengiyle AYNIDIR: uzaktaki nesneler gökyüzüne karışır ve
         // aşağı kıvrılan yolun ucunda dikiş görünmez.
-        static readonly Color SkyZenith = new Color(0.16f, 0.5f, 1f);
-        static readonly Color SkyHorizon = new Color(0.7f, 0.88f, 1f);
+        // Tepe derin mavidir: soluk tepe bütün sahneyi yıkanmış gösteriyordu.
+        static readonly Color SkyZenith = new Color(0.08f, 0.4f, 0.98f);
+        static readonly Color SkyHorizon = new Color(0.62f, 0.84f, 1f);
         const float SkyExponent = 0.55f;
 
         // Güneşin sahnedeki yönü; hem ışık hem gökyüzündeki disk bundan türetilir.
@@ -33,34 +34,37 @@ namespace OutOfOffice.EditorTools
             EnsureFolder(AtmosphereDir);
 
             // ---- Ana ışık: güneş. Kameranın arkasından gelir ki oyuncunun kameraya dönük sırtı
-            // aydınlık kalsın ve gölgeler ileriye, yolun üstüne düşsün.
+            // aydınlık kalsın. Gerçek zamanlı gölge ATMAZ (mobilde pahalı); gölgeyi her nesnenin
+            // altındaki damla gölge verir (PlaceholderContentBuilder.Shadows.cs). Biçimi, güneşe
+            // dönük ve dönük olmayan yüzler arasındaki parlaklık farkı okutur; bu yüzden güneş güçlü,
+            // ortam ışığı ölçülüdür.
             var sun = new GameObject("Sun Light").AddComponent<Light>();
             sun.type = LightType.Directional;
-            sun.color = new Color(1f, 0.96f, 0.86f);
-            sun.intensity = 1.45f;
-            sun.shadows = LightShadows.Soft;
-            sun.shadowStrength = 0.55f;
+            sun.color = new Color(1f, 0.95f, 0.84f);
+            sun.intensity = 1.65f;
+            sun.shadows = LightShadows.None;
             sun.transform.rotation = SunRotation;
 
             // ---- Dolgu ışığı: karşıdan gelen gök mavisi. Güneşe dönük olmayan yüzler kararmaz; gölge atmaz.
             var fill = new GameObject("Fill Light").AddComponent<Light>();
             fill.type = LightType.Directional;
             fill.color = new Color(0.7f, 0.85f, 1f);
-            fill.intensity = 0.35f;
+            fill.intensity = 0.28f;
             fill.shadows = LightShadows.None;
             fill.transform.rotation = Quaternion.Euler(28f, 155f, 0f);
 
             // ---- Ortam ışığı: üstten gök mavisi, yandan sıcak beyaz, alttan zeminden seken açık ton.
             RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.58f, 0.72f, 0.95f);
-            RenderSettings.ambientEquatorColor = new Color(0.62f, 0.64f, 0.74f);
-            RenderSettings.ambientGroundColor = new Color(0.4f, 0.4f, 0.48f);
+            RenderSettings.ambientSkyColor = new Color(0.5f, 0.63f, 0.9f);
+            RenderSettings.ambientEquatorColor = new Color(0.52f, 0.54f, 0.65f);
+            RenderSettings.ambientGroundColor = new Color(0.3f, 0.3f, 0.4f);
 
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Linear;
             RenderSettings.fogColor = SkyHorizon;
-            RenderSettings.fogStartDistance = 62f;
-            RenderSettings.fogEndDistance = 135f;
+            // Sis geç başlar: yakın ve orta mesafe sise boğulup soluklaşmasın.
+            RenderSettings.fogStartDistance = 72f;
+            RenderSettings.fogEndDistance = 140f;
 
             RenderSettings.skybox = BuildSkyMaterial();
             RenderSettings.sun = sun;
@@ -189,15 +193,23 @@ namespace OutOfOffice.EditorTools
             bloom.tint.Override(Color.white);
             bloom.highQualityFiltering.Override(false);
 
+            // Kontrast ve doygunluk belirgin: renkler canlı, koyu gövdeler gerçekten koyu.
             var color = Override<ColorAdjustments>(profile);
-            color.postExposure.Override(0f);
-            color.contrast.Override(10f);
-            color.saturation.Override(22f);
+            color.postExposure.Override(0.05f);
+            color.contrast.Override(28f);
+            color.saturation.Override(32f);
             color.colorFilter.Override(Color.white);
 
+            // Koyu tonlar hafifçe aşağı çekilir (siyah noktası); gri pus kalkar.
+            var liftGammaGain = Override<LiftGammaGain>(profile);
+            liftGammaGain.lift.Override(new Vector4(1f, 1f, 1f, -0.05f));
+            liftGammaGain.gamma.Override(new Vector4(1f, 1f, 1f, 0f));
+            liftGammaGain.gain.Override(new Vector4(1f, 1f, 1f, 0.02f));
+
             var toning = Override<SplitToning>(profile);
-            toning.shadows.Override(new Color(0.46f, 0.5f, 0.6f));
-            toning.highlights.Override(new Color(0.56f, 0.52f, 0.46f));
+            // Hafif ton ayrımı: gölgeler serin, parlaklar sıcak. Güçlüsü görüntüyü griye çekiyordu.
+            toning.shadows.Override(new Color(0.48f, 0.5f, 0.56f));
+            toning.highlights.Override(new Color(0.54f, 0.52f, 0.48f));
             toning.balance.Override(0f);
 
             var vignette = Override<Vignette>(profile);

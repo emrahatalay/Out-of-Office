@@ -1,4 +1,5 @@
 using OutOfOffice.Core.Run;
+using OutOfOffice.Core.Services;
 using OutOfOffice.Core.State;
 
 namespace OutOfOffice.Core.Signals
@@ -15,8 +16,31 @@ namespace OutOfOffice.Core.Signals
     public readonly struct PauseToggleRequestedSignal { }
     public readonly struct ResumeRequestedSignal { }
     public readonly struct ReturnToMenuRequestedSignal { }
-    public readonly struct LanguageCycleRequestedSignal { }
     public readonly struct AbilityRequestedSignal { }
+
+    // ---- Ayarlar sekmesi
+
+    /// <summary>Dili seç. Kod, Localization'daki dilin kodudur ("tr", "en").</summary>
+    public readonly struct LanguageSelectRequestedSignal
+    {
+        public readonly string Code;
+        public LanguageSelectRequestedSignal(string code) { Code = code; }
+    }
+
+    public readonly struct SoundSetRequestedSignal
+    {
+        public readonly bool On;
+        public SoundSetRequestedSignal(bool on) { On = on; }
+    }
+
+    public readonly struct QualitySetRequestedSignal
+    {
+        public readonly GraphicsQuality Quality;
+        public QualitySetRequestedSignal(GraphicsQuality quality) { Quality = quality; }
+    }
+
+    /// <summary>Geliştiricinin sayfasını tarayıcıda aç.</summary>
+    public readonly struct DeveloperPageRequestedSignal { }
 
     /// <summary>Sahip olunan aksesuarı kullan (çift dokunuş, HUD butonu ya da E tuşu).</summary>
     public readonly struct AccessoryUseRequestedSignal { }
@@ -280,5 +304,18 @@ namespace OutOfOffice.Core.Signals
     {
         public readonly string Code;
         public LocaleChangedSignal(string code) { Code = code; }
+    }
+
+    /// <summary>Ses ya da görüntü kalitesi değişti (açılışta da bir kez atılır).</summary>
+    public readonly struct SettingsChangedSignal
+    {
+        public readonly bool SoundOn;
+        public readonly GraphicsQuality Quality;
+
+        public SettingsChangedSignal(bool soundOn, GraphicsQuality quality)
+        {
+            SoundOn = soundOn;
+            Quality = quality;
+        }
     }
 }

@@ -37,8 +37,8 @@ namespace OutOfOffice.EditorTools
             camera.clearFlags = CameraClearFlags.Skybox;
             camera.backgroundColor = SkyHorizon;
             camera.fieldOfView = config.baseFieldOfView;
-            // Sis 135 m'de tamamen kapanır; ötesini çizmeye gerek yok.
-            camera.farClipPlane = 145f;
+            // Sis 140 m'de tamamen kapanır; ötesini çizmeye gerek yok.
+            camera.farClipPlane = 148f;
             camera.allowHDR = true;
             cameraObject.AddComponent<AudioListener>();
             cameraObject.transform.position = config.menuCameraOffset;

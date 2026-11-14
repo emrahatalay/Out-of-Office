@@ -203,6 +203,78 @@ MonoBehaviour:
     m_Key: ui.selected
     m_Metadata:
       m_Items: []
+  - m_Id: 235146446888960
+    m_Key: ui.tab.settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888961
+    m_Key: ui.settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888962
+    m_Key: ui.settings.language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888963
+    m_Key: ui.settings.language.tr
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888964
+    m_Key: ui.settings.language.en
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888965
+    m_Key: ui.settings.sound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888966
+    m_Key: ui.settings.on
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888967
+    m_Key: ui.settings.off
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888968
+    m_Key: ui.settings.quality
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888969
+    m_Key: ui.settings.quality.low
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888970
+    m_Key: ui.settings.quality.medium
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888971
+    m_Key: ui.settings.quality.high
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888972
+    m_Key: ui.dev
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888973
+    m_Key: ui.dev.initials
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888974
+    m_Key: ui.dev.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888975
+    m_Key: ui.dev.role
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888976
+    m_Key: ui.dev.location
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888977
+    m_Key: ui.dev.github
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

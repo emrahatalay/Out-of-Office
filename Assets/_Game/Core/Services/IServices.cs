@@ -12,6 +12,22 @@ namespace OutOfOffice.Core.Services
         void Flush();
     }
 
+    /// <summary>Ayarlar sekmesindeki görüntü kalitesi seçenekleri. Sayısal karşılıkları GameConfig'tedir.</summary>
+    public enum GraphicsQuality
+    {
+        Low,
+        Medium,
+        High
+    }
+
+    /// <summary>Görüntü kalitesini motora uygular. Arkası URP; oynanış hangi boru hattı olduğunu bilmez.</summary>
+    public interface IRenderQuality
+    {
+        /// <param name="renderScale">Sahnenin çizildiği çözünürlük oranı (1 = ekran).</param>
+        /// <param name="postProcessing">Renk ayarı, bloom gibi son işlemler açık mı.</param>
+        void Apply(float renderScale, bool postProcessing);
+    }
+
     /// <summary>Koddan üretilen metinler için çeviri. Sabit etiketler LocalizeStringEvent kullanır.</summary>
     public interface ILocalizationService
     {

@@ -21,7 +21,7 @@ namespace OutOfOffice.Infrastructure
         public UnityLocalizationService(ISignalBus bus)
         {
             _bus = bus;
-            _subscription = _bus.Subscribe<LanguageCycleRequestedSignal>(_ => CycleLocale());
+            _subscription = _bus.Subscribe<LanguageSelectRequestedSignal>(s => SelectLocale(s.Code));
         }
 
         public string CurrentCode
@@ -45,13 +45,12 @@ namespace OutOfOffice.Infrastructure
             return LocalizationSettings.StringDatabase.GetLocalizedString(Table, key);
         }
 
-        void CycleLocale()
+        void SelectLocale(string code)
         {
-            var locales = LocalizationSettings.AvailableLocales.Locales;
-            if (locales.Count == 0) return;
+            if (string.IsNullOrEmpty(code)) return;
 
-            int index = locales.IndexOf(LocalizationSettings.SelectedLocale);
-            LocalizationSettings.SelectedLocale = locales[(index + 1) % locales.Count];
+            var locale = LocalizationSettings.AvailableLocales.GetLocale(new LocaleIdentifier(code));
+            if (locale != null && locale != LocalizationSettings.SelectedLocale) LocalizationSettings.SelectedLocale = locale;
         }
 
         void OnLocaleChanged(Locale locale)

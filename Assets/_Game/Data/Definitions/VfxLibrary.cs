@@ -42,6 +42,20 @@ namespace OutOfOffice.Data
         [Tooltip("Süreli bir etki aktifken oyuncunun etrafında döner.")]
         public GameObject auraPrefab;
 
+        [Header("Damla gölge (gerçek gölgenin yerine)")]
+        [Tooltip("Karakterin ve kovalayanın altına konan yumuşak gölge: 'Blob Shadow' shader'lı, 1 m'lik yatay quad.")]
+        public GameObject blobShadowPrefab;
+        [Tooltip("Oyuncunun gölgesinin çapı (m).")]
+        [Min(0.1f)] public float playerShadowSize = 1.25f;
+        [Tooltip("Kovalayanın gölgesinin çapı (m).")]
+        [Min(0.1f)] public float chaserShadowSize = 1.7f;
+        [Tooltip("Oyuncu bu yüksekliğe (m) çıkınca gölge en küçük ve en soluk haline gelir.")]
+        [Min(0.1f)] public float shadowFadeHeight = 4f;
+        [Tooltip("Tepede gölgenin boyu (yerdekinin oranı).")]
+        [Range(0f, 1f)] public float airShadowScale = 0.55f;
+        [Tooltip("Tepede gölgenin koyuluğu (yerdekinin oranı).")]
+        [Range(0f, 1f)] public float airShadowStrength = 0.35f;
+
         public bool TryGet(VfxEvent trigger, out VfxEntry entry)
         {
             if (bursts != null)

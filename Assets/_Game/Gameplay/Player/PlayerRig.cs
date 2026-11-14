@@ -23,7 +23,12 @@ namespace OutOfOffice.Gameplay
 
         readonly Dictionary<GameObject, Attachment> _attachments = new Dictionary<GameObject, Attachment>();
         readonly GameConfig _config;
+        readonly VfxLibrary _vfx;
         readonly CapsuleCollider _collider;
+        readonly Transform _shadow;
+        readonly Renderer _shadowRenderer;
+        readonly MaterialPropertyBlock _shadowBlock;
+        readonly float _shadowStrength;
         GameObject _visual;
         GameObject _visualPrefab;
         Animator _animator;
@@ -43,14 +48,16 @@ namespace OutOfOffice.Gameplay
         static readonly int PoseParam = Animator.StringToHash("Pose");
         static readonly int CaughtParam = Animator.StringToHash("Caught");
         static readonly int StumbleParam = Animator.StringToHash("Stumble");
+        static readonly int ShadowStrengthId = Shader.PropertyToID("_Strength");
 
         public Transform Root { get; }
         public Transform VisualRoot { get; }
         public TriggerRelay Relay { get; }
 
-        public PlayerRig(GameConfig config)
+        public PlayerRig(GameConfig config, VfxLibrary vfx)
         {
             _config = config;
+            _vfx = vfx;
 
             var root = new GameObject("Player");
             Root = root.transform;
@@ -68,7 +75,37 @@ namespace OutOfOffice.Gameplay
             VisualRoot = new GameObject("Visual").transform;
             VisualRoot.SetParent(Root, false);
 
+            // Damla gölge: köke bağlıdır ama her karede zemine indirilir; zıplarken küçülüp soluklaşır.
+            if (vfx.blobShadowPrefab != null)
+            {
+                _shadow = Object.Instantiate(vfx.blobShadowPrefab, Root, false).transform;
+                _shadow.name = "Shadow";
+                _shadowRenderer = _shadow.GetComponentInChildren<Renderer>();
+                _shadowBlock = new MaterialPropertyBlock();
+                _shadowStrength = _shadowRenderer != null && _shadowRenderer.sharedMaterial != null
+                    ? _shadowRenderer.sharedMaterial.GetFloat(ShadowStrengthId)
+                    : 1f;
+            }
+
             SetSliding(false);
+            UpdateShadow();
+        }
+
+        /// <summary>Gölgeyi zemine indirir; görsel yükseldikçe gölge küçülür ve soluklaşır.</summary>
+        void UpdateShadow()
+        {
+            if (_shadow == null) return;
+
+            float height = Mathf.Max(0f, Root.position.y + VisualRoot.localPosition.y);
+            float t = Mathf.Clamp01(height / _vfx.shadowFadeHeight);
+            float size = _vfx.playerShadowSize * Mathf.Lerp(1f, _vfx.airShadowScale, t);
+
+            _shadow.localPosition = new Vector3(0f, -Root.position.y, 0f);
+            _shadow.localScale = new Vector3(size, 1f, size);
+
+            if (_shadowRenderer == null) return;
+            _shadowBlock.SetFloat(ShadowStrengthId, _shadowStrength * Mathf.Lerp(1f, _vfx.airShadowStrength, t));
+            _shadowRenderer.SetPropertyBlock(_shadowBlock);
         }
 
         public void SetSliding(bool sliding)
@@ -95,6 +132,7 @@ namespace OutOfOffice.Gameplay
                 VisualRoot.localPosition = Vector3.zero;
                 VisualRoot.localRotation = Quaternion.Euler(0f, 0f, lean);
                 VisualRoot.localScale = Vector3.one;
+                UpdateShadow();
                 return;
             }
 
@@ -113,6 +151,7 @@ namespace OutOfOffice.Gameplay
             VisualRoot.localPosition = new Vector3(0f, bob, 0f);
             VisualRoot.localRotation = Quaternion.Euler(pitch, 0f, lean);
             VisualRoot.localScale = new Vector3(1f / Mathf.Sqrt(stretch), squash * stretch, 1f / Mathf.Sqrt(stretch));
+            UpdateShadow();
         }
 
         void DriveAnimator(float deltaTime, float verticalSpeed, bool grounded, float runSpeed)
@@ -166,6 +205,8 @@ namespace OutOfOffice.Gameplay
                 _animator.ResetTrigger(StumbleParam);
                 VisualRoot.localPosition = new Vector3(0f, -Root.position.y, 0f);
             }
+
+            UpdateShadow();
         }
 
         public void SetVisual(GameObject prefab)

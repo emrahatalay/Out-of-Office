@@ -206,6 +206,78 @@ MonoBehaviour:
     m_Localized: SELECTED
     m_Metadata:
       m_Items: []
+  - m_Id: 235146446888960
+    m_Localized: SETTINGS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888961
+    m_Localized: SETTINGS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888962
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888963
+    m_Localized: "T\xDCRK\xC7E"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888964
+    m_Localized: ENGLISH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888965
+    m_Localized: Sound
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888966
+    m_Localized: ON
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888967
+    m_Localized: OFF
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888968
+    m_Localized: Graphics quality
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888969
+    m_Localized: LOW
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888970
+    m_Localized: MEDIUM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888971
+    m_Localized: HIGH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888972
+    m_Localized: DEVELOPER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888973
+    m_Localized: EA
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888974
+    m_Localized: Emrah Atalay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888975
+    m_Localized: Fullstack Developer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888976
+    m_Localized: "Istanbul, T\xFCrkiye"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888977
+    m_Localized: GITHUB PROFILE
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

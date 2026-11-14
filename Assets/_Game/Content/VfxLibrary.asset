@@ -45,3 +45,9 @@ MonoBehaviour:
   speedLinesMinSpeed: 17
   speedLinesMaxRate: 70
   auraPrefab: {fileID: 928364232719329710, guid: aaf0a17b91efd4eddb49874f53169453, type: 3}
+  blobShadowPrefab: {fileID: 493477749008627561, guid: d3b19886ca1444c98b5bb3a12231c91b, type: 3}
+  playerShadowSize: 1.25
+  chaserShadowSize: 1.7
+  shadowFadeHeight: 4
+  airShadowScale: 0.55
+  airShadowStrength: 0.35

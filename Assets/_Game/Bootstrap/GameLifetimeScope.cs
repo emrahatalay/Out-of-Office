@@ -42,6 +42,7 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<UnityLocalizationService>();
             builder.RegisterEntryPoint<InputReader>();
             builder.RegisterEntryPoint<FrameRateService>();
+            builder.Register<UrpRenderQuality>(Lifetime.Singleton).As<IRenderQuality>();
 
             // Koşunun paylaşılan durumu
             builder.Register<RunSession>(Lifetime.Singleton);
@@ -70,6 +71,7 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<AccessorySystem>().AsSelf();
             RegisterAlwaysOn<RewardSystem>(builder);
             builder.RegisterEntryPoint<StoreSystem>();
+            builder.RegisterEntryPoint<SettingsSystem>().AsSelf();
 
             // His ve efektler (sadece sinyal dinler; çıkarılsalar oyun aynen çalışır)
             builder.RegisterEntryPoint<TimeFeelSystem>();
@@ -88,6 +90,7 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<StorePresenter>();
             builder.RegisterEntryPoint<MenuTabsPresenter>();
             builder.RegisterEntryPoint<CollectionPresenter>();
+            builder.RegisterEntryPoint<SettingsPresenter>();
         }
 
         /// <summary>Yalnızca sinyal dinleyen (Tick'i olmayan) sistemler için: kimse istemese de kurulur.</summary>

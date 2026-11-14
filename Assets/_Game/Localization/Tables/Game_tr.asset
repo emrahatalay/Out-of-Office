@@ -206,6 +206,78 @@ MonoBehaviour:
     m_Localized: "SE\xC7\u0130L\u0130"
     m_Metadata:
       m_Items: []
+  - m_Id: 235146446888960
+    m_Localized: AYARLAR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888961
+    m_Localized: AYARLAR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888962
+    m_Localized: Dil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888963
+    m_Localized: "T\xDCRK\xC7E"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888964
+    m_Localized: ENGLISH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888965
+    m_Localized: Ses
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888966
+    m_Localized: "A\xC7IK"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888967
+    m_Localized: KAPALI
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888968
+    m_Localized: "G\xF6r\xFCnt\xFC kalitesi"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888969
+    m_Localized: "D\xDC\u015E\xDCK"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888970
+    m_Localized: ORTA
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888971
+    m_Localized: "Y\xDCKSEK"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888972
+    m_Localized: "GEL\u0130\u015ET\u0130R\u0130C\u0130"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888973
+    m_Localized: EA
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888974
+    m_Localized: Emrah Atalay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888975
+    m_Localized: "Fullstack Geli\u015Ftirici"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888976
+    m_Localized: "\u0130stanbul, T\xFCrkiye"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 235146446888977
+    m_Localized: "GITHUB PROF\u0130L\u0130"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

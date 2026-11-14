@@ -43,6 +43,10 @@ namespace OutOfOffice.EditorTools
 
         public static string BuildAll()
         {
+            // Sahne Play'de kurulamaz; erken çıkılmazsa prefab ve tablolar kurulup sahnede yarıda kalır.
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new System.InvalidOperationException("Play modundayken içerik üretilmez; önce Play'i durdur.");
+
             ConfigureUiSprites();
             BuildData(BuildPrefabs());
             BuildVfx();
@@ -50,6 +54,7 @@ namespace OutOfOffice.EditorTools
             string localization = BuildLocalization();
             BuildScene();
             ApplyMobileSettings();
+            ApplyRenderSettings();
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

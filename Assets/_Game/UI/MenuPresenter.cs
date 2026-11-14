@@ -54,7 +54,6 @@ namespace OutOfOffice.UI
 
             _playButton.clicked += () => _bus.Fire<StartRunRequestedSignal>();
             _buybackButton.clicked += () => _bus.Fire<BuybackRequestedSignal>();
-            screen.Q<Button>("languageButton").clicked += () => _bus.Fire<LanguageCycleRequestedSignal>();
             screen.Q<Button>("prevCharacterButton").clicked += () => _bus.Fire(new CharacterCycleRequestedSignal(-1));
             screen.Q<Button>("nextCharacterButton").clicked += () => _bus.Fire(new CharacterCycleRequestedSignal(1));
 

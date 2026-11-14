@@ -1,3 +1,4 @@
+using OutOfOffice.Core.Services;
 using UnityEngine;
 
 namespace OutOfOffice.Data
@@ -23,8 +24,10 @@ namespace OutOfOffice.Data
         public float difficultyRampSeconds = 120f;
 
         [Header("Zıplama ve kayma")]
-        public float jumpHeight = 2f;
-        public float gravity = 46f;
+        [Tooltip("Zıplamanın tepesi (m, ayak yüksekliği). 3,2 m: taksi (2 m), meslek robotu (2,4 m) ve sunucu kabini (2,6 m) zamanında zıplanırsa aşılır.")]
+        public float jumpHeight = 3.2f;
+        [Tooltip("Zıplamadaki yerçekimi (m/sn²). Küçüldükçe havada kalma uzar: 40 ile tepe 3,2 m'de ~0,8 sn.")]
+        public float gravity = 40f;
         public float fastFallSpeed = 34f;
         public float slideDuration = 0.65f;
         [Tooltip("Yere inmeden bu kadar önce basılan zıplama, inince uygulanır.")]
@@ -136,6 +139,22 @@ namespace OutOfOffice.Data
 
         [Header("Puan")]
         public int coinScore = 10;
+
+        [Header("Ayarlar: görüntü kalitesi")]
+        [Tooltip("İlk açılışta seçili kalite. Oyuncu Ayarlar sekmesinden değiştirir; seçimi kayıtta durur.")]
+        public GraphicsQuality defaultQuality = GraphicsQuality.Medium;
+        [Tooltip("Düşük kalitede render ölçeği (1 = ekranın tam çözünürlüğü). Sahne bu oranda çizilip büyütülür.")]
+        [Range(0.4f, 1f)] public float renderScaleLow = 0.65f;
+        [Tooltip("Orta kalitede render ölçeği.")]
+        [Range(0.4f, 1f)] public float renderScaleMedium = 0.8f;
+        [Tooltip("Yüksek kalitede render ölçeği.")]
+        [Range(0.4f, 1f)] public float renderScaleHigh = 1f;
+        [Tooltip("Düşük kalitede post-processing (renk ayarı, bloom) açık mı. Kapalıyken eski cihazlarda belirgin kazanç sağlar.")]
+        public bool postProcessingOnLow = false;
+
+        [Header("Ayarlar: geliştirici")]
+        [Tooltip("Ayarlar sekmesindeki 'GitHub' butonunun açtığı adres.")]
+        public string developerUrl = "https://github.com/emrahatalay";
 
         public float LaneToX(int lane)
         {

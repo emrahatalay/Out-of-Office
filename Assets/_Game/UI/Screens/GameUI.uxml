@@ -16,10 +16,6 @@
                                 <ui:Label name="menuKeysValue" text="0" class="chip-value" />
                             </ui:VisualElement>
                         </ui:VisualElement>
-                        <ui:Button name="languageButton" class="chip chip-button">
-                            <ui:VisualElement class="icon icon-globe" picking-mode="Ignore" />
-                            <ui:Label text="#ui.language.short" class="chip-value" picking-mode="Ignore" />
-                        </ui:Button>
                     </ui:VisualElement>
 
                     <ui:VisualElement name="homePage" class="page" picking-mode="Ignore">
@@ -97,18 +93,93 @@
                         <ui:VisualElement name="storeList" class="store-list" />
                     </ui:VisualElement>
 
+                    <ui:VisualElement name="settingsPage" class="page page--panel hidden">
+                        <ui:VisualElement class="ribbon" picking-mode="Ignore">
+                            <ui:Label text="#ui.settings" class="ribbon-label" />
+                        </ui:VisualElement>
+
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-head" picking-mode="Ignore">
+                                <ui:VisualElement class="icon icon-small icon-globe setting-icon" />
+                                <ui:Label text="#ui.settings.language" class="setting-label" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="segment-group">
+                                <ui:Button name="languageTr" class="segment">
+                                    <ui:Label text="#ui.settings.language.tr" class="segment-label" picking-mode="Ignore" />
+                                </ui:Button>
+                                <ui:Button name="languageEn" class="segment">
+                                    <ui:Label text="#ui.settings.language.en" class="segment-label" picking-mode="Ignore" />
+                                </ui:Button>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-head" picking-mode="Ignore">
+                                <ui:VisualElement class="icon icon-small icon-sound setting-icon" />
+                                <ui:Label text="#ui.settings.sound" class="setting-label" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="segment-group">
+                                <ui:Button name="soundOn" class="segment">
+                                    <ui:Label text="#ui.settings.on" class="segment-label" picking-mode="Ignore" />
+                                </ui:Button>
+                                <ui:Button name="soundOff" class="segment">
+                                    <ui:Label text="#ui.settings.off" class="segment-label" picking-mode="Ignore" />
+                                </ui:Button>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+
+                        <ui:VisualElement class="setting-row">
+                            <ui:VisualElement class="setting-head" picking-mode="Ignore">
+                                <ui:VisualElement class="icon icon-small icon-display setting-icon" />
+                                <ui:Label text="#ui.settings.quality" class="setting-label" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="segment-group">
+                                <ui:Button name="qualityLow" class="segment">
+                                    <ui:Label text="#ui.settings.quality.low" class="segment-label" picking-mode="Ignore" />
+                                </ui:Button>
+                                <ui:Button name="qualityMedium" class="segment">
+                                    <ui:Label text="#ui.settings.quality.medium" class="segment-label" picking-mode="Ignore" />
+                                </ui:Button>
+                                <ui:Button name="qualityHigh" class="segment">
+                                    <ui:Label text="#ui.settings.quality.high" class="segment-label" picking-mode="Ignore" />
+                                </ui:Button>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+
+                        <ui:Label text="#ui.dev" class="eyebrow setting-section" />
+                        <ui:VisualElement class="dev-card">
+                            <ui:VisualElement class="dev-avatar" picking-mode="Ignore">
+                                <ui:Label text="#ui.dev.initials" class="dev-initials" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="dev-info" picking-mode="Ignore">
+                                <ui:Label text="#ui.dev.name" class="dev-name" />
+                                <ui:Label text="#ui.dev.role" class="dev-role" />
+                                <ui:Label text="#ui.dev.location" class="dev-meta" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:Button name="developerButton" class="btn btn-secondary dev-button">
+                            <ui:VisualElement class="icon icon-code" picking-mode="Ignore" />
+                            <ui:Label text="#ui.dev.github" class="btn-label" picking-mode="Ignore" />
+                        </ui:Button>
+                        <ui:Label name="versionLabel" class="version-label" />
+                    </ui:VisualElement>
+
                     <ui:VisualElement class="tab-bar">
                         <ui:Button name="homeTab" class="tab">
-                            <ui:VisualElement class="icon icon-home tab-icon" picking-mode="Ignore" />
+                            <ui:VisualElement class="tab-icon tab-icon--home" picking-mode="Ignore" />
                             <ui:Label text="#ui.tab.home" class="tab-label" picking-mode="Ignore" />
                         </ui:Button>
                         <ui:Button name="collectionTab" class="tab">
-                            <ui:VisualElement class="icon icon-person tab-icon" picking-mode="Ignore" />
+                            <ui:VisualElement class="tab-icon tab-icon--collection" picking-mode="Ignore" />
                             <ui:Label text="#ui.tab.collection" class="tab-label" picking-mode="Ignore" />
                         </ui:Button>
                         <ui:Button name="storeTab" class="tab">
-                            <ui:VisualElement class="icon icon-package tab-icon" picking-mode="Ignore" />
+                            <ui:VisualElement class="tab-icon tab-icon--store" picking-mode="Ignore" />
                             <ui:Label text="#ui.store" class="tab-label" picking-mode="Ignore" />
+                        </ui:Button>
+                        <ui:Button name="settingsTab" class="tab">
+                            <ui:VisualElement class="tab-icon tab-icon--settings" picking-mode="Ignore" />
+                            <ui:Label text="#ui.tab.settings" class="tab-label" picking-mode="Ignore" />
                         </ui:Button>
                     </ui:VisualElement>
                 </ui:VisualElement>

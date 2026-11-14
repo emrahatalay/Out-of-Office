@@ -9,7 +9,8 @@ Assets/_Game/
 ├─ Core/              saf C# sözleşmeleri, Unity sahnesinden bağımsız
 │  ├─ Signals/        ISignalBus, SignalBus, SubscriptionBag, GameSignals.cs (tüm sinyaller)
 │  ├─ State/          GameState, StateMachine<T>, IGameStateProvider
-│  ├─ Services/       ISaveService, ILocalizationService, IPoolService, IArtProvider
+│  ├─ Services/       ISaveService, ILocalizationService, IPoolService, IArtProvider,
+│  │                  IRenderQuality, GraphicsQuality
 │  └─ Run/            IPlayerStatus, IChaser, IObstacleField, EffectContext, RewardKind...
 ├─ Data/
 │  ├─ Definitions/    GameConfig, CharacterDefinition, ObstacleDefinition, PowerUpDefinition,
@@ -20,14 +21,15 @@ Assets/_Game/
 │  └─ Movement/       MovementPattern türevleri (SideSweep, Approach)
 ├─ Gameplay/
 │  ├─ Flow/           GameFlow, RunSystem, RunSession, PlayerProfile, CharacterSelection,
-│  │                  Workforce, AccessorySystem, RewardSystem, StoreSystem, CatalogArt
+│  │                  Workforce, AccessorySystem, RewardSystem, StoreSystem, CatalogArt,
+│  │                  SettingsSystem
 │  ├─ Player/         PlayerSystem, PlayerStatus, PlayerRig, CollisionSystem, CameraFollowSystem
 │  ├─ Chaser/         ChaserSystem
 │  ├─ World/          TrackSystem, SpawnDirector, AdaptiveDirector, ObstacleField, PickupField,
 │  │                  WorldCurveSystem, PoolWarmupSystem, ObstacleView, PickupView
 │  └─ Effects/        EffectRunner, AbilitySystem, TimeFeelSystem, VfxSystem, SfxSystem
 ├─ Infrastructure/    PlayerPrefsSaveService, PoolService, InputReader,
-│                     UnityLocalizationService, FrameRateService
+│                     UnityLocalizationService, FrameRateService, UrpRenderQuality
 ├─ UI/                sunucular (*Presenter), ScreenRouter, UiText, RadialProgress, SafeArea
 │  ├─ Screens/        GameUI.uxml, GameUI.uss
 │  ├─ Theme/          GameTheme.tss, GamePanelSettings.asset
@@ -36,7 +38,8 @@ Assets/_Game/
 │  ├─ Portraits/      karakter çizimleri (PortraitBuilder gerçek modelden çeker)
 │  └─ Items/          mağaza görselleri (ItemIconBuilder)
 ├─ Bootstrap/         GameLifetimeScope.cs (composition root)
-├─ Shaders/           CurvedLit.shader + CurvedWorld.hlsl (kıvrımlı dünya), Sky.shader (gündüz gökyüzü)
+├─ Shaders/           CurvedLit.shader + CurvedWorld.hlsl (kıvrımlı dünya), Sky.shader (gündüz gökyüzü),
+│                     BlobShadow.shader (damla gölge)
 ├─ Editor/            PlaceholderContentBuilder (parçalı sınıf), CharacterModelBuilder, PropModelBuilder,
 │                     PortraitBuilder, ItemIconBuilder, UiKitBuilder, ModelSnapshot, AndroidBuild, PerfProbe
 ├─ Content/           üretilen tanım asset'leri (GameConfig, ContentCatalog, Characters/...)
@@ -44,6 +47,7 @@ Assets/_Game/
 ├─ Art/Characters/    gerçek karakter modelleri: <Ad>/<Ad>.fbx + doku + materyal, Animations/ (klipler, denetleyiciler)
 ├─ Art/Props/         gerçek engel, eşya ve dekor modelleri: <Ad>.fbx + <Ad>_BaseColor.png + <Ad>.mat
 ├─ Art/Atmosphere/    üretilen gökyüzü materyali, yansıma küp haritası, post-processing profili
+├─ Art/Road/          üretilen yol ve kaldırım dokuları ile materyalleri (PlaceholderContentBuilder.Road)
 ├─ Audio/Sfx/         sentezlenmiş ses efektleri (Tools/Audio/make_sfx.py üretir)
 ├─ Prefabs/Placeholder/  üretilen prefab'lar
 ├─ Prefabs/Characters/   CharacterModelBuilder'ın ürettiği gerçek karakter prefab'ları
@@ -130,7 +134,7 @@ builder.Register<Impl>(Lifetime.Singleton).As<IService>();   // servis
 
 ## Kayıt
 
-`ISaveService` (şimdilik PlayerPrefs, önek `ooo.`). Anahtarlar: `best_score`, `total_coins`, `keys`, `character`, `automated` (virgüllü kimlik listesi), `automated_count.<id>`, `accessory.<id>`. Yeni kalıcı değer eklerken anahtarı bu listeye de yaz. Bulut kaydına geçmek için yalnızca yeni bir `ISaveService` yazılır.
+`ISaveService` (şimdilik PlayerPrefs, önek `ooo.`). Anahtarlar: `best_score`, `total_coins`, `keys`, `character`, `automated` (virgüllü kimlik listesi), `automated_count.<id>`, `accessory.<id>`, `sound` (1 açık, 0 kapalı), `quality` (`GraphicsQuality`: 0 düşük, 1 orta, 2 yüksek). Seçili dili Localization paketi kendisi kaydeder. Yeni kalıcı değer eklerken anahtarı bu listeye de yaz. Bulut kaydına geçmek için yalnızca yeni bir `ISaveService` yazılır.
 
 ## Çeviri
 
@@ -145,6 +149,7 @@ builder.Register<Impl>(Lifetime.Singleton).As<IService>();   // servis
 - `Shaders/CurvedWorld.hlsl`: `BendWorldPosition`, köşe noktasını kameradan uzaklığın karesiyle yana ve aşağı kaydırır.
 - `Shaders/CurvedLit.shader` ("Out of Office/Curved Lit"): URP PBR aydınlatması + bükme; ileri, gölge, derinlik ve derinlik-normal geçişlerinin hepsi aynı bükmeyi uygular.
 - `WorldCurveSystem`: kıvrımı koşu boyunca değiştirir, global shader değerlerini yazar, bükülen nesneler erken elenmesin diye kameranın eleme alanını genişletir.
+- `Shaders/BlobShadow.shader` ("Out of Office/Blob Shadow"): damla gölge. Işıksız, zemini çarparak koyulaştırır (multiply), sisle beyaza karışır; aynı bükmeyi uygular.
 - `CurvedLit` ayrıca dokunun alfasındaki maskeyle neon bölgeleri ışıtır (`_GlowStrength`; "Eşya ve çevre modelleri").
 - `CurvedLit` mesh'in **köşe rengini boya olarak** çarpar (ışıma boyanmaz). Köşe rengi olmayan mesh'te Unity beyaz verir, yani hiçbir şey değişmez. Binaların farklı renkleri böyle verilir ("Eşya ve çevre modelleri", "Boyanabilir modeller").
 - Yeni bir shader (ör. saydam yüzey, parçacık) dünyada kullanılacaksa `CurvedWorld.hlsl`'i dahil edip aynı işlevi çağırmalıdır. Parçacıklar şu an bükülmüyor.
@@ -202,7 +207,7 @@ Prefab'da Animator yoksa (geçici küp modeller) `PlayerRig` eski elle esnetme y
 
 ## Eşya ve çevre modelleri
 
-Engeller, toplananlar, aksesuar ve dekor da Meshy ile üretildi (23 model). Altın tek istisnadır: 160 üçgenlik diski betik kurar, yüz dokusu konsept görselden kesilir.
+Engeller, toplananlar, aksesuar ve dekor da Meshy ile üretildi (23 model). Altın tek istisnadır: 160 üçgenlik diski ve dokusunu betik kurar (`make_coin.py -- <çıktı klasörü>`; doku koddan çizilir: doygun altın, ışığı dokuya gömülü kabartma kenar, çip amblemi).
 
 **Hat (depo kökünde `Tools/ModelPipeline`, Blender gerekir):**
 
@@ -231,7 +236,7 @@ Arayüzdeki her görsel koddan üretilir; elle çizilmiş dosya yoktur. Görün�
 
 | Araç | Ürettiği | Nasıl |
 |---|---|---|
-| `UiKitBuilder` | `UI/Sprites`: `panel`, `slot`, `btn_primary`, `btn_accent`, `btn_secondary`, `frame_selected`, `spot`; `UI/Items/AccessCard` | İşaretli uzaklık (SDF) ile çizer: dış çizgi, taban, geçiş, parlama. Renk ve ölçüler `Plate` tablosundadır |
+| `UiKitBuilder` | `UI/Sprites`: `panel`, `slot`, `btn_primary`, `btn_accent`, `btn_secondary`, `frame_selected`, `spot`, sekme ikonları `tab_home`, `tab_collection`, `tab_store`, `tab_settings` (`UiKitBuilder.TabIcons.cs`); `UI/Items/AccessCard` | İşaretli uzaklık (SDF) ile çizer: dış çizgi, taban, geçiş, parlama. Renk ve ölçüler `Plate` tablosunda, sekme ikonları kendi çizim işlevlerindedir |
 | `PortraitBuilder` | `UI/Portraits/<Ad>.png` (512) | `Prefabs/Characters/Character_<Ad>` prefab'ını bekleme pozunda, kendi ışığıyla, saydam zemine çeker; başı kadraja ortalar |
 | `ItemIconBuilder` | `UI/Items/<Ad>.png` (256) | `Icons` tablosundaki eşya modelini (`Art/Props`) çeker; modeli olmayanı `UiKitBuilder` çizer |
 | `ModelSnapshot` | (ortak yardımcı) | `PreviewRenderUtility` ile çizim, 2x çizip küçültme, saydam PNG, içe aktarma ayarı (mobilde ASTC 4x4) |
@@ -249,7 +254,24 @@ Arayüzdeki her görsel koddan üretilir; elle çizilmiş dosya yoktur. Görün�
 - Arayüz Gameplay'i tanımadığı için düğme sesi ayrı sinyalle değil, düğmelerin zaten attığı **istek sinyalleriyle** (`StartRunRequestedSignal`, `StorePurchaseRequestedSignal`...) çalar. İstek atmayan arayüz hareketleri (menü sekmeleri) sessizdir.
 - Art arda toplanan altının sesi her seferinde biraz incelir (`coinStreak*` alanları).
 - Klipler kayıt değildir: `Tools/Audio/make_sfx.py` (yalnızca Python standart kütüphanesi) sentezler ve `Assets/_Game/Audio/Sfx` altına yazar. Üretici (`PlaceholderContentBuilder.Audio.cs`) içe aktarma ayarlarını (tek kanal, ADPCM, bellekte açık) ve `SfxLibrary`'yi kurar.
-- Müzik ve ses ayarı (kısma, kapatma) henüz yok.
+- Ses Ayarlar sekmesinden açılıp kapanır (`SettingsSystem`, `AudioListener.volume`). Müzik henüz yok.
+
+## Ayarlar
+
+Menünün Ayarlar sekmesi: dil, ses, görüntü kalitesi ve geliştirici kartı.
+
+- `SettingsPresenter` (UI) yalnızca istek sinyali atar: `LanguageSelectRequestedSignal(kod)`, `SoundSetRequestedSignal`, `QualitySetRequestedSignal`, `DeveloperPageRequestedSignal`. Seçili seçeneği `LocaleChangedSignal` ve `SettingsChangedSignal`'dan öğrenir.
+- Dil: `UnityLocalizationService` seçer; paket kaydeder.
+- Ses ve kalite: `SettingsSystem` (Gameplay) kayda yazar (`sound`, `quality`), uygular ve `SettingsChangedSignal` atar. Kalite Initialize'da, ilk karede uygulanır; sinyal PostStart'ta atılır (arayüz Start'ta abone olur).
+- Kalitenin sayısal karşılığı `GameConfig`'tedir (`renderScaleLow/Medium/High`, `postProcessingOnLow`, `defaultQuality`). Nasıl uygulanacağını `IRenderQuality` bilir; URP karşılığı `UrpRenderQuality` (Infrastructure) render ölçeğini etkin URP asset'ine, post-processing'i kameraya yazar ve kapanışta asset'in özgün ölçeğini geri koyar (editörde Play'den sonra asset değişik kalmasın).
+- Geliştirici kartının metinleri çeviri tablosundadır (`ui.dev.*`, GitHub profilinden), bağlantı `GameConfig.developerUrl`. Avatar yok; baş harfler gösterilir.
+- Yeni seçenek: Core'a istek sinyali, `SettingsSystem`'e alan ve kayıt anahtarı, UXML'e buton, `SettingsPresenter`'daki tabloya satır.
+
+## Gölge ve zemin
+
+- **Gerçek zamanlı gölge kapalıdır** (mobilde gölge geçişi sahneyi ikinci kez çizer). Üretici URP asset'lerinde gölgeyi kapatır (`ApplyRenderSettings`) ve güneşi gölgesiz kurar. Yerine her karakterin, robotun, engelin ve güçlendirmenin altında **damla gölge** vardır: `Blob Shadow` shader'lı tek quad (`PlaceholderContentBuilder.Shadows.cs`).
+- Prefab'lardaki gölgeyi üretici koyar (`BlobShadow(root, boyut)`); oyuncunun ve kovalayanın gölgesini `PlayerRig` ve `ChaserSystem` `VfxLibrary.blobShadowPrefab`'tan kurar. Oyuncunun gölgesi zıplarken yerde kalır, küçülür ve soluklaşır (`VfxLibrary`: `shadowFadeHeight`, `airShadowScale`, `airShadowStrength`).
+- **Zemin "akıllı yol"dur** (`PlaceholderContentBuilder.Road.cs`): asfalt, kenarda bordür ve ışık şeridi, iki yanda kaldırım. Dokular koddan çizilir (`Art/Road`; PNG yazılır, içe aktarma ayarı kurulur): asfalt tanesi ve lekeleri, tekerlek izleri, kesikli şerit çizgileri, kenar çizgileri, ışıyan kılavuz noktaları ve şerit ortasında ışıyan oklar (ışıma alfada). Doku 10 m'de bir tekrar eder; zemin parçası 30 m'dir.
 
 ## Performans kuralları
 
@@ -312,7 +334,7 @@ Etki yalnızca `EffectContext` üzerinden çalışır (oyuncu, kovalayan, engel 
 
 ## Editör araçları
 
-- `PlaceholderContentBuilder` (parçalı): `.cs` (ortak yardımcılar, `Mat`, `Part`, `SlicedPart`, `CombineByMaterial`), `.Prefabs`, `.Data`, `.Vfx`, `.Audio` (ses klipleri ve `SfxLibrary`), `.Localization`, `.Scene`, `.Atmosphere` (gökyüzü, güneş, sis, yansıma, post-processing; görünüm kuralı `docs/GORSEL_DIL.md`).
+- `PlaceholderContentBuilder` (parçalı): `.cs` (ortak yardımcılar, `Mat`, `Part`, `SlicedPart`, `CombineByMaterial`), `.Prefabs`, `.Data`, `.Vfx`, `.Audio` (ses klipleri ve `SfxLibrary`), `.Localization`, `.Scene`, `.Atmosphere` (gökyüzü, güneş, sis, yansıma, post-processing; görünüm kuralı `docs/GORSEL_DIL.md`), `.Road` (akıllı yol: mesh ve prosedürel dokular), `.Shadows` (damla gölge, URP gölgesini kapatma).
 - `CharacterModelBuilder`: gerçek karakter modellerini kurar (yukarıda "Karakter modelleri ve animasyon"). Çalıştırdıktan sonra tanım asset'leri yeni prefab'ı görsün diye içerik üreticiyi de çalıştır.
 - `PropModelBuilder`: eşya ve çevre modellerinin içe aktarma ayarlarını, materyallerini ve boyanabilir modellerin renksiz dokusunu kurar (yukarıda "Eşya ve çevre modelleri").
 - **Out of Office > Oyun Ayarlarını Varsayılana Döndür:** `GameConfig`'i koddaki değerlere çeker (elle yapılan dengeleme silinir).

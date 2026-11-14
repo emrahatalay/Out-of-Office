@@ -4,21 +4,24 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 
 ## Yapılanlar
 
-- Çekirdek koşu: üç şerit, zıplama, kayma, girdi tamponu, hızlanma, zorluk eğrisi.
+- Çekirdek koşu: üç şerit, zıplama (tepe 3,2 m: en yüksek engel 2,6 m), kayma, girdi tamponu, hızlanma, zorluk eğrisi.
 - Kovalayan robot (İK-9000): tökezlemede yaklaşır, ikinci çarpışmada yakalar.
 - Öğrenen engel yönetmeni (şerit alışkanlığına göre engel dizer).
 - 5 engel, 2 meslek robotu, 8 güçlendirme (liste `docs/HIKAYE.md`'de).
 - 3 meslek (Yazılımcı, Grafiker, Stajyer), 2 yetenek.
 - Meslek otomasyonu ve artan bedelle geri alma.
 - Aksesuar (Ofis Sandalyesi), sürpriz paketler, giriş kartıyla devam, altınla mağaza.
-- Arayüz: sekmeli menü (Ana Sayfa, Koleksiyon, Mağaza), HUD, duraklatma, oyun sonu. Türkçe ve İngilizce.
+- Arayüz: sekmeli menü (Ana Sayfa, Koleksiyon, Mağaza, Ayarlar), HUD, duraklatma, oyun sonu. Türkçe ve İngilizce.
+- **Altın yeniden çizildi:** dokusu artık koddan (`make_coin.py`): doygun altın, kabartma kenar, çip amblemi; ışıma çok hafif. Eskisi konseptten kesilmiş soluk bir dokuydu, tamamı ışıyıp bloom'la beyaza kaçıyordu.
+- **Sekme ikonları** renkli çizim (ev, çalışan, hediye, dişli).
+- **Ayarlar sekmesi:** dil, ses açma/kapama, görüntü kalitesi (render ölçeği ve post-processing; `GameConfig`), geliştirici kartı ve GitHub bağlantısı.
 - **Arayüz teması (UI kit):** koyu dış çizgili, tabanlı, parlamalı panel ve butonlar; hepsi koddan üretilir (`UiKitBuilder`). Meslek portreleri gerçek karakter modellerinden (`PortraitBuilder`), eşya görselleri gerçek eşya modellerinden çekilir (`ItemIconBuilder`); giriş kartı temayla çizilir. Altın, giriş kartı ve sandalye her yerde aynı görselle gösterilir.
 - His: kamera takibi, görüş açısı, sarsıntı, ağır çekim, parçacık efektleri.
 - Kıvrımlı dünya (yol sağa/sola kıvrılır, uzakta aşağı eğilir).
-- **Bütün modeller gerçek** (Meshy ile üretildi; kural `docs/GORSEL_DIL.md`): üç meslek ve İK-9000 iskeletli; 5 engel, 2 meslek robotu, altın, 7 güçlendirme, sürpriz paket, ofis sandalyesi, taşıyıcı dron ve dekor (kolon, masa, pano, iki kule). Yalnızca zemin ve bariyer koddan kurulur.
+- **Bütün modeller gerçek** (Meshy ile üretildi; kural `docs/GORSEL_DIL.md`): üç meslek ve İK-9000 iskeletli; 5 engel, 2 meslek robotu, altın, 7 güçlendirme, sürpriz paket, ofis sandalyesi, taşıyıcı dron ve dekor (kolon, masa, pano, iki kule). Yalnızca zemin (akıllı yol) koddan kurulur; dokuları da koddan çizilir.
 - Karakter animasyonları: bekleme, koşu, zıplama, kayma, tökezleme, yakalanınca düşme, sandalyede oturma, drona asılma. Tek klip seti bütün karakterlerde ortak; İK-9000 koşu ve beklemeyi kullanır.
 - Model hattı (`Tools/ModelPipeline`): ölçek, yön, doku boşluğu doldurma, alfada ışıma maskesi, dokusuz FBX.
-- Sahne havası: gündüz gökyüzü (bulutlu), güneş ve dolgu ışığı, ufuk rengi sis, açık zemin, şeker renkli binalar (aynı iki kule modeli köşe rengiyle boyanır), krem kolonlar, ölçülü post-processing.
+- Sahne havası: gündüz gökyüzü (bulutlu), güneş ve dolgu ışığı, ufuk rengi sis, akıllı yol zemini (asfalt, ışıklı oklar, bordür, kaldırım), gerçek gölge yerine damla gölge, kontrastlı renk ayarı, şeker renkli binalar (aynı iki kule modeli köşe rengiyle boyanır), krem kolonlar, ölçülü post-processing.
 - Ses efektleri: zıplama, kayma, şerit değiştirme, altın, güçlendirme, tökezleme, kalkan kırılması, yakalanma, düğme (`SfxSystem`, `SfxLibrary`; klipler `Tools/Audio/make_sfx.py` ile sentezlenir).
 - Performans: havuzlama ve ön üretim, materyal başına birleştirilmiş mesh'ler. Ölçümde oynanış sistemleri koşu sırasında bellek ayırmıyordu (aksesuar, mağaza ve kıvrımlı dünyadan önce ölçüldü).
 
@@ -26,10 +29,9 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 
 Hikâyede ve tasarımda olup yapılmayanlar:
 
-- **Müzik** ve ses ayarı (kısma, kapatma) yok. Ses efektleri sentezlenmiş ilk sürümdür; kulakla dinlenip ayarlanmadı (aşağıya bak).
+- **Müzik** yok (ses efektleri Ayarlar'dan açılıp kapanır; ses düzeyi kaydırıcısı yok). Ses efektleri sentezlenmiş ilk sürümdür; kulakla dinlenip ayarlanmadı (aşağıya bak).
 - Menü sekmeleri düğme sesi çıkarmaz (istek sinyali atmadıkları için).
 - **Eksik animasyonlar:** şerit değiştirme (yalnızca gövde yatması var), İK-9000'in yakalama hareketi (başına gelip bekler), engellerin kendi hareketi (dron pervanesi, taksi tekerleği dönmüyor).
-- **Zemin ve bariyer** hâlâ düz renkli, koddan kurulan kutular; dokulu gerçek zemin yok.
 - **Güçlendirmeler:** Prompt Injection, Fişi Çek.
 - **Meslek:** Şoför (ve başka meslekler).
 - **Diğer dünyalar** ve dünyalar arası geçiş: otonom şehir, lojistik deposu, veri merkezi, Analog Kasaba.
@@ -37,7 +39,6 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - Görevler, günlük ödül, başarımlar, lider tablosu.
 - Reklam ve uygulama içi satın alma.
 - Öğretici (ilk açılışta nasıl oynanır).
-- Ayarlar ekranı (şu an yalnızca dil düğmesi var).
 
 ## Bilinen sorunlar ve doğrulanmamışlar
 
@@ -47,6 +48,8 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - Derleme uyarıları oyunun kodundan değil paketlerden geliyor (`com.unity.ai.inference` shader'ı, TextMesh Pro). `com.unity.ai.assistant` ve bağımlılıkları (App UI) çıktıya giriyor; yayın öncesi gerekli mi bakılmalı.
 - **Çıktı almak proje ayarlarına dokunuyor:** URP asset'lerindeki ön eleme alanları ve `ProjectSettings` (ön yüklenen asset'ler) güncellenir; bunlar commit edildi. `UnityConnectSettings`'teki `m_Enabled` çıktı sırasında 1'e döndü, geri alındı (servisler kapalı kalsın diye); tekrar dönerse bilerek karar verilmeli.
 - Çıktıdan sonra editörün etkin platformu Android'dir (etkin profil "Android Test").
+- **Zıplama, gölge, kontrast, yol, bina dokuları (14 Kasım 2026)** editörde Play'de ekran görüntüsüyle bakıldı; zıplama tepesi ölçüldü (~3,0-3,2 m). Gerçek oynanışla yüksek engelin üstünden atlanması elle denenmedi; cihazda bakılmadı.
+- **Ayarlar sekmesi (14 Kasım 2026)** editörde Play'de iki dilde ekran görüntüsüyle bakıldı; seçimler sinyalle verildi ve uygulandığı okundu (Düşük: render ölçeği 0,65, post-processing kapalı; ses kapalıyken `AudioListener.volume` 0; Play bitince URP asset'inin ölçeği geri geldi). Gerçek tıklama, GitHub butonu (tarayıcı açar) ve cihaz denenmedi. Render ölçeği URP asset'ine yazıldığı için editörde Play sırasında asset değişik görünür; kapanışta geri konur.
 - **Yeni butonlar** (mağaza, koleksiyon, devam) testlerde sinyalle tetiklendi; gerçek tıklamayla uçtan uca denenmedi.
 - **Çift dokunuş** (aksesuar) arayüzdeki çift dokunuşlarda da tetiklenebilir.
 - **Uçuş kamerası** (`cameraFlightFollow = 0.8`) görsel olarak doğrulanmadı.
@@ -56,7 +59,7 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 
 - **Modeller ve animasyonlar** editörde, Play modunda gözle denendi: koşu, zıplama, kayma, tökezleme, yakalanma, sandalye, dron uçuşu, üç karakter. **Gerçek cihazda denenmedi.**
 - **Bellek ayırma (14 Kasım 2026, editör, `PerfProbe`):** kare başına ortanca ~45 KB; animasyonlu gerçek modellerle, animasyonsuz küp modelle ve menüde (koşu yokken) aynı. Yani bu editörün kendi yükü; animasyon ve yeni modeller ölçülebilir ek ayırma yapmıyor. Oyunun payını editörden ayıran ölçüm (build'de profil) yapılmadı.
-- **Çizim yükü (editör):** koşuda ~150-190 draw call, 32 set-pass, ~220-250 bin üçgen (gölge ve derinlik geçişleri dahil). Zemin parçası başına ~13.000 üçgen dekor var; düşük uçlu cihazda ağır gelirse `BuildDecor`'daki dekor sayısı azaltılır.
+- **Çizim yükü (editör):** koşuda ~150-190 draw call, 32 set-pass, ~220-250 bin üçgen (gölge ve derinlik geçişleri dahil; gerçek gölge kapatılmadan önce ölçüldü, yeniden ölçülmedi). Zemin parçası başına ~13.000 üçgen dekor var; düşük uçlu cihazda ağır gelirse `BuildDecor`'daki dekor sayısı azaltılır.
 - **Sandalyede oturuş** üç karakterde üstten ve yandan bakılarak doğrulandı (14 Kasım 2026): gövde şeridin ortasında (yana sapma ≤ 1 cm), sandalye 22 cm geride. Yazılımcı'nın sırt çantası sırtlığa birkaç cm girer.
 - **Kayma pozu** çarpışma kapsülünden (0,8 m) alçak ama yana doğru geniş; Çerez Duvarı'nın altından geçerken görsel taşma olup olmadığına bakılmadı.
 - **Havada yakalanma:** görsel yere indirilir ama düşüş animasyonu yoktur, bir karede iner.

@@ -56,7 +56,8 @@ namespace OutOfOffice.EditorTools
             new PropSpec("DevBot", 512, 2.5f),
             new PropSpec("DesignBot", 512, 2.5f),
             // Toplananlar ve aksesuar
-            new PropSpec("Coin", 128, 1.6f),
+            // Altının dokusu koddan çizilir (make_coin.py); ışıma çok hafif: fazlası bloom'la beyaza kaçıp amblemi siliyordu.
+            new PropSpec("Coin", 256, 1f),
             new PropSpec("Captcha", 256, 2.5f),
             new PropSpec("Hallucination", 256, 1.4f),
             new PropSpec("Shield", 256, 2f),
@@ -73,14 +74,16 @@ namespace OutOfOffice.EditorTools
             new PropSpec("Kiosk", 512, 2f),
             new PropSpec("Billboard", 512, 2f),
             // Binalar boyanabilir: her kopya ayrı bir pastel renk alır. Gündüz pencereler ışık
-            // saçmaz, gökyüzünü yansıtan cam gibi hafifçe parlar.
-            new PropSpec("TowerA", 256, 0.15f, tintable: true),
-            new PropSpec("TowerB", 256, 0.15f, tintable: true),
+            // saçmaz, gökyüzünü yansıtan cam gibi hafifçe parlar. Ekranın büyük bölümünü
+            // kapladıkları için dokuları 1024'tür (256'da pencere ızgarası lekeye dönüyordu).
+            new PropSpec("TowerA", 1024, 0.15f, tintable: true),
+            new PropSpec("TowerB", 1024, 0.15f, tintable: true),
         };
 
-        // Renksiz dokunun ayarları: gövdenin en koyu ve en açık yeri bu aralığa yayılır (boya
-        // çarpılınca renk canlı kalsın diye taban yüksek). Işıyan pikseller kendi rengini korur.
-        const float NeutralFloor = 0.6f;
+        // Renksiz dokunun ayarları: gövdenin en koyu ve en açık yeri bu aralığa yayılır. Taban
+        // boya çarpılınca renk canlı kalacak kadar yüksek, pencere ve kat çizgileri okunacak kadar
+        // alçaktır (0,6'da bina düz ve soluk görünüyordu). Işıyan pikseller kendi rengini korur.
+        const float NeutralFloor = 0.42f;
         const float NeutralCeiling = 1f;
 
         [MenuItem("Out of Office/Eşya ve Çevre Modellerini Kur")]
@@ -103,11 +106,14 @@ namespace OutOfOffice.EditorTools
                 ConfigureModel(ModelPath(spec.Name));
                 if (spec.SharedMaterial == null)
                 {
-                    ConfigureTexture(TexturePath(spec.Name), spec.TextureSize);
+                    // Boyanabilir çevre modelleri (bina, kolon) yola yatık açıyla görünür; anizotropik
+                    // süzme olmadan uzaktaki yüzleri bulanıklaşır.
+                    int aniso = spec.Tintable ? 4 : 1;
+                    ConfigureTexture(TexturePath(spec.Name), spec.TextureSize, aniso);
                     if (spec.Tintable)
                     {
                         BuildNeutralTexture(TexturePath(spec.Name), NeutralTexturePath(spec.Name));
-                        ConfigureTexture(NeutralTexturePath(spec.Name), spec.TextureSize);
+                        ConfigureTexture(NeutralTexturePath(spec.Name), spec.TextureSize, aniso);
                     }
 
                     BuildMaterial(spec);
@@ -267,7 +273,7 @@ namespace OutOfOffice.EditorTools
             importer.SaveAndReimport();
         }
 
-        static void ConfigureTexture(string path, int maxSize)
+        static void ConfigureTexture(string path, int maxSize, int anisoLevel = 1)
         {
             if (!(AssetImporter.GetAtPath(path) is TextureImporter importer)) return;
 
@@ -280,7 +286,7 @@ namespace OutOfOffice.EditorTools
             importer.alphaIsTransparency = false;
             importer.wrapMode = TextureWrapMode.Clamp;
             importer.filterMode = FilterMode.Bilinear;
-            importer.anisoLevel = 1;
+            importer.anisoLevel = anisoLevel;
             importer.maxTextureSize = maxSize;
             importer.textureCompression = TextureImporterCompression.Compressed;
 

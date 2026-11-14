@@ -14,7 +14,7 @@ namespace OutOfOffice.EditorTools
             public GameObject Ground;
         }
 
-        // Ölçüler: oyuncu 1.8 m boyunda, kayarken 0.8 m. Zıplama tepesi 2.2 m.
+        // Ölçüler: oyuncu 1.8 m boyunda, kayarken 0.8 m. Zıplama tepesi 3.2 m (GameConfig.jumpHeight).
         // Bir şerit 2.5 m genişliğinde. Tüm prefab'ların orijini zeminde, şeridin ortasındadır.
         static PlaceholderPrefabs BuildPrefabs()
         {
@@ -32,11 +32,9 @@ namespace OutOfOffice.EditorTools
             var cyan = Mat("ShieldCyan", new Color(0.25f, 0.85f, 0.95f), 0.6f, 1.5f);
             var espresso = Mat("EspressoBrown", new Color(0.55f, 0.33f, 0.18f), 0.5f, 1.2f);
             var internGrey = Mat("InternGrey", new Color(0.62f, 0.66f, 0.72f));
-            // Zemin açık ve serin bir taştır: koyu gövdeli engeller ve renkli karakterler üstünde
-            // net okunur (docs/GORSEL_DIL.md). Fazla parlak olursa ufka doğru beyaza keser.
-            var floor = Mat("Floor", new Color(0.47f, 0.53f, 0.72f), 0.3f);
-            var floorStripe = Mat("FloorStripe", new Color(0.55f, 0.61f, 0.8f), 0.3f);
-            var wall = Mat("Wall", new Color(0.96f, 0.94f, 0.9f), 0.2f);
+            // Yolun bordürü krem beton, üst kenarındaki şerit turkuaz ışır. Asfalt ve kaldırım
+            // dokuludur (PlaceholderContentBuilder.Road.cs).
+            var curb = Mat("Curb", new Color(0.93f, 0.91f, 0.88f), 0.2f);
             var laneGlow = Mat("LaneGlow", new Color(0.1f, 0.78f, 0.82f), 0.5f, 0.7f);
 
             return new PlaceholderPrefabs
@@ -64,18 +62,19 @@ namespace OutOfOffice.EditorTools
                 OfficeChair = BuildOfficeChair(dark, steel),
                 CarrierDrone = BuildCarrierDrone(white, dark),
                 Package = BuildPackage(espresso, yellow),
-                Ground = BuildGround(floor, floorStripe, laneGlow, wall, dark),
+                Ground = BuildGround(curb, laneGlow, dark),
             };
         }
 
         /// <summary>
         /// Gerçek modeli kuruluysa (PropModelBuilder) köke görsel olarak ekler ve true döner.
         /// Dönen değer false ise çağıran geçici parçaları kurar. Çarpışma şekli her iki
-        /// durumda da aynıdır; oynanış modele göre değişmez.
+        /// durumda da aynıdır; oynanış modele göre değişmez. Gerçek zamanlı gölge kapalıdır;
+        /// gölgeyi damla gölge verir (PlaceholderContentBuilder.Shadows.cs).
         /// </summary>
-        static bool Model(GameObject root, string prop, bool castShadows)
+        static bool Model(GameObject root, string prop)
         {
-            return PropModelBuilder.TryAddModel(root.transform, prop, castShadows);
+            return PropModelBuilder.TryAddModel(root.transform, prop, castShadows: false);
         }
 
         // Karakter ve kovalayan prefab'ları yalnızca görseldir (+Z ileri bakar).
@@ -107,7 +106,7 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildProfessionBot(string name, string prop, Material frame, Material body, Material screen)
         {
             var root = new GameObject(name);
-            bool real = Model(root, prop, castShadows: true);
+            bool real = Model(root, prop);
             if (!real)
             {
                 Part(root.transform, PrimitiveType.Cube, "Base", new Vector3(0f, 0.25f, 0f), new Vector3(1.5f, 0.5f, 1.1f), frame);
@@ -116,8 +115,9 @@ namespace OutOfOffice.EditorTools
                 Part(root.transform, PrimitiveType.Cube, "Head", new Vector3(0f, 2.15f, 0f), new Vector3(0.7f, 0.4f, 0.6f), frame);
             }
 
+            BlobShadow(root, new Vector2(2f, 1.5f));
             BoxTrigger(root, new Vector3(0f, 1.2f, 0f), new Vector3(1.5f, 2.4f, 1.1f));
-            if (!real) CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 
@@ -125,7 +125,7 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildOfficeChair(Material seat, Material metal)
         {
             var root = new GameObject("Accessory_OfficeChair");
-            if (!Model(root, "OfficeChair", castShadows: true))
+            if (!Model(root, "OfficeChair"))
             {
                 Part(root.transform, PrimitiveType.Cylinder, "Base", new Vector3(0f, 0.06f, 0f), new Vector3(1.1f, 0.05f, 1.1f), metal);
                 Part(root.transform, PrimitiveType.Cylinder, "Stem", new Vector3(0f, 0.25f, 0f), new Vector3(0.12f, 0.2f, 0.12f), metal);
@@ -141,7 +141,7 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildCarrierDrone(Material body, Material rotor)
         {
             var root = new GameObject("Attachment_CarrierDrone");
-            if (!Model(root, "CarrierDrone", castShadows: true))
+            if (!Model(root, "CarrierDrone"))
             {
                 Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 2.5f, 0f), new Vector3(1f, 0.3f, 1f), body);
                 Part(root.transform, PrimitiveType.Cube, "Handle", new Vector3(0f, 2.15f, 0f), new Vector3(0.7f, 0.06f, 0.06f), rotor);
@@ -160,7 +160,7 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildPackage(Material box, Material ribbon)
         {
             var root = new GameObject("Pickup_Package");
-            bool real = Model(root, "Package", castShadows: false);
+            bool real = Model(root, "Package");
             if (!real)
             {
                 Part(root.transform, PrimitiveType.Cube, "Box", new Vector3(0f, 1.05f, 0f), new Vector3(0.9f, 0.9f, 0.9f), box);
@@ -168,6 +168,7 @@ namespace OutOfOffice.EditorTools
                 Part(root.transform, PrimitiveType.Cube, "RibbonB", new Vector3(0f, 1.05f, 0f), new Vector3(0.2f, 0.94f, 0.94f), ribbon);
             }
 
+            BlobShadow(root, new Vector2(0.95f, 0.95f));
             SphereTrigger(root, new Vector3(0f, 1.05f, 0f), 0.85f);
             if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
@@ -190,7 +191,7 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildServerRack(Material body, Material led)
         {
             var root = new GameObject("Obstacle_ServerRack");
-            bool real = Model(root, "ServerRack", castShadows: true);
+            bool real = Model(root, "ServerRack");
             if (!real)
             {
                 Part(root.transform, PrimitiveType.Cube, "Rack", new Vector3(0f, 1.3f, 0f), new Vector3(1.8f, 2.6f, 1.2f), body);
@@ -198,8 +199,9 @@ namespace OutOfOffice.EditorTools
                     Part(root.transform, PrimitiveType.Cube, "Led" + i, new Vector3(0f, 0.6f + i * 0.5f, -0.61f), new Vector3(1.4f, 0.08f, 0.02f), led);
             }
 
+            BlobShadow(root, new Vector2(2.1f, 1.5f));
             BoxTrigger(root, new Vector3(0f, 1.3f, 0f), new Vector3(1.7f, 2.6f, 1.1f));
-            if (!real) CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 
@@ -207,7 +209,7 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildCookieWall(Material banner, Material post)
         {
             var root = new GameObject("Obstacle_CookieWall");
-            bool real = Model(root, "CookieWall", castShadows: true);
+            bool real = Model(root, "CookieWall");
             if (!real)
             {
                 Part(root.transform, PrimitiveType.Cube, "Banner", new Vector3(0f, 1.9f, 0f), new Vector3(2.3f, 1.6f, 0.3f), banner);
@@ -215,8 +217,9 @@ namespace OutOfOffice.EditorTools
                 Part(root.transform, PrimitiveType.Cube, "PostRight", new Vector3(1.1f, 0.55f, 0f), new Vector3(0.12f, 1.1f, 0.12f), post);
             }
 
+            BlobShadow(root, new Vector2(2.7f, 0.9f));
             BoxTrigger(root, new Vector3(0f, 1.9f, 0f), new Vector3(2.3f, 1.6f, 0.8f));
-            if (!real) CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 
@@ -224,15 +227,16 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildRobotVacuum(Material body, Material light)
         {
             var root = new GameObject("Obstacle_RobotVacuum");
-            bool real = Model(root, "RobotVacuum", castShadows: true);
+            bool real = Model(root, "RobotVacuum");
             if (!real)
             {
                 Part(root.transform, PrimitiveType.Cylinder, "Body", new Vector3(0f, 0.22f, 0f), new Vector3(1.7f, 0.22f, 1.7f), body);
                 Part(root.transform, PrimitiveType.Cylinder, "Sensor", new Vector3(0f, 0.5f, 0f), new Vector3(0.5f, 0.07f, 0.5f), light);
             }
 
+            BlobShadow(root, new Vector2(2.1f, 2.1f));
             BoxTrigger(root, new Vector3(0f, 0.35f, 0f), new Vector3(1.6f, 0.7f, 1.4f));
-            if (!real) CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 
@@ -240,7 +244,7 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildCargoDrone(Material body, Material rotor, Material cargo)
         {
             var root = new GameObject("Obstacle_CargoDrone");
-            bool real = Model(root, "CargoDrone", castShadows: true);
+            bool real = Model(root, "CargoDrone");
             if (!real)
             {
                 Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 1.95f, 0f), new Vector3(1f, 0.3f, 1f), body);
@@ -253,8 +257,9 @@ namespace OutOfOffice.EditorTools
                 }
             }
 
+            BlobShadow(root, new Vector2(1.7f, 1.7f));
             BoxTrigger(root, new Vector3(0f, 1.75f, 0f), new Vector3(1.5f, 1.1f, 1.3f));
-            if (!real) CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 
@@ -262,7 +267,7 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildAutoTaxi(Material body, Material glass)
         {
             var root = new GameObject("Obstacle_AutoTaxi");
-            bool real = Model(root, "AutoTaxi", castShadows: true);
+            bool real = Model(root, "AutoTaxi");
             if (!real)
             {
                 Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 0.6f, 0f), new Vector3(1.8f, 0.9f, 3.6f), body);
@@ -271,15 +276,16 @@ namespace OutOfOffice.EditorTools
             }
 
             // Gerçek model kısa ve yüksek bir robotaksidir (2,5 m); kutu görselden uzun olmasın.
+            BlobShadow(root, new Vector2(2.2f, real ? 3.2f : 4f));
             BoxTrigger(root, new Vector3(0f, 1f, 0f), new Vector3(1.7f, 2f, real ? 2.4f : 3.5f));
-            if (!real) CombineByMaterial(root, castShadows: true);
+            if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 
         static GameObject BuildCoin(Material material)
         {
             var root = new GameObject("Pickup_Coin");
-            bool real = Model(root, "Coin", castShadows: false);
+            bool real = Model(root, "Coin");
             if (!real)
                 Part(root.transform, PrimitiveType.Cylinder, "Disc", new Vector3(0f, 1f, 0f), new Vector3(0.7f, 0.05f, 0.7f), material, new Vector3(90f, 0f, 0f));
 
@@ -291,44 +297,34 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildPowerUp(string name, string prop, Material core, Material ring)
         {
             var root = new GameObject(name);
-            bool real = Model(root, prop, castShadows: false);
+            bool real = Model(root, prop);
             if (!real)
             {
                 Part(root.transform, PrimitiveType.Sphere, "Core", new Vector3(0f, 1.1f, 0f), new Vector3(0.8f, 0.8f, 0.8f), core);
                 Part(root.transform, PrimitiveType.Cylinder, "Ring", new Vector3(0f, 1.1f, 0f), new Vector3(1.15f, 0.03f, 1.15f), ring, new Vector3(90f, 0f, 0f));
             }
 
+            BlobShadow(root, new Vector2(0.9f, 0.9f));
             SphereTrigger(root, new Vector3(0f, 1.1f, 0f), 0.8f);
             if (!real) CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 
-        // 30 m'lik plaza parçası. Orijin parçanın başında, +Z yönünde uzanır.
-        // Zemin ve bariyer koddan kurulur (dilimli ve ek yeri kusursuz olmalı); dekor gerçek
-        // modellerdir. Hepsi materyal başına tek mesh'te birleşir.
-        static GameObject BuildGround(Material floor, Material stripe, Material line, Material wall, Material desk)
+        // 30 m'lik yol parçası. Orijin parçanın başında, +Z yönünde uzanır.
+        // Asfalt, bordür ve kaldırım koddan kurulur (dilimli ve ek yeri kusursuz olmalı;
+        // PlaceholderContentBuilder.Road.cs); dekor gerçek modellerdir. Hepsi materyal başına tek
+        // mesh'te birleşir.
+        static GameObject BuildGround(Material curb, Material line, Material desk)
         {
             const float length = 30f;
-            const float width = 8.5f;
 
             var root = new GameObject("Ground_Office");
-            SlicedPart(root.transform, "Floor", new Vector3(0f, -0.25f, length * 0.5f), new Vector3(width, 0.5f, length), floor);
-
-            // Hız hissi için enine şeritler ve şerit çizgileri.
-            for (int i = 0; i < 6; i++)
-                Part(root.transform, PrimitiveType.Cube, "Stripe" + i, new Vector3(0f, 0.005f, 2.5f + i * 5f), new Vector3(width, 0.01f, 0.3f), stripe);
-
-            SlicedPart(root.transform, "LaneLineLeft", new Vector3(-1.25f, 0.012f, length * 0.5f), new Vector3(0.08f, 0.01f, length), line);
-            SlicedPart(root.transform, "LaneLineRight", new Vector3(1.25f, 0.012f, length * 0.5f), new Vector3(0.08f, 0.01f, length), line);
+            BuildRoad(root.transform, length, curb, line);
 
             bool realDecor = PropModelBuilder.Exists("Column");
             for (int side = -1; side <= 1; side += 2)
             {
                 string suffix = side < 0 ? "Left" : "Right";
-                SlicedPart(root.transform, "Wall" + suffix, new Vector3(side * 4.6f, 0.6f, length * 0.5f), new Vector3(0.4f, 1.2f, length), wall);
-                // Bariyerin üstündeki turkuaz şerit yolun kenarını çizer.
-                SlicedPart(root.transform, "WallGlow" + suffix, new Vector3(side * 4.6f, 1.23f, length * 0.5f), new Vector3(0.14f, 0.06f, length), line);
-
                 if (realDecor)
                 {
                     BuildDecor(root.transform, side);
@@ -338,8 +334,8 @@ namespace OutOfOffice.EditorTools
                 for (int i = 0; i < 3; i++)
                 {
                     float z = 5f + i * 10f;
-                    Part(root.transform, PrimitiveType.Cube, $"Pillar{suffix}{i}", new Vector3(side * 5.4f, 2.5f, z), new Vector3(0.8f, 5f, 0.8f), wall);
-                    Part(root.transform, PrimitiveType.Cube, $"Desk{suffix}{i}", new Vector3(side * 6.8f, 0.4f, z + 5f), new Vector3(1.6f, 0.8f, 0.9f), desk);
+                    Part(root.transform, PrimitiveType.Cube, $"Pillar{suffix}{i}", new Vector3(side * 5.4f, SidewalkTop + 2.5f, z), new Vector3(0.8f, 5f, 0.8f), curb);
+                    Part(root.transform, PrimitiveType.Cube, $"Desk{suffix}{i}", new Vector3(side * 6.8f, SidewalkTop + 0.4f, z + 5f), new Vector3(1.6f, 0.8f, 0.9f), desk);
                 }
             }
 
@@ -355,17 +351,17 @@ namespace OutOfOffice.EditorTools
             float inward = side * 55f;
 
             for (int i = 0; i < 3; i++)
-                PropModelBuilder.TryAddModel(root, "Column", false, new Vector3(side * 5.7f, 0f, 5f + i * 10f), 0f, ColumnTint);
+                PropModelBuilder.TryAddModel(root, "Column", false, new Vector3(side * 5.7f, SidewalkTop, 5f + i * 10f), 0f, ColumnTint);
 
-            PropModelBuilder.TryAddModel(root, "Kiosk", false, new Vector3(side * 7.6f, 0f, 9f + shift), inward);
-            PropModelBuilder.TryAddModel(root, "Billboard", false, new Vector3(side * 7.2f, 0f, 19f + shift), side * 30f);
+            PropModelBuilder.TryAddModel(root, "Kiosk", false, new Vector3(side * 7.6f, SidewalkTop, 9f + shift), inward);
+            PropModelBuilder.TryAddModel(root, "Billboard", false, new Vector3(side * 7.2f, SidewalkTop, 19f + shift), side * 30f);
 
             // Binalar: aynı iki model, her kopya ayrı bir pastel renkte (TowerPalette).
             string near = side < 0 ? "TowerA" : "TowerB";
             string far = side < 0 ? "TowerB" : "TowerA";
             int first = side < 0 ? 0 : 2;
-            PropModelBuilder.TryAddModel(root, near, false, new Vector3(side * 13.5f, 0f, 7f + shift), side * 90f, TowerPalette[first]);
-            PropModelBuilder.TryAddModel(root, far, false, new Vector3(side * 16f, 0f, 22f - shift), side * 90f, TowerPalette[first + 1]);
+            PropModelBuilder.TryAddModel(root, near, false, new Vector3(side * 13.5f, SidewalkTop, 7f + shift), side * 90f, TowerPalette[first]);
+            PropModelBuilder.TryAddModel(root, far, false, new Vector3(side * 16f, SidewalkTop, 22f - shift), side * 90f, TowerPalette[first + 1]);
         }
 
         // Binaların renkleri: şeker pastelleri. Sıra, yan yana ve karşı karşıya gelenler birbirinden

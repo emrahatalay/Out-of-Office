@@ -14,7 +14,7 @@ namespace OutOfOffice.EditorTools
     /// dosya adları aynı kaldığı için USS'e dokunmak gerekmez (köşe yarıçapı değişirse USS'teki
     /// dilim değerleri de güncellenmelidir).
     /// </summary>
-    public static class UiKitBuilder
+    public static partial class UiKitBuilder
     {
         const string SpriteDir = "Assets/_Game/UI/Sprites";
 
@@ -84,6 +84,9 @@ namespace OutOfOffice.EditorTools
 
             // Portrenin arkasındaki yumuşak ışık.
             count += Write("spot", DrawSpot(256, 0.6f), 256);
+
+            // Menünün alt sekme ikonları (UiKitBuilder.TabIcons.cs).
+            count += BuildTabIcons();
 
             AssetDatabase.Refresh();
             PlaceholderContentBuilder.ConfigureUiSprites();

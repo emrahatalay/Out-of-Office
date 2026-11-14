@@ -20,8 +20,8 @@ MonoBehaviour:
   maxSpeed: 30
   acceleration: 0.16
   difficultyRampSeconds: 120
-  jumpHeight: 2
-  gravity: 46
+  jumpHeight: 3.2
+  gravity: 40
   fastFallSpeed: 34
   slideDuration: 0.65
   inputBufferSeconds: 0.15

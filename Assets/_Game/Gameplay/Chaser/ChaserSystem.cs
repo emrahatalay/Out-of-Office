@@ -23,6 +23,7 @@ namespace OutOfOffice.Gameplay
         readonly RunSession _session;
         readonly PlayerStatus _player;
         readonly IGameStateProvider _state;
+        readonly VfxLibrary _vfx;
         readonly SubscriptionBag _subscriptions = new SubscriptionBag();
 
         ChaserDefinition _definition;
@@ -36,14 +37,25 @@ namespace OutOfOffice.Gameplay
 
         public bool IsThreatening => _stunCount == 0 && _threatTimer > 0f;
 
-        public ChaserSystem(RunSession session, PlayerStatus player, IGameStateProvider state, ISignalBus bus)
+        public ChaserSystem(RunSession session, PlayerStatus player, IGameStateProvider state, VfxLibrary vfx, ISignalBus bus)
         {
             _session = session;
             _player = player;
             _state = state;
+            _vfx = vfx;
 
             bus.Subscribe<RunStartedSignal>(_ => OnRunStarted()).AddTo(_subscriptions);
             bus.Subscribe<RunClearedSignal>(_ => Hide()).AddTo(_subscriptions);
+        }
+
+        /// <summary>Damla gölge (gerçek gölgenin yerine). Kovalayan hep yerde koştuğu için gölge sabittir.</summary>
+        void AddShadow(Transform parent)
+        {
+            if (_vfx.blobShadowPrefab == null) return;
+
+            var shadow = Object.Instantiate(_vfx.blobShadowPrefab, parent, false).transform;
+            shadow.name = "Shadow";
+            shadow.localScale = new Vector3(_vfx.chaserShadowSize, 1f, _vfx.chaserShadowSize);
         }
 
         void OnRunStarted()
@@ -62,6 +74,7 @@ namespace OutOfOffice.Gameplay
                     _visual.name = "Chaser";
                     foreach (var collider in _visual.GetComponentsInChildren<Collider>()) collider.enabled = false;
                     _animator = _visual.GetComponentInChildren<Animator>();
+                    AddShadow(_visual.transform);
                 }
             }
 

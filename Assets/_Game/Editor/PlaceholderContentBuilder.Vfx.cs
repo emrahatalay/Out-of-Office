@@ -30,6 +30,7 @@ namespace OutOfOffice.EditorTools
             };
             library.speedLinesPrefab = SpeedLines();
             library.auraPrefab = Aura(cyan);
+            library.blobShadowPrefab = BlobShadowPrefab();
             EditorUtility.SetDirty(library);
             AssetDatabase.SaveAssets();
         }

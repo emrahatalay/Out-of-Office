@@ -45,13 +45,13 @@ Material:
     - _GlowColorA: {r: 0.8, g: 0.25, b: 0.85, a: 1}
     - _GlowColorB: {r: 0.2, g: 0.75, b: 1, a: 1}
     - _GroundColor: {r: 0.05, g: 0.05, b: 0.12, a: 1}
-    - _HorizonColor: {r: 0.7, g: 0.88, b: 1, a: 1}
+    - _HorizonColor: {r: 0.62, g: 0.84, b: 1, a: 1}
     - _MoonColor: {r: 0.7, g: 0.88, b: 1, a: 1}
     - _MoonDirection: {r: 0.1, g: 0.2, b: 1, a: 0}
     - _SkylineColor: {r: 0.035, g: 0.035, b: 0.09, a: 1}
     - _SunColor: {r: 1.6, g: 1.45, b: 1.1, a: 1}
     - _SunDirection: {r: 0.32139376, g: 0.76604444, b: -0.55667037, a: 0}
     - _WindowColor: {r: 1.2, g: 0.85, b: 0.45, a: 1}
-    - _ZenithColor: {r: 0.16, g: 0.5, b: 1, a: 1}
+    - _ZenithColor: {r: 0.08, g: 0.4, b: 0.98, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

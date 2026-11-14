@@ -163,6 +163,18 @@
     -unity-background-image-tint-color: var(--color-muted);
 }
 
+.icon-sound {
+    background-image: url("project://database/Assets/_Game/UI/Icons/sound.svg");
+}
+
+.icon-display {
+    background-image: url("project://database/Assets/_Game/UI/Icons/display.svg");
+}
+
+.icon-code {
+    background-image: url("project://database/Assets/_Game/UI/Icons/code.svg");
+}
+
 /* Sarı butonun üstündeki çizgi ikon koyu olur (beyaz ikon sarıda kaybolur). */
 .btn-accent > .icon,
 .buy-button > .icon {
@@ -922,10 +934,34 @@
     scale: 0.94 0.94;
 }
 
+/* Sekme ikonları renkli çizimdir (UI/Sprites/tab_*; UiKitBuilder çizer), boyanmaz.
+   Etkin olmayan sekmede hafif soluk durur, etkin sekmede tam renk ve biraz büyük. */
 .tab-icon {
-    width: 56px;
-    height: 56px;
-    -unity-background-image-tint-color: var(--color-muted);
+    flex-shrink: 0;
+    width: 84px;
+    height: 84px;
+    margin-top: -6px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.82;
+    transition-duration: 0.12s;
+}
+
+.tab-icon--home {
+    background-image: url("project://database/Assets/_Game/UI/Sprites/tab_home.png");
+}
+
+.tab-icon--collection {
+    background-image: url("project://database/Assets/_Game/UI/Sprites/tab_collection.png");
+}
+
+.tab-icon--store {
+    background-image: url("project://database/Assets/_Game/UI/Sprites/tab_store.png");
+}
+
+.tab-icon--settings {
+    background-image: url("project://database/Assets/_Game/UI/Sprites/tab_settings.png");
 }
 
 .tab-label {
@@ -949,7 +985,8 @@
 }
 
 .tab--active > .tab-icon {
-    -unity-background-image-tint-color: var(--color-on-accent);
+    opacity: 1;
+    scale: 1.12 1.12;
 }
 
 .tab--active > .tab-label {
@@ -1164,6 +1201,176 @@
     color: var(--color-tech);
     font-size: 40px;
     -unity-font-definition: var(--font-bold);
+}
+
+/* ---------------------------------------------------------------- Ayarlar
+   Her ayar bir yuva satırıdır: üstte ikon ve başlık, altta seçenek grubu. Seçili seçenek
+   sekme çubuğundaki gibi sarı buton görselidir. */
+
+.setting-row {
+    align-self: stretch;
+    margin: 0 -7px var(--space-xs) -7px;
+    padding: 18px 26px 32px 26px;
+    background-image: var(--sprite-slot);
+    -unity-slice-left: 72;
+    -unity-slice-top: 72;
+    -unity-slice-right: 72;
+    -unity-slice-bottom: 84;
+    -unity-slice-scale: 0.5px;
+}
+
+.setting-head {
+    flex-direction: row;
+    align-items: center;
+    margin: 0 0 12px 4px;
+}
+
+.setting-icon {
+    -unity-background-image-tint-color: var(--color-tech);
+}
+
+.setting-label {
+    margin: 0 0 0 12px;
+    padding: 0;
+    font-size: 36px;
+    -unity-font-definition: var(--font-bold);
+    text-shadow: 0 3px 0 var(--color-ink-shadow);
+}
+
+.segment-group {
+    flex-direction: row;
+    height: 100px;
+    padding: 6px;
+    background-color: var(--color-ink);
+    border-radius: 30px;
+}
+
+.segment {
+    flex-grow: 1;
+    flex-basis: 0;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0 0 6px 0;
+    background-color: var(--color-clear);
+    border-width: 0;
+    border-radius: 24px;
+    transition-duration: 0.12s;
+}
+
+.segment:hover,
+.segment:focus,
+.segment:active {
+    background-color: var(--color-clear);
+}
+
+.segment:active {
+    scale: 0.95 0.95;
+}
+
+.segment-label {
+    margin: 0;
+    padding: 0;
+    color: var(--color-muted);
+    font-size: 32px;
+    letter-spacing: 2px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.segment--active {
+    margin: -10px 0 -4px 0;
+    padding-bottom: 14px;
+    background-image: var(--sprite-accent);
+    -unity-slice-left: 96;
+    -unity-slice-top: 124;
+    -unity-slice-right: 96;
+    -unity-slice-bottom: 114;
+    -unity-slice-scale: 0.36px;
+}
+
+.segment--active > .segment-label {
+    color: var(--color-on-accent);
+}
+
+.setting-section {
+    margin: var(--space-sm) 0 var(--space-xs) 0;
+}
+
+/* Geliştirici kartı: profil bilgisi çeviri tablosunda, bağlantı GameConfig'te. Avatar yerine baş harfler. */
+.dev-card {
+    flex-direction: row;
+    align-items: center;
+    align-self: stretch;
+    margin: 0 -7px;
+    padding: 22px 26px 34px 26px;
+    background-image: var(--sprite-slot);
+    -unity-slice-left: 72;
+    -unity-slice-top: 72;
+    -unity-slice-right: 72;
+    -unity-slice-bottom: 84;
+    -unity-slice-scale: 0.5px;
+}
+
+.dev-avatar {
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 128px;
+    height: 128px;
+    background-color: var(--color-primary);
+    border-width: 5px;
+    border-color: var(--color-ink);
+    border-radius: 64px;
+}
+
+.dev-initials {
+    margin: 0;
+    padding: 0;
+    font-size: 50px;
+    -unity-font-definition: var(--font-bold);
+    text-shadow: 0 4px 0 var(--color-ink-shadow);
+}
+
+.dev-info {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin-left: 24px;
+}
+
+.dev-name {
+    margin: 0;
+    padding: 0;
+    font-size: 44px;
+    -unity-font-definition: var(--font-bold);
+    text-shadow: 0 3px 0 var(--color-ink-shadow);
+}
+
+.dev-role {
+    margin: 2px 0 0 0;
+    padding: 0;
+    color: var(--color-tech);
+    font-size: 32px;
+    -unity-font-definition: var(--font-semibold);
+}
+
+.dev-meta {
+    margin: 2px 0 0 0;
+    padding: 0;
+    color: var(--color-muted);
+    font-size: 30px;
+    -unity-font-definition: var(--font-medium);
+}
+
+.dev-button {
+    height: 132px;
+}
+
+.version-label {
+    margin: var(--space-xs) 0 0 0;
+    padding: 0;
+    color: var(--color-muted);
+    font-size: 26px;
+    -unity-font-definition: var(--font-medium);
 }
 
 /* ---------------------------------------------------------------- Otomasyon */

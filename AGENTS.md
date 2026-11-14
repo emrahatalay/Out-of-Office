@@ -54,7 +54,7 @@ Editor          içerik üretici ve araçlar
 6. **Sinyaller `readonly struct`'tır**, adları olaysa geçmiş zaman (`PlayerJumpedSignal`), istekse `...RequestedSignal`.
 7. **Abonelikler bırakılır.** `SubscriptionBag` kullan, `Dispose`'da boşalt.
 8. **Kod dili:** tanımlayıcılar İngilizce, yorumlar ve `[Tooltip]` metinleri Türkçe. C# 9 (dosya kapsamlı namespace yok). Namespace `OutOfOffice.*`.
-9. **Dünyadaki her yüzey `Out of Office/Curved Lit` shader'ını kullanır** (gökyüzü hariç; o `Out of Office/Sky`). Yoksa kıvrılan yolun üstünde düz kalır. Z boyunca uzun mesh'ler birkaç metrede bir bölünmüş olmalı.
+9. **Dünyadaki her yüzey `Out of Office/Curved Lit` shader'ını kullanır** (gökyüzü hariç; o `Out of Office/Sky`. Damla gölge `Out of Office/Blob Shadow` kullanır; o da aynı bükmeyi uygular). Yoksa kıvrılan yolun üstünde düz kalır. Z boyunca uzun mesh'ler birkaç metrede bir bölünmüş olmalı.
 10. **Her 3B model `docs/GORSEL_DIL.md`'ye uyar:** tombul ve renkli koşu oyunu çizgisi + neon cyberpunk, üç renk, ışıyan parça, dokuda yazı yok, tek materyal, bütçe içinde.
 11. **Geçici içerik koddan üretilir.** Prefab, materyal, tanım asset'i, çeviri tablosu ve sahne `PlaceholderContentBuilder` ile kurulur. Bunları değiştirmek için üreticiyi değiştir, sonra yeniden çalıştır (aşağıya bak).
 
@@ -66,7 +66,7 @@ Editor          içerik üretici ve araçlar
 - Oyun sistemleri için `MonoBehaviour` yazma. Sistemler düz C# sınıfıdır ve VContainer giriş noktasıdır. `MonoBehaviour` yalnızca sahnedeki nesneye yapışması gereken küçük görünümler içindir (`ObstacleView`, `PickupView`, `TriggerRelay`).
 - `Packages/manifest.json` dosyasını elle düzenleme. Paketleri Unity'nin paket yöneticisiyle ekle.
 - `.meta` dosyalarını silme ya da elle yazma; asset taşırken `.meta`'sıyla birlikte taşı.
-- `Assets/_Game/Art/Placeholder`, `Art/Atmosphere`, `Prefabs/Placeholder`, `Prefabs/Characters`, `Content`, `Localization/Tables`, `Scenes/Game.unity`, `UI/Sprites`, `UI/Portraits`, `UI/Items` ve `Art/Props` ile `Art/Characters` altındaki materyal, denetleyici ve `_Neutral` dokularında elle kalıcı değişiklik yapma: üretici ya da araçlar yeniden çalışınca üzerine yazar. (`GameConfig.asset` istisna; ayarları korunur.)
+- `Assets/_Game/Art/Placeholder`, `Art/Atmosphere`, `Art/Road`, `Prefabs/Placeholder`, `Prefabs/Characters`, `Content`, `Localization/Tables`, `Scenes/Game.unity`, `UI/Sprites`, `UI/Portraits`, `UI/Items` ve `Art/Props` ile `Art/Characters` altındaki materyal, denetleyici ve `_Neutral` dokularında elle kalıcı değişiklik yapma: üretici ya da araçlar yeniden çalışınca üzerine yazar. (`GameConfig.asset` istisna; ayarları korunur.)
 - Kaydı (PlayerPrefs, `ooo.` önekli) testlerde kalıcı bozma. Test öncesi değerleri sakla, sonra geri yükle.
 - Proje sahibinin e-posta adresini, API anahtarlarını ya da kişisel bilgilerini koda, belgeye ya da dış servislere yazma.
 - Subway Surfers'ın ya da başka bir oyunun karakterini, adını, görselini, arayüz çizimini kopyalama. Tür aynı, içerik özgün.

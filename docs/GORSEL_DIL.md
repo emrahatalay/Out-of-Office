@@ -47,9 +47,9 @@ Mobil hedef. Aşılacaksa gerekçesi `docs/DURUM.md`'ye yazılır.
 | Büyük engel (taksi, meslek robotu) | ≤ 3.000 | 512 | |
 | Engel (kabin, duvar, dron, süpürge) | ≤ 2.000 | 512 | |
 | Güçlendirme, paket, aksesuar | ≤ 1.200 | 256 | |
-| Altın | ≤ 300 | 128 | Ekranda onlarcası olur; mesh'i betik kurar (160 üçgen) |
+| Altın | ≤ 300 | 256 | Ekranda onlarcası olur; mesh'i ve dokusunu betik kurar (160 üçgen, doku koddan çizilir) |
 | Dekor (kolon, masa, pano) | ≤ 1.500 | 512 | |
-| Bina (kule) | ≤ 600 | 256 | Boyanabilir: her kopya ayrı pastel renk alır |
+| Bina (kule) | ≤ 600 | 1024 | Boyanabilir: her kopya ayrı pastel renk alır. Doku büyük çünkü 26 m'lik yüzeye yayılır; 256'da bulanıktı |
 
 - Model başına **tek materyal, tek doku**. Shader her zaman `Out of Office/Curved Lit`.
 - Doku ASTC 6x6 (Android, iOS), mipmap'li.
@@ -62,11 +62,11 @@ Modeller kadar bağlayıcıdır; hepsi `PlaceholderContentBuilder.Atmosphere.cs`
 
 - **Gündüz, açık ve iç açıcı.** Gökyüzü parlak maviden açık ufka iner; ufkun üstündeki kuşakta yavaşça kayan pamuk bulutlar vardır (`Out of Office/Sky` shader'ı, doku kullanmaz).
 - **Gökyüzüne yere basan şekil çizilmez** (bina silueti, dağ). Yol uzakta aşağı kıvrıldığı için böyle bir şekil havada asılı görünür. Ufkun altı ufuk renginde kalır.
-- **Sis ufuk rengiyle aynıdır** (62 m'de başlar, 135 m'de kapanır). Uzaktaki nesne gökyüzüne karışarak kaybolur; aniden belirmez.
+- **Sis ufuk rengiyle aynıdır** (72 m'de başlar, 140 m'de kapanır). Uzaktaki nesne gökyüzüne karışarak kaybolur; aniden belirmez.
 - **Binalar şeker renklidir.** Aynı iki kule modeli boyanarak dizilir: mercan pembesi, nane, bal sarısı, lavanta (`TowerPalette`). Yan yana ve karşı karşıya gelen binalar farklı renktedir. Kolonlar krem beyazıdır, neon çizgilerini korur. Yeni bina rengi pastel ve doygun olmalı; gri, kahverengi, koyu lacivert bina yok.
-- **Zemin açık serin bir taştır** (mavi-lila), bariyer krem; şerit çizgileri ve bariyerin üst kenarı turkuazdır. Zemin fazla parlak yapılmaz: ufka doğru beyaza keser.
-- **İki ışık.** Arkadan sıcak güneş (gölgeyi o atar, gölgeler ileriye düşer), karşıdan gök mavisi dolgu ışığı (gölgede kalan yüzler kararmaz). Ortam ışığı üstten mavi, yandan açık gri, alttan zeminden seken ton.
-- **Post-processing ölçülüdür:** bloom yalnızca ışıyan parçaları yayar (eşik yüksek), doygunluk ve kontrast hafif artar, kenar karartması çok hafiftir. Alan derinliği, hareket bulanıklığı, renk sapması, film greni yok (mobilde pahalı ve görüntüyü bulandırır).
+- **Zemin "akıllı yol"dur:** açık gri-mor asfalt (tane, leke, tekerlek izi), beyaz kesikli şerit ve kenar çizgileri, şerit ortasında turkuaz ışıyan oklar, kenarda ışıyan kılavuz noktaları. Kenarda krem bordür ve turkuaz ışık şeridi, iki yanda açık taş kaldırım (binalar kaldırımda durur). Otonom şehir bulvarı hissi; dokuda yazı yok.
+- **İki ışık, gerçek gölge yok.** Arkadan sıcak güneş, karşıdan gök mavisi dolgu ışığı (gölgede kalan yüzler kararmaz). Gölge haritası kapalıdır; her karakterin, robotun, engelin altında yumuşak, serin tonlu (siyah değil) bir **damla gölge** durur. Ortam ışığı üstten mavi, yandan açık gri, alttan zeminden seken ton.
+- **Post-processing ölçülüdür:** bloom yalnızca ışıyan parçaları yayar (eşik yüksek), kontrast ve doygunluk belirgin artar (soluk görünmesin), gölgeler hafif koyulur, kenar karartması çok hafiftir. Alan derinliği, hareket bulanıklığı, renk sapması, film greni yok (mobilde pahalı ve görüntüyü bulandırır).
 - **Yağmur yok.**
 - Okunurluk sırası değişmez: toplanacak ve kaçılacak nesneler > oyuncu > dekor > gökyüzü. Açık sahnede bunu parlaklık değil **renk doygunluğu ve koyu gövde** sağlar: engeller koyu gövdeli ve neonludur, dekor pastel ve soluktur.
 

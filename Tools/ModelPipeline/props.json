@@ -21,8 +21,8 @@
     "Column": {"source": "column", "task": "01a1d6af-acf5-7191-9685-8cf8816870bc", "fit": {"height": 5.0}, "texture": 512, "tris": 800, "glow": {"hues": [[160, 205], [280, 330]]}},
     "Kiosk": {"source": "kiosk", "task": "01a1d6af-b0b6-7176-9be7-b849ec7baada", "fit": {"width": 2.0}, "texture": 512, "tris": 1500, "glow": {"hues": [[160, 205], [290, 345]]}},
     "Billboard": {"source": "billboard", "task": "01a1d6b1-63e2-746b-b4fe-02bd2ce98e42", "fit": {"height": 5.5}, "texture": 512, "tris": 1000, "glow": {"hues": [[160, 205], [280, 345]], "v": [0.6, 0.9]}},
-    "TowerA": {"source": "tower_a", "task": "01a1d6b1-5b0f-757f-9e09-bcea4f632197", "fit": {"height": 26.0}, "texture": 256, "tris": 600, "glow": {"v": [0.55, 0.85], "s": [0.3, 0.6]}},
-    "TowerB": {"source": "tower_b", "task": "01a1d6b1-5f7a-7642-b059-8f42c73b00a8", "fit": {"height": 22.0}, "texture": 256, "tris": 700, "glow": {"v": [0.55, 0.85], "s": [0.3, 0.6]}}
+    "TowerA": {"source": "tower_a", "task": "01a1d6b1-5b0f-757f-9e09-bcea4f632197", "fit": {"height": 26.0}, "texture": 1024, "tris": 600, "glow": {"v": [0.55, 0.85], "s": [0.3, 0.6]}},
+    "TowerB": {"source": "tower_b", "task": "01a1d6b1-5f7a-7642-b059-8f42c73b00a8", "fit": {"height": 22.0}, "texture": 1024, "tris": 700, "glow": {"v": [0.55, 0.85], "s": [0.3, 0.6]}}
   },
   "coin": {"concept_task": "01a1d6aa-47b5-7108-b664-3d0483b58a84"},
   "characters": {
