@@ -100,7 +100,8 @@ Menü: **Out of Office > Android Test Profilini Oluştur**, sonra **Out of Offic
 
 - Unity 6 build profili kullanılır: `Assets/Settings/Build Profiles/Android Test.asset`. Profil yalnızca oyun sahnesini içerir; IL2CPP + ARM64 proje ayarlarından gelir.
 - Çıktı `Builds/Android/SonMesai.apk` (depoda izlenmez), hata ayıklama anahtarıyla imzalıdır: cihaza elle kurulur (`adb install -r "Builds/Android/SonMesai.apk"`), mağazaya yüklenemez.
-- Çıktı almak editörün platformunu Android'e çevirir (dokular yeniden içe aktarılır) ve dakikalar sürer; proje sahibi editörü kullanıyorsa önce haber ver.
+- Çıktı almak editörün platformunu Android'e çevirir (dokular yeniden içe aktarılır) ve dakikalar sürer; proje sahibi editörü kullanıyorsa önce haber ver. Editör başka platformdaysa araç önce platformu değiştirir ve çıktıyı ikinci çalıştırmada alır (yoksa çeviri içeriği yanlış platform için paketlenir, oyun cihazda başlamaz).
+- Çıktıyı cihazda doğrula: kur, başlat, `adb logcat -s Unity` ile hataya bak. "Çıktı alındı" tek başına "çalışıyor" demek değildir.
 
 ## Doğrulama
 

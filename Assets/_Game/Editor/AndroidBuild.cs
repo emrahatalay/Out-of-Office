@@ -66,6 +66,15 @@ namespace OutOfOffice.EditorTools
             if (profile == null) return "Önce profili oluştur: Out of Office > Android Test Profilini Oluştur.";
             if (EditorApplication.isPlayingOrWillChangePlaymode) return "Play modundayken çıktı alınmaz.";
 
+            // Editör başka platformdayken çıktı alınırsa çeviri içeriği (Addressables) o platform
+            // için paketlenir ve cihazda dil yüklenemez, oyun başlamaz. Önce profil etkinleştirilir;
+            // platform değiştiyse betikler yeniden derlenir, çıktı ikinci çalıştırmada alınır.
+            if (BuildProfile.GetActiveBuildProfile() != profile || EditorUserBuildSettings.activeBuildTarget != BuildTarget.Android)
+            {
+                BuildProfile.SetActiveBuildProfile(profile);
+                return "Editör Android platformuna geçirildi. Geçiş bitince çıktıyı yeniden başlat.";
+            }
+
             Directory.CreateDirectory(Path.GetDirectoryName(OutputPath));
             var report = BuildPipeline.BuildPlayer(new BuildPlayerWithProfileOptions
             {
