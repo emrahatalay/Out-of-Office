@@ -54,6 +54,7 @@ namespace OutOfOffice.EditorTools
             new[] { "ui.tab.collection", "KOLEKSİYON", "COLLECTION" },
             new[] { "ui.collection", "MESLEKLER", "PROFESSIONS" },
             new[] { "ui.collection.hint", "Oynamak istediğin mesleği seç.", "Pick the profession you want to play." },
+            new[] { "ui.selected", "SEÇİLİ", "SELECTED" },
             new[] { "ui.close", "KAPAT", "CLOSE" },
             // Kodda "key" olarak geçen devam hakkı, oyunda Giriş Kartı olarak görünür.
             new[] { "item.key", "Giriş Kartı", "Access Card" },

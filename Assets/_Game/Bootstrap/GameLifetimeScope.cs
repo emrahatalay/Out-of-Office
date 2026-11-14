@@ -21,6 +21,7 @@ namespace OutOfOffice.Bootstrap
         [SerializeField] GameConfig config;
         [SerializeField] ContentCatalog catalog;
         [SerializeField] VfxLibrary vfxLibrary;
+        [SerializeField] SfxLibrary sfxLibrary;
         [SerializeField] Camera gameCamera;
         [SerializeField] UIDocument uiDocument;
 
@@ -30,6 +31,7 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterInstance(config);
             builder.RegisterInstance(catalog);
             builder.RegisterInstance(vfxLibrary);
+            builder.RegisterInstance(sfxLibrary);
             builder.RegisterInstance(gameCamera);
             builder.RegisterInstance(uiDocument);
 
@@ -48,6 +50,7 @@ namespace OutOfOffice.Bootstrap
             builder.Register<EffectContext>(Lifetime.Singleton);
             builder.RegisterEntryPoint<PlayerProfile>().AsSelf();
             builder.Register<Workforce>(Lifetime.Singleton);
+            builder.Register<CatalogArt>(Lifetime.Singleton).As<IArtProvider>();
 
             // Oynanış sistemleri
             builder.RegisterEntryPoint<GameFlow>();
@@ -71,6 +74,7 @@ namespace OutOfOffice.Bootstrap
             // His ve efektler (sadece sinyal dinler; çıkarılsalar oyun aynen çalışır)
             builder.RegisterEntryPoint<TimeFeelSystem>();
             builder.RegisterEntryPoint<VfxSystem>();
+            RegisterAlwaysOn<SfxSystem>(builder);
             RegisterAlwaysOn<AbilitySystem>(builder);
             RegisterAlwaysOn<CollisionSystem>(builder);
 

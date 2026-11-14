@@ -14,8 +14,14 @@ namespace OutOfOffice.Gameplay
     /// </summary>
     public sealed class PlayerRig : IPlayerAttachments, IDisposable
     {
-        readonly Dictionary<GameObject, GameObject> _attachments = new Dictionary<GameObject, GameObject>();
-        readonly Dictionary<GameObject, PlayerPose> _attachmentPoses = new Dictionary<GameObject, PlayerPose>();
+        struct Attachment
+        {
+            public GameObject Instance;
+            public Vector3 Offset;
+            public PlayerPose Pose;
+        }
+
+        readonly Dictionary<GameObject, Attachment> _attachments = new Dictionary<GameObject, Attachment>();
         readonly GameConfig _config;
         readonly CapsuleCollider _collider;
         GameObject _visual;
@@ -80,7 +86,8 @@ namespace OutOfOffice.Gameplay
         /// </summary>
         public void Animate(float deltaTime, float sideSpeed, float verticalSpeed, bool grounded, float runSpeed)
         {
-            float lean = Mathf.Clamp(-sideSpeed * 1.4f, -_config.maxLeanDegrees, _config.maxLeanDegrees);
+            // Sandalyede ya da dronda yatmaz: takılı görsel köke bağlıdır, gövde tek başına yatarsa ondan ayrılır.
+            float lean = CurrentPose != PlayerPose.None ? 0f : Mathf.Clamp(-sideSpeed * 1.4f, -_config.maxLeanDegrees, _config.maxLeanDegrees);
 
             if (_animator != null)
             {
@@ -177,6 +184,9 @@ namespace OutOfOffice.Gameplay
                 _animator.SetInteger(PoseParam, (int)CurrentPose);
                 _animator.SetBool(CaughtParam, _caught);
             }
+
+            // Karakter değişti: takılı sandalye ya da dron yeni boya göre yeniden ölçülür.
+            foreach (var attachment in _attachments.Values) Fit(attachment);
             foreach (var collider in _visual.GetComponentsInChildren<Collider>()) collider.enabled = false;
         }
 
@@ -185,25 +195,36 @@ namespace OutOfOffice.Gameplay
             if (prefab == null || _attachments.ContainsKey(prefab)) return;
 
             var instance = Object.Instantiate(prefab, Root, false);
-            instance.transform.localPosition = localOffset;
             foreach (var collider in instance.GetComponentsInChildren<Collider>()) collider.enabled = false;
-            _attachments.Add(prefab, instance);
-            _attachmentPoses.Add(prefab, pose);
+
+            var attachment = new Attachment { Instance = instance, Offset = localOffset, Pose = pose };
+            _attachments.Add(prefab, attachment);
+            Fit(attachment);
             CountPose(pose, 1);
         }
 
         public void Detach(GameObject prefab)
         {
-            if (prefab == null || !_attachments.TryGetValue(prefab, out var instance)) return;
+            if (prefab == null || !_attachments.TryGetValue(prefab, out var attachment)) return;
 
             _attachments.Remove(prefab);
-            if (_attachmentPoses.TryGetValue(prefab, out var pose))
-            {
-                _attachmentPoses.Remove(prefab);
-                CountPose(pose, -1);
-            }
+            CountPose(attachment.Pose, -1);
+            if (attachment.Instance != null) Object.Destroy(attachment.Instance);
+        }
 
-            if (instance != null) Object.Destroy(instance);
+        /// <summary>
+        /// Duruş veren görsel (sandalye, dron) karakterin boyuna göre ölçülür: oturma ve asılma
+        /// klipleri karakterle birlikte ölçeklendiği için oturağın ve tutamağın da ölçeklenmesi gerekir.
+        /// </summary>
+        void Fit(Attachment attachment)
+        {
+            if (attachment.Instance == null) return;
+
+            float scale = attachment.Pose != PlayerPose.None && _animator != null
+                ? _animator.humanScale / _config.poseReferenceHumanScale
+                : 1f;
+            attachment.Instance.transform.localPosition = attachment.Offset * scale;
+            attachment.Instance.transform.localScale = Vector3.one * scale;
         }
 
         void CountPose(PlayerPose pose, int delta)

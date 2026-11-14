@@ -28,6 +28,11 @@ MonoBehaviour:
   standingHeight: 1.8
   slidingHeight: 0.8
   bodyRadius: 0.4
+  runAnimationReferenceSpeed: 13
+  runAnimationMinRate: 1
+  runAnimationMaxRate: 1.6
+  animationDampTime: 0.08
+  poseReferenceHumanScale: 0.984
   spawnAhead: 70
   trackAhead: 130
   despawnBehind: 14
@@ -48,11 +53,22 @@ MonoBehaviour:
   cameraSideFollow: 0.6
   cameraSmoothTime: 0.08
   cameraJumpFollow: 0.3
+  cameraFlightFollow: 0.8
   baseFieldOfView: 60
   maxFieldOfView: 74
-  menuCameraOffset: {x: 3.4, y: 1.7, z: 2.8}
-  menuLookAt: {x: 0, y: 1.15, z: 0.2}
+  menuCameraOffset: {x: 4.25, y: 1.9, z: 3.5}
+  menuLookAt: {x: 0, y: 0.45, z: 0.2}
   cameraBlendSeconds: 0.7
+  curveEnabled: 1
+  curveDistance: 80
+  curveSideMeters: 9
+  curveDownMeters: 3
+  curveFlatDistance: 7
+  curveSegmentMeters: {x: 110, y: 240}
+  curveFirstStraightMeters: 45
+  curveBlendSeconds: 1.4
+  curveStraightChance: 0.3
+  curveMinStrength: 0.55
   shakeSeconds: 0.35
   stumbleShake: 0.35
   shieldShake: 0.25
@@ -65,4 +81,7 @@ MonoBehaviour:
   prewarmPerObstacle: 4
   prewarmCoins: 40
   prewarmPerVfx: 3
+  reviveBaseKeys: 1
+  reviveOfferSeconds: 6
+  reviveClearDistance: 45
   coinScore: 10

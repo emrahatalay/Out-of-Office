@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.StoreItemDefinition
   id: key_1
   nameKey: item.key
+  icon: {fileID: 2800000, guid: 2ce79582bb8ed4baeb9142f52fb9c089, type: 3}
   kind: 2
   amount: 1
   price: 300

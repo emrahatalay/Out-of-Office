@@ -93,6 +93,9 @@ namespace OutOfOffice.EditorTools
         // - Kayma: alçalma ve yerde kayma (6-21). Son karede bekler, kalkışı Koşu'ya geçiş yapar.
         // - Tökezleme: sırttan darbe yiyip sendeleme ve toparlanma (3-40); ileri gidişi oynanış verir.
         // - Yakalanma: geriye düşüş (3-68); yerde kalır.
+        // - Oturma: yalnızca dik oturulan bölüm (0-38); kaydın devamında karakter öne kapanır. Kayıtta
+        //   karakter merkezden 18 cm yana ve 27 cm geriye kaymış oturur; yatay konum pozda tutulmaz,
+        //   gövde ağırlık merkeziyle şeridin ortasına gelir.
         // - Oturma ve asılma: döngü; sandalyenin oturağı ve dronun tutamağı bu pozlara göre ölçülüdür.
         static readonly ClipSpec[] Clips =
         {
@@ -102,7 +105,7 @@ namespace OutOfOffice.EditorTools
             new ClipSpec("Slide", "Actions", "slide_light", false, 6, 21, true, false),
             new ClipSpec("Stumble", "Actions2", "Hit_in_Back", false, 3, 40, true, false),
             new ClipSpec("Caught", "Actions2", "falling_down", false, 3, 68, true, true),
-            new ClipSpec("Seated", "Actions2", "Chair_Sit", true, 0, 0, true, true),
+            new ClipSpec("Seated", "Actions2", "Chair_Sit", true, 0, 38, true, false),
             new ClipSpec("Hanging", "Actions2", "Bar_Hang", true, 0, 0, true, true),
         };
 

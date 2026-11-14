@@ -46,6 +46,7 @@ namespace OutOfOffice.EditorTools
             ConfigureUiSprites();
             BuildData(BuildPrefabs());
             BuildVfx();
+            BuildSfx();
             string localization = BuildLocalization();
             BuildScene();
             ApplyMobileSettings();
@@ -81,7 +82,7 @@ namespace OutOfOffice.EditorTools
         }
 
         /// <summary>Arayüz görselleri: sıkıştırmasız, mipmap'siz, 9 dilim için boyutu korunmuş.</summary>
-        static void ConfigureUiSprites()
+        internal static void ConfigureUiSprites()
         {
             foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new[] { UiSpriteDir }))
             {
@@ -206,20 +207,39 @@ namespace OutOfOffice.EditorTools
                 list.Add(new CombineInstance { mesh = filter.sharedMesh, transform = toRoot * filter.transform.localToWorldMatrix });
             }
 
-            foreach (var filter in filters) Object.DestroyImmediate(filter.gameObject);
+            // Boyalı modeller asset olmayan geçici mesh kopyaları kullanır; birleştirme bitince atılırlar.
+            var temporary = new List<Mesh>();
+            foreach (var filter in filters)
+            {
+                if (!EditorUtility.IsPersistent(filter.sharedMesh)) temporary.Add(filter.sharedMesh);
+                Object.DestroyImmediate(filter.gameObject);
+            }
 
             EnsureFolder(MeshDir);
             foreach (var group in groups)
             {
                 string path = $"{MeshDir}/{root.name}_{group.Key.name}.asset";
-                if (AssetDatabase.LoadAssetAtPath<Mesh>(path) != null) AssetDatabase.DeleteAsset(path);
 
                 var mesh = new Mesh { name = $"{root.name}_{group.Key.name}" };
                 mesh.CombineMeshes(group.Value.ToArray(), true, true);
                 mesh.RecalculateBounds();
                 MeshUtility.Optimize(mesh);
                 mesh.UploadMeshData(true);
-                AssetDatabase.CreateAsset(mesh, path);
+
+                // Var olan asset'in içeriği yenilenir; GUID değişmez. Silip yeniden oluşturmak
+                // ara sıra prefab'daki mesh bağını koparıyordu (yeni GUID ile eski .meta çakışıyor).
+                var existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+                if (existing != null)
+                {
+                    EditorUtility.CopySerialized(mesh, existing);
+                    Object.DestroyImmediate(mesh);
+                    mesh = existing;
+                    EditorUtility.SetDirty(mesh);
+                }
+                else
+                {
+                    AssetDatabase.CreateAsset(mesh, path);
+                }
 
                 var part = new GameObject(group.Key.name);
                 part.transform.SetParent(root.transform, false);
@@ -228,6 +248,8 @@ namespace OutOfOffice.EditorTools
                 renderer.sharedMaterial = group.Key;
                 renderer.shadowCastingMode = castShadows ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
             }
+
+            foreach (var mesh in temporary) Object.DestroyImmediate(mesh);
         }
 
         static GameObject SavePrefab(GameObject root)

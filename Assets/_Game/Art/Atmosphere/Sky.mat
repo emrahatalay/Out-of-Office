@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: NightSky
+  m_Name: Sky
   m_Shader: {fileID: 4800000, guid: afc0f2c70d5384347b26ccc928549ce1, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -25,22 +25,33 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _Exponent: 0.42
+    - _CloudCount: 14
+    - _CloudCoverage: 0.47
+    - _CloudHeightScale: 8
+    - _CloudScale: 1.4
+    - _CloudSoftness: 0.07
+    - _CloudSpeed: 0.01
+    - _Exponent: 0.55
     - _GlowFalloff: 11
     - _GlowStrength: 0.3
     - _MoonSize: 3.6
     - _SkylineHeight: 0.085
     - _StarBrightness: 1.6
     - _StarDensity: 0.06
+    - _SunSize: 3
     m_Colors:
+    - _CloudColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CloudShadeColor: {r: 0.86, g: 0.92, b: 1, a: 1}
     - _GlowColorA: {r: 0.8, g: 0.25, b: 0.85, a: 1}
     - _GlowColorB: {r: 0.2, g: 0.75, b: 1, a: 1}
     - _GroundColor: {r: 0.05, g: 0.05, b: 0.12, a: 1}
-    - _HorizonColor: {r: 0.13, g: 0.08, b: 0.27, a: 1}
+    - _HorizonColor: {r: 0.7, g: 0.88, b: 1, a: 1}
     - _MoonColor: {r: 0.7, g: 0.88, b: 1, a: 1}
     - _MoonDirection: {r: 0.1, g: 0.2, b: 1, a: 0}
     - _SkylineColor: {r: 0.035, g: 0.035, b: 0.09, a: 1}
+    - _SunColor: {r: 1.6, g: 1.45, b: 1.1, a: 1}
+    - _SunDirection: {r: 0.32139376, g: 0.76604444, b: -0.55667037, a: 0}
     - _WindowColor: {r: 1.2, g: 0.85, b: 0.45, a: 1}
-    - _ZenithColor: {r: 0.015, g: 0.02, b: 0.07, a: 1}
+    - _ZenithColor: {r: 0.16, g: 0.5, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

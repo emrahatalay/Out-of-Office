@@ -42,6 +42,8 @@ namespace OutOfOffice.Data
         [Min(0.1f)] public float runAnimationMaxRate = 1.6f;
         [Tooltip("Animator parametrelerinin yumuşatma süresi (sn).")]
         [Min(0f)] public float animationDampTime = 0.08f;
+        [Tooltip("Sandalye ve taşıyıcı dronun ölçülü olduğu karakterin insan ölçeği (Animator.humanScale; Yazılımcı). Başka boydaki karakterde bu görseller aynı oranda küçülür ya da büyür: oturak kalçaya, tutamak ellere denk gelir.")]
+        [Min(0.1f)] public float poseReferenceHumanScale = 0.984f;
 
         [Header("Üretim")]
         [Tooltip("Engeller oyuncunun bu kadar önünde doğar.")]
@@ -82,8 +84,8 @@ namespace OutOfOffice.Data
         public float maxFieldOfView = 74f;
 
         [Header("Kamera: menü")]
-        public Vector3 menuCameraOffset = new Vector3(3.4f, 1.7f, 2.8f);
-        public Vector3 menuLookAt = new Vector3(0f, 1.15f, 0.2f);
+        public Vector3 menuCameraOffset = new Vector3(4.25f, 1.9f, 3.5f);
+        public Vector3 menuLookAt = new Vector3(0f, 0.45f, 0.2f);
         [Tooltip("Menü ile koşu kamerası arasındaki geçiş süresi (sn).")]
         public float cameraBlendSeconds = 0.7f;
 

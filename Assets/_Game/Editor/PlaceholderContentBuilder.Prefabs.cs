@@ -32,12 +32,12 @@ namespace OutOfOffice.EditorTools
             var cyan = Mat("ShieldCyan", new Color(0.25f, 0.85f, 0.95f), 0.6f, 1.5f);
             var espresso = Mat("EspressoBrown", new Color(0.55f, 0.33f, 0.18f), 0.5f, 1.2f);
             var internGrey = Mat("InternGrey", new Color(0.62f, 0.66f, 0.72f));
-            // Zemin koyu ve soğuktur; üstündeki her şey ondan parlaktır (docs/GORSEL_DIL.md).
-            // Parlak zemin gökyüzünün ufuk ışığını yansıtır (ıslak asfalt hissi).
-            var floor = Mat("Floor", new Color(0.15f, 0.17f, 0.25f), 0.78f);
-            var floorStripe = Mat("FloorStripe", new Color(0.11f, 0.13f, 0.2f), 0.6f);
-            var wall = Mat("Wall", new Color(0.13f, 0.15f, 0.24f), 0.3f);
-            var laneGlow = Mat("LaneGlow", new Color(0.3f, 0.88f, 1f), 0.6f, 1.3f);
+            // Zemin açık ve serin bir taştır: koyu gövdeli engeller ve renkli karakterler üstünde
+            // net okunur (docs/GORSEL_DIL.md). Fazla parlak olursa ufka doğru beyaza keser.
+            var floor = Mat("Floor", new Color(0.47f, 0.53f, 0.72f), 0.3f);
+            var floorStripe = Mat("FloorStripe", new Color(0.55f, 0.61f, 0.8f), 0.3f);
+            var wall = Mat("Wall", new Color(0.96f, 0.94f, 0.9f), 0.2f);
+            var laneGlow = Mat("LaneGlow", new Color(0.1f, 0.78f, 0.82f), 0.5f, 0.7f);
 
             return new PlaceholderPrefabs
             {
@@ -326,7 +326,7 @@ namespace OutOfOffice.EditorTools
             {
                 string suffix = side < 0 ? "Left" : "Right";
                 SlicedPart(root.transform, "Wall" + suffix, new Vector3(side * 4.6f, 0.6f, length * 0.5f), new Vector3(0.4f, 1.2f, length), wall);
-                // Bariyerin üstünde ışıyan şerit: yolun kenarı karanlıkta da okunur.
+                // Bariyerin üstündeki turkuaz şerit yolun kenarını çizer.
                 SlicedPart(root.transform, "WallGlow" + suffix, new Vector3(side * 4.6f, 1.23f, length * 0.5f), new Vector3(0.14f, 0.06f, length), line);
 
                 if (realDecor)
@@ -355,16 +355,30 @@ namespace OutOfOffice.EditorTools
             float inward = side * 55f;
 
             for (int i = 0; i < 3; i++)
-                PropModelBuilder.TryAddModel(root, "Column", false, new Vector3(side * 5.7f, 0f, 5f + i * 10f));
+                PropModelBuilder.TryAddModel(root, "Column", false, new Vector3(side * 5.7f, 0f, 5f + i * 10f), 0f, ColumnTint);
 
             PropModelBuilder.TryAddModel(root, "Kiosk", false, new Vector3(side * 7.6f, 0f, 9f + shift), inward);
             PropModelBuilder.TryAddModel(root, "Billboard", false, new Vector3(side * 7.2f, 0f, 19f + shift), side * 30f);
 
-            // Uzak dekor: siluet ve pencere ışıkları. Sisin içinde durur.
+            // Binalar: aynı iki model, her kopya ayrı bir pastel renkte (TowerPalette).
             string near = side < 0 ? "TowerA" : "TowerB";
             string far = side < 0 ? "TowerB" : "TowerA";
-            PropModelBuilder.TryAddModel(root, near, false, new Vector3(side * 13.5f, 0f, 7f + shift), side * 90f);
-            PropModelBuilder.TryAddModel(root, far, false, new Vector3(side * 16f, 0f, 22f - shift), side * 90f);
+            int first = side < 0 ? 0 : 2;
+            PropModelBuilder.TryAddModel(root, near, false, new Vector3(side * 13.5f, 0f, 7f + shift), side * 90f, TowerPalette[first]);
+            PropModelBuilder.TryAddModel(root, far, false, new Vector3(side * 16f, 0f, 22f - shift), side * 90f, TowerPalette[first + 1]);
         }
+
+        // Binaların renkleri: şeker pastelleri. Sıra, yan yana ve karşı karşıya gelenler birbirinden
+        // ayrışacak şekildedir (sol yakın, sol uzak, sağ yakın, sağ uzak).
+        static readonly Color[] TowerPalette =
+        {
+            new Color(1f, 0.46f, 0.56f),  // mercan pembesi
+            new Color(0.3f, 0.86f, 0.66f), // nane
+            new Color(1f, 0.76f, 0.28f),  // bal sarısı
+            new Color(0.56f, 0.52f, 1f),  // lavanta
+        };
+
+        // Kolonların gövdesi: krem beyazı. Neon çizgileri dokudan gelir.
+        static readonly Color ColumnTint = new Color(1f, 0.97f, 0.92f);
     }
 }

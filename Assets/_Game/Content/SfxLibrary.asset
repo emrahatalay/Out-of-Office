@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc7075b24cbf41bca6289fa5ff894a1, type: 3}
+  m_Name: SfxLibrary
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.SfxLibrary
+  clips:
+  - trigger: 0
+    clip: {fileID: 8300000, guid: b6b370df9bf1b408b9e0c82d62c0f4a1, type: 3}
+    volume: 0.5
+    pitchVariation: 0.05
+  - trigger: 1
+    clip: {fileID: 8300000, guid: 25e7e2663249c45e6a1f511552c857f0, type: 3}
+    volume: 0.45
+    pitchVariation: 0.05
+  - trigger: 2
+    clip: {fileID: 8300000, guid: 77acd75e0b9b94cddbabe4c281483d11, type: 3}
+    volume: 0.3
+    pitchVariation: 0.08
+  - trigger: 3
+    clip: {fileID: 8300000, guid: b8b034373814c40c0ad73ea241da9a59, type: 3}
+    volume: 0.5
+    pitchVariation: 0
+  - trigger: 4
+    clip: {fileID: 8300000, guid: 0391dfa507cf04e928594e2a5c4d7cdf, type: 3}
+    volume: 0.6
+    pitchVariation: 0
+  - trigger: 5
+    clip: {fileID: 8300000, guid: f92305440be764d6f9d3bdc5ee126a68, type: 3}
+    volume: 0.8
+    pitchVariation: 0.04
+  - trigger: 6
+    clip: {fileID: 8300000, guid: 91a423a0c83a848ee94e4f31c000ae04, type: 3}
+    volume: 0.6
+    pitchVariation: 0.03
+  - trigger: 7
+    clip: {fileID: 8300000, guid: 556320c4499074b289a74547e9cfc52a, type: 3}
+    volume: 0.7
+    pitchVariation: 0
+  - trigger: 8
+    clip: {fileID: 8300000, guid: 69196ad605041428aa2b45cfac163d0e, type: 3}
+    volume: 0.5
+    pitchVariation: 0
+  masterVolume: 0.8
+  voices: 6
+  coinStreakWindow: 0.6
+  coinStreakPitchStep: 0.04
+  coinStreakMaxPitch: 1.5

@@ -24,7 +24,9 @@ namespace OutOfOffice.EditorTools
             var collectPackage = LoadOrCreate<CollectPackageEffect>($"{DataDir}/Effects/Effect_CollectPackage.asset");
             var jumpBoost = LoadOrCreate<JumpBoostEffect>($"{DataDir}/Effects/Effect_JumpBoost.asset");
             var attachDrone = Attach("Effect_AttachDrone", prefabs.CarrierDrone, Vector3.zero, OutOfOffice.Core.Run.PlayerPose.Hanging);
-            var attachChair = Attach("Effect_AttachChair", prefabs.OfficeChair, Vector3.zero, OutOfOffice.Core.Run.PlayerPose.Seated);
+            // Oturan karakterin ağırlık merkezi kökün üstündedir, kalçası onun gerisinde kalır;
+            // sandalye, sırt çantası sırtlığa dayanacak kadar geriye alınır (Play'de ölçüldü).
+            var attachChair = Attach("Effect_AttachChair", prefabs.OfficeChair, new Vector3(0f, 0f, -0.22f), OutOfOffice.Core.Run.PlayerPose.Seated);
 
             // ---- Yetenekler
             var debug = Ability("Ability_Debug", "debug", "ability.debug", 18f, 0f, destroy);
@@ -138,10 +140,10 @@ namespace OutOfOffice.EditorTools
             // ---- Mağaza ürünleri
             catalog.storeItems = new[]
             {
-                StoreItem("Store_Chair1", "chair_1", "acc.chair", OutOfOffice.Core.Run.RewardKind.Accessory, 1, 150),
-                StoreItem("Store_Chair3", "chair_3", "acc.chair", OutOfOffice.Core.Run.RewardKind.Accessory, 3, 400),
-                StoreItem("Store_Key1", "key_1", "item.key", OutOfOffice.Core.Run.RewardKind.Key, 1, 300),
-                StoreItem("Store_Key3", "key_3", "item.key", OutOfOffice.Core.Run.RewardKind.Key, 3, 800),
+                StoreItem("Store_Chair1", "chair_1", "acc.chair", "OfficeChair", OutOfOffice.Core.Run.RewardKind.Accessory, 1, 150),
+                StoreItem("Store_Chair3", "chair_3", "acc.chair", "OfficeChair", OutOfOffice.Core.Run.RewardKind.Accessory, 3, 400),
+                StoreItem("Store_Key1", "key_1", "item.key", "AccessCard", OutOfOffice.Core.Run.RewardKind.Key, 1, 300),
+                StoreItem("Store_Key3", "key_3", "item.key", "AccessCard", OutOfOffice.Core.Run.RewardKind.Key, 3, 800),
             };
             EditorUtility.SetDirty(catalog);
 
@@ -167,6 +169,8 @@ namespace OutOfOffice.EditorTools
             character.id = id;
             character.nameKey = nameKey;
             character.prefab = prefab;
+            // Portre, prefab'ıyla aynı adı taşır ("Character_Developer" -> "Developer"); yoksa boş kalır.
+            character.portrait = PortraitBuilder.Load(file.Replace("Character_", string.Empty));
             character.ability = ability;
             character.canBeAutomated = canBeAutomated;
             character.buybackCost = buybackCost;
@@ -194,11 +198,13 @@ namespace OutOfOffice.EditorTools
             EditorUtility.SetDirty(character);
         }
 
-        static StoreItemDefinition StoreItem(string file, string id, string nameKey, OutOfOffice.Core.Run.RewardKind kind, int amount, int price)
+        /// <param name="icon">UI/Items altındaki görselin adı (ItemIconBuilder); üretilmemişse boş kalır.</param>
+        static StoreItemDefinition StoreItem(string file, string id, string nameKey, string icon, OutOfOffice.Core.Run.RewardKind kind, int amount, int price)
         {
             var item = LoadOrCreate<StoreItemDefinition>($"{DataDir}/Store/{file}.asset");
             item.id = id;
             item.nameKey = nameKey;
+            item.icon = ItemIconBuilder.Load(icon);
             item.kind = kind;
             item.amount = amount;
             item.price = price;

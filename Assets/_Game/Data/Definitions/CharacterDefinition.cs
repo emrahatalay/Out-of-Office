@@ -11,6 +11,8 @@ namespace OutOfOffice.Data
         public string nameKey;
         [Tooltip("Koleksiyon kartındaki rengi.")]
         public Color themeColor = new Color(0.3f, 0.55f, 1f);
+        [Tooltip("Menüde ve koleksiyon kartında görünen çizim (saydam zeminli). PortraitBuilder modelden üretir.")]
+        public Texture2D portrait;
         [Tooltip("Yalnızca görsel. Çarpışma ve hareket kodu prefab'a bağlı değildir.")]
         public GameObject prefab;
         [Tooltip("Boş bırakılabilir (ör. Stajyer).")]

@@ -9,36 +9,42 @@ Assets/_Game/
 ├─ Core/              saf C# sözleşmeleri, Unity sahnesinden bağımsız
 │  ├─ Signals/        ISignalBus, SignalBus, SubscriptionBag, GameSignals.cs (tüm sinyaller)
 │  ├─ State/          GameState, StateMachine<T>, IGameStateProvider
-│  ├─ Services/       ISaveService, ILocalizationService, IPoolService
+│  ├─ Services/       ISaveService, ILocalizationService, IPoolService, IArtProvider
 │  └─ Run/            IPlayerStatus, IChaser, IObstacleField, EffectContext, RewardKind...
 ├─ Data/
 │  ├─ Definitions/    GameConfig, CharacterDefinition, ObstacleDefinition, PowerUpDefinition,
 │  │                  AbilityDefinition, AccessoryDefinition, ChaserDefinition, WorldDefinition,
-│  │                  ContentCatalog, LootTable, StoreItemDefinition, VfxLibrary, EffectDefinition
+│  │                  ContentCatalog, LootTable, StoreItemDefinition, VfxLibrary, SfxLibrary,
+│  │                  EffectDefinition
 │  ├─ Effects/        EffectDefinition türevleri (Shield, Flight, Magnet, GhostObstacles...)
 │  └─ Movement/       MovementPattern türevleri (SideSweep, Approach)
 ├─ Gameplay/
 │  ├─ Flow/           GameFlow, RunSystem, RunSession, PlayerProfile, CharacterSelection,
-│  │                  Workforce, AccessorySystem, RewardSystem, StoreSystem
+│  │                  Workforce, AccessorySystem, RewardSystem, StoreSystem, CatalogArt
 │  ├─ Player/         PlayerSystem, PlayerStatus, PlayerRig, CollisionSystem, CameraFollowSystem
 │  ├─ Chaser/         ChaserSystem
 │  ├─ World/          TrackSystem, SpawnDirector, AdaptiveDirector, ObstacleField, PickupField,
 │  │                  WorldCurveSystem, PoolWarmupSystem, ObstacleView, PickupView
-│  └─ Effects/        EffectRunner, AbilitySystem, TimeFeelSystem, VfxSystem
+│  └─ Effects/        EffectRunner, AbilitySystem, TimeFeelSystem, VfxSystem, SfxSystem
 ├─ Infrastructure/    PlayerPrefsSaveService, PoolService, InputReader,
 │                     UnityLocalizationService, FrameRateService
 ├─ UI/                sunucular (*Presenter), ScreenRouter, UiText, RadialProgress, SafeArea
 │  ├─ Screens/        GameUI.uxml, GameUI.uss
 │  ├─ Theme/          GameTheme.tss, GamePanelSettings.asset
-│  └─ Fonts/ Icons/ Sprites/
+│  ├─ Fonts/ Icons/   yazı ailesi, tek renkli çizgi ikonlar (SVG)
+│  ├─ Sprites/        temanın 9 dilimli panel ve buton görselleri (UiKitBuilder üretir)
+│  ├─ Portraits/      karakter çizimleri (PortraitBuilder gerçek modelden çeker)
+│  └─ Items/          mağaza görselleri (ItemIconBuilder)
 ├─ Bootstrap/         GameLifetimeScope.cs (composition root)
-├─ Shaders/           CurvedLit.shader + CurvedWorld.hlsl (kıvrımlı dünya), NightSky.shader (gökyüzü)
-├─ Editor/            PlaceholderContentBuilder (parçalı sınıf), CharacterModelBuilder, PropModelBuilder, PerfProbe
+├─ Shaders/           CurvedLit.shader + CurvedWorld.hlsl (kıvrımlı dünya), Sky.shader (gündüz gökyüzü)
+├─ Editor/            PlaceholderContentBuilder (parçalı sınıf), CharacterModelBuilder, PropModelBuilder,
+│                     PortraitBuilder, ItemIconBuilder, UiKitBuilder, ModelSnapshot, PerfProbe
 ├─ Content/           üretilen tanım asset'leri (GameConfig, ContentCatalog, Characters/...)
 ├─ Art/Placeholder/   üretilen materyal ve mesh'ler
 ├─ Art/Characters/    gerçek karakter modelleri: <Ad>/<Ad>.fbx + doku + materyal, Animations/ (klipler, denetleyiciler)
 ├─ Art/Props/         gerçek engel, eşya ve dekor modelleri: <Ad>.fbx + <Ad>_BaseColor.png + <Ad>.mat
 ├─ Art/Atmosphere/    üretilen gökyüzü materyali, yansıma küp haritası, post-processing profili
+├─ Audio/Sfx/         sentezlenmiş ses efektleri (Tools/Audio/make_sfx.py üretir)
 ├─ Prefabs/Placeholder/  üretilen prefab'lar
 ├─ Prefabs/Characters/   CharacterModelBuilder'ın ürettiği gerçek karakter prefab'ları
 ├─ Localization/      çeviri ayarları ve "Game" tablosu
@@ -59,6 +65,8 @@ Assets/_Game/
 | `OutOfOffice.Editor` | Core, Data, UI, Bootstrap, URP |
 
 UI'ın Data ve Gameplay'e, Gameplay'in UI ve Infrastructure'a referansı **yoktur ve eklenmez**. UI'ın göstereceği her şey sinyalin içinde taşınır (ör. `CharacterCardSignal` adı, rengi, kilit durumunu taşır).
+
+**Görseller istisnadır:** sinyaller nesne taşımaz, bu yüzden arayüz bir çizimi sinyaldeki kimlikle Core'daki `IArtProvider`'dan sorar (`GetCharacterPortrait(id)`, `GetStoreIcon(id)`). Uygulaması `CatalogArt`'tır (Gameplay); görselin kendisi tanım asset'inde durur (`CharacterDefinition.portrait`, `StoreItemDefinition.icon`).
 
 ## Sinyal veri yolu
 
@@ -138,6 +146,7 @@ builder.Register<Impl>(Lifetime.Singleton).As<IService>();   // servis
 - `Shaders/CurvedLit.shader` ("Out of Office/Curved Lit"): URP PBR aydınlatması + bükme; ileri, gölge, derinlik ve derinlik-normal geçişlerinin hepsi aynı bükmeyi uygular.
 - `WorldCurveSystem`: kıvrımı koşu boyunca değiştirir, global shader değerlerini yazar, bükülen nesneler erken elenmesin diye kameranın eleme alanını genişletir.
 - `CurvedLit` ayrıca dokunun alfasındaki maskeyle neon bölgeleri ışıtır (`_GlowStrength`; "Eşya ve çevre modelleri").
+- `CurvedLit` mesh'in **köşe rengini boya olarak** çarpar (ışıma boyanmaz). Köşe rengi olmayan mesh'te Unity beyaz verir, yani hiçbir şey değişmez. Binaların farklı renkleri böyle verilir ("Eşya ve çevre modelleri", "Boyanabilir modeller").
 - Yeni bir shader (ör. saydam yüzey, parçacık) dünyada kullanılacaksa `CurvedWorld.hlsl`'i dahil edip aynı işlevi çağırmalıdır. Parçacıklar şu an bükülmüyor.
 
 ## Karakter modelleri ve animasyon
@@ -181,7 +190,7 @@ Klipler Humanoid'dir; **tek klip seti bütün karakterlerde oynar** (İK-9000 da
 | `Caught` | bool | Yakalandı; geriye düşer ve yerde kalır |
 | `Stumble` | tetik | Engele çarpıp sendeledi |
 
-Duruşu takılan görsel belirler: `AttachVisualEffect.pose` alanı `IPlayerAttachments.Attach` ile `PlayerRig`'e ulaşır. Yeni bir binek ya da taşıyıcı için kod gerekmez; etki asset'inde `pose` seçilir. Tökezleme ve yakalanmayı `PlayerSystem` sinyallerden (`PlayerStumbledSignal`, `GameStateChangedSignal`) alıp `PlayerRig.Stumble()` ve `SetCaught()` ile iletir.
+Duruşu takılan görsel belirler: `AttachVisualEffect.pose` alanı `IPlayerAttachments.Attach` ile `PlayerRig`'e ulaşır. Duruş veren görsel karakterin boyuna göre ölçeklenir (`Animator.humanScale / GameConfig.poseReferenceHumanScale`): oturma ve asılma klipleri karakterle birlikte küçüldüğü için oturak kalçaya, tutamak ellere denk gelir. Konum `localOffset`'ten gelir. Oturma kaydında karakter merkezden yana ve geriye kaymış oturduğu için klibin yatay konumu pozda tutulmaz (gövde ağırlık merkeziyle kökün üstüne gelir); kalça yine kökün gerisinde kaldığından sandalye 22 cm geriye takılır. Duruş varken gövde şerit değiştirirken yatmaz (takılı görselden ayrılmasın diye). Yeni bir binek ya da taşıyıcı için kod gerekmez; etki asset'inde `pose` seçilir. Tökezleme ve yakalanmayı `PlayerSystem` sinyallerden (`PlayerStumbledSignal`, `GameStateChangedSignal`) alıp `PlayerRig.Stumble()` ve `SetCaught()` ile iletir.
 
 Kovalayanın tek parametresi `Caught`'tır; `ChaserSystem` yazar (oyuncuyu yakalayıp `ChaserDefinition.catchGap` kadar gerisine gelince koşmayı bırakır).
 
@@ -212,7 +221,35 @@ Kaynak GLB'ler depoda tutulmaz; `props.json`'daki görev kimliğiyle Meshy'den y
 
 **Unity tarafı.** `PropModelBuilder` (menü: Out of Office > Eşya ve Çevre Modellerini Kur) içe aktarma ayarlarını ve materyalleri kurar. Prefab kurmaz: içerik üretici her prefab'da `Model(root, "<Ad>", ...)` ile gerçek modeli ister, yoksa geçici küpleri kurar; çarpışma kutusu iki durumda da aynıdır. Zemin parçasında dekor modelleri materyal başına tek mesh'te birleşir (parça başına 9 draw call, ~13.000 üçgen).
 
+**Boyanabilir modeller (binalar).** `PropSpec`'te `tintable: true` olan modelin dokusundan açık, renksiz bir kopya üretilir (`<Ad>_Neutral.png`; kaynak doku değişmez, ışıma maskesi korunur) ve materyal onu kullanır. Rengi yerleştirirken verilen boya belirler: `PropModelBuilder.TryAddModel(..., tint: renk)` mesh'in bir kopyasının köşe rengine boyayı yazar. Kopya asset değildir; `CombineByMaterial` ile birleştirilen bir mesh'e katılmalıdır (zemin parçasındaki binalar gibi). Böylece aynı iki kule modeli tek materyalle, ek draw call olmadan istenen sayıda renkte durur. Renkler `PlaceholderContentBuilder.Prefabs.cs` içindeki `TowerPalette` dizisindedir.
+
 **Yön kuralı.** Hat, modelin önünü gelen oyuncuya (Unity'de -Z) çevirir; oyuncuyla aynı yöne bakması gerekenler (`"face": "forward"`: sandalye, taşıyıcı dron) +Z'ye bakar. Blender'da -Y, FBX'ten sonra Unity'de +Z olur.
+
+## Arayüz görselleri
+
+Arayüzdeki her görsel koddan üretilir; elle çizilmiş dosya yoktur. Görünüm kuralı: `docs/TASARIM.md`.
+
+| Araç | Ürettiği | Nasıl |
+|---|---|---|
+| `UiKitBuilder` | `UI/Sprites`: `panel`, `slot`, `btn_primary`, `btn_accent`, `btn_secondary`, `frame_selected`, `spot`; `UI/Items/AccessCard` | İşaretli uzaklık (SDF) ile çizer: dış çizgi, taban, geçiş, parlama. Renk ve ölçüler `Plate` tablosundadır |
+| `PortraitBuilder` | `UI/Portraits/<Ad>.png` (512) | `Prefabs/Characters/Character_<Ad>` prefab'ını bekleme pozunda, kendi ışığıyla, saydam zemine çeker; başı kadraja ortalar |
+| `ItemIconBuilder` | `UI/Items/<Ad>.png` (256) | `Icons` tablosundaki eşya modelini (`Art/Props`) çeker; modeli olmayanı `UiKitBuilder` çizer |
+| `ModelSnapshot` | (ortak yardımcı) | `PreviewRenderUtility` ile çizim, 2x çizip küçültme, saydam PNG, içe aktarma ayarı (mobilde ASTC 4x4) |
+
+- Portre ve eşya görselleri gerçek modelden çekildiği için model ya da doku değişince aracı yeniden çalıştırmak yeter.
+- Görseli tanım asset'ine içerik üretici bağlar: portre prefab adıyla eşleşir (`Character_Developer` -> `Developer.png`), mağaza görseli `StoreItem(...)` satırındaki adla.
+- Portre açısı bekleme klibinin yönüne bağlıdır (`PortraitBuilder.Yaw`): klipte karakter -X'e dönük durur.
+- Kıvrımlı dünya değerleri (`_OooCurve`) çekimden önce sıfırlanır; yoksa son Play'den kalan kıvrım modeli büker.
+- Play modundayken USS ya da UXML kaydedilirse Unity arayüzü yeniden kurar ve sunucuların bağları kopar (arayüz kaybolur). Bu yalnızca editörde olur; Play'i yeniden başlat.
+
+## Ses
+
+- `SfxLibrary` (Data, `Content/SfxLibrary.asset`): olay → klip eşlemesi (`SfxEvent`, ses düzeyi, rastgele perde payı), ortak ses düzeyi, aynı anda çalabilen ses sayısı, altın serisi ayarları.
+- `SfxSystem` (Gameplay/Effects): yalnızca sinyal dinler, `VfxSystem`'in ses karşılığıdır. Açılışta `[Sfx]` nesnesine sabit sayıda `AudioSource` kurar ve sesleri sırayla onlardan çalar; koşu sırasında nesne üretilmez. Sesler 2B'dir.
+- Arayüz Gameplay'i tanımadığı için düğme sesi ayrı sinyalle değil, düğmelerin zaten attığı **istek sinyalleriyle** (`StartRunRequestedSignal`, `StorePurchaseRequestedSignal`...) çalar. İstek atmayan arayüz hareketleri (menü sekmeleri) sessizdir.
+- Art arda toplanan altının sesi her seferinde biraz incelir (`coinStreak*` alanları).
+- Klipler kayıt değildir: `Tools/Audio/make_sfx.py` (yalnızca Python standart kütüphanesi) sentezler ve `Assets/_Game/Audio/Sfx` altına yazar. Üretici (`PlaceholderContentBuilder.Audio.cs`) içe aktarma ayarlarını (tek kanal, ADPCM, bellekte açık) ve `SfxLibrary`'yi kurar.
+- Müzik ve ses ayarı (kısma, kapatma) henüz yok.
 
 ## Performans kuralları
 
@@ -227,8 +264,8 @@ Kaynak GLB'ler depoda tutulmaz; `props.json`'daki görev kimliğiyle Meshy'den y
 Geçici içerik döneminde tanım asset'lerini `PlaceholderContentBuilder.Data.cs` üretir; aşağıdaki "asset" adımları şimdilik oraya bir satır eklemek demektir. Sonra **Out of Office > Placeholder İçeriği Yeniden Oluştur**.
 
 **Yeni meslek (karakter)**
-1. Prefab (yalnızca görsel; çarpışma koddan gelir). Gerçek model için: Humanoid'e uygun, T pozunda iskeletli FBX'i ve dokusunu `Art/Characters/<Ad>/` altına koy, `CharacterModelBuilder.Characters` tablosuna ad ve boy ekle, aracı çalıştır. Üreticide o karakterin satırını `CharacterModelBuilder.PrefabOr(...)` ile sar.
-2. `CharacterDefinition`: `id`, `nameKey`, `themeColor`, `prefab`, `ability` (boş olabilir), otomasyon alanları, `automatedObstacle`.
+1. Prefab (yalnızca görsel; çarpışma koddan gelir). Gerçek model için: Humanoid'e uygun, T pozunda iskeletli FBX'i ve dokusunu `Art/Characters/<Ad>/` altına koy, `CharacterModelBuilder.Characters` tablosuna ad ve boy ekle, aracı çalıştır. Üreticide o karakterin satırını `CharacterModelBuilder.PrefabOr(...)` ile sar. Sonra **Karakter Portrelerini Üret**: portre kendiliğinden çıkar.
+2. `CharacterDefinition`: `id`, `nameKey`, `themeColor` (portrenin zemin rengi), `portrait`, `prefab`, `ability` (boş olabilir), otomasyon alanları, `automatedObstacle`.
 3. `ContentCatalog.characters` listesine ekle.
 4. Çeviri satırı (`char.<id>`). Kod yok.
 
@@ -243,6 +280,8 @@ Geçici içerik döneminde tanım asset'lerini `PlaceholderContentBuilder.Data.c
 3. `WorldDefinition.powerUps` listesine ekle, çeviri satırı (`powerup.<id>`). Kod yok.
 
 **Yeni karakter animasyonu:** klibi (aynı iskeletle) `Art/Characters/Animations/` altına koy, `CharacterModelBuilder.Clips` tablosuna satır ekle, `BuildController`'da durum ve geçişini tanımla. Yeni parametre gerekiyorsa onu yalnızca `PlayerRig` yazsın; değerini hesaplamak için gereken bilgi `Animate` çağrısına eklenir.
+
+**Yeni ses efekti:** `Tools/Audio/make_sfx.py` içindeki `build` sözlüğüne klibi ekle (ya da hazır bir WAV'ı `Audio/Sfx` altına koy), betiği çalıştır. Yeni bir olaysa `SfxEvent`'e değer, `SfxSystem` kurucusuna tek abonelik satırı ekle. Üreticide `BuildSfx`'e `AddSfx(...)` satırı yaz, içeriği yeniden üret.
 
 **Yeni yetenek ya da aksesuar:** `AbilityDefinition` (bekleme, süre, etkiler) ya da `AccessoryDefinition` (fiyat, süre, etkiler). Yine var olan etkilerin birleşimi.
 
@@ -265,16 +304,17 @@ Etki yalnızca `EffectContext` üzerinden çalışır (oyuncu, kovalayan, engel 
 
 **Yeni sistem:** Gameplay'de düz sınıf, kurucuda abonelik, gerekiyorsa `ITickable`. `GameLifetimeScope`'a tek satır. Ayar sayıları `GameConfig`'e.
 
-**Yeni ekran ya da arayüz parçası:** UXML'e eleman (ad camelCase, metin `#anahtar`), USS'e sınıf (`docs/TASARIM.md`), UI'da bir `*Presenter` (`IStartable`'da bağla, sinyal dinle, istek sinyali at), `GameLifetimeScope`'a kayıt. Yeni veri gerekiyorsa önce Core'a sinyal ekle.
+**Yeni ekran ya da arayüz parçası:** UXML'e eleman (ad camelCase, metin `#anahtar`), USS'e sınıf (`docs/TASARIM.md`; önce var olan bileşenlere bak), UI'da bir `*Presenter` (`IStartable`'da bağla, sinyal dinle, istek sinyali at), `GameLifetimeScope`'a kayıt. Yeni veri gerekiyorsa önce Core'a sinyal ekle; yeni bir görsel türü gerekiyorsa `IArtProvider`'a üye ekle.
 
-**Yeni mağaza ürünü:** `StoreItemDefinition` (`kind`, `amount`, `price`) ve `ContentCatalog.storeItems`. Yeni ödül türü gerekiyorsa `RewardKind`'a değer ve `RewardSystem.Grant`'a dal ekle.
+**Yeni mağaza ürünü:** `StoreItemDefinition` (`kind`, `amount`, `price`, `icon`) ve `ContentCatalog.storeItems`. Görsel için `ItemIconBuilder.Icons` tablosuna eşyanın modelini ekle (modeli yoksa `UiKitBuilder`'a çizimini yaz) ve **Eşya Görsellerini Üret**'i çalıştır; `icon` boşsa satırda türün çizgi ikonu görünür. Yeni ödül türü gerekiyorsa `RewardKind`'a değer ve `RewardSystem.Grant`'a dal ekle.
 
 **Yeni dünya:** zemin prefab'ı (Z boyunca bölünmüş), `WorldDefinition`, `ContentCatalog.worlds`. Dünyalar arası geçiş henüz yazılmadı.
 
 ## Editör araçları
 
-- `PlaceholderContentBuilder` (parçalı): `.cs` (ortak yardımcılar, `Mat`, `Part`, `SlicedPart`, `CombineByMaterial`), `.Prefabs`, `.Data`, `.Vfx`, `.Localization`, `.Scene`, `.Atmosphere` (gökyüzü, ışık, sis, yansıma, post-processing, yağmur; görünüm kuralı `docs/GORSEL_DIL.md`).
+- `PlaceholderContentBuilder` (parçalı): `.cs` (ortak yardımcılar, `Mat`, `Part`, `SlicedPart`, `CombineByMaterial`), `.Prefabs`, `.Data`, `.Vfx`, `.Audio` (ses klipleri ve `SfxLibrary`), `.Localization`, `.Scene`, `.Atmosphere` (gökyüzü, güneş, sis, yansıma, post-processing; görünüm kuralı `docs/GORSEL_DIL.md`).
 - `CharacterModelBuilder`: gerçek karakter modellerini kurar (yukarıda "Karakter modelleri ve animasyon"). Çalıştırdıktan sonra tanım asset'leri yeni prefab'ı görsün diye içerik üreticiyi de çalıştır.
-- `PropModelBuilder`: eşya ve çevre modellerinin içe aktarma ayarlarını ve materyallerini kurar (yukarıda "Eşya ve çevre modelleri").
+- `PropModelBuilder`: eşya ve çevre modellerinin içe aktarma ayarlarını, materyallerini ve boyanabilir modellerin renksiz dokusunu kurar (yukarıda "Eşya ve çevre modelleri").
 - **Out of Office > Oyun Ayarlarını Varsayılana Döndür:** `GameConfig`'i koddaki değerlere çeker (elle yapılan dengeleme silinir).
+- `PortraitBuilder`, `ItemIconBuilder`, `UiKitBuilder`: arayüz görselleri (yukarıda "Arayüz görselleri").
 - `PerfProbe`: Play modunda kare başına bellek ayırma, çizim çağrısı ve kare süresini örnekler (`PerfProbe.Start()`, sonra `PerfProbe.Report()`). Önce/sonra karşılaştırması içindir; editör değerleri cihazdakinden farklıdır. Editörün kendisi menüde bile kare başına ~45 KB ayırır; oyunun payını görmek için aynı ölçümü menüde de alıp farka bak, ortancayı (`med`) oku.

@@ -1,6 +1,6 @@
 # Tasarım dili
 
-Hedef his: karanlık, teknolojik bir kurumsal dünya; üstünde canlı, oyuncu dostu vurgular. Modern mobil koşu oyunlarının netliğinde, ama görsel kimliği kendine ait.
+Hedef his: aydınlık, neşeli bir gündüz şehri; içinde koyu gövdeli, neon ışıklı kurumsal robotlar. Arayüz, oyundaki nesnelerle aynı dili konuşan tombul bir oyun arayüzü takımıdır (UI kit): kalın koyu dış çizgi, yuvarlak köşe, altta kalın taban, üstte parlama. Modern mobil koşu oyunlarının netliğinde, ama görsel kimliği kendine ait.
 
 ## Renkler
 
@@ -9,18 +9,25 @@ Arayüz renkleri `Assets/_Game/UI/Screens/GameUI.uss` başındaki değişkenlerd
 | Değişken | Değer | Kullanım |
 |---|---|---|
 | `--color-primary` | `#ff4d5f` | Ana eylem (OYNA), tehlike, İK-9000 |
-| `--color-accent` | `#ffc83d` | Altın, ödül, seçili sekme, rekor |
+| `--color-accent` | `#ffc83d` | Altın, ödül, satın alma, seçili sekme ve kart |
 | `--color-tech` | `#4ee3ff` | Yetenek, güçlendirme, giriş kartı, adet sayıları |
-| `--color-text` | `#f3f6ff` | Ana metin |
-| `--color-muted` | `#93a0c2` | İkincil metin, pasif ikon |
-| `--color-surface` | `rgba(12,17,36,0.74)` | Çip ve panel zemini |
-| `--color-surface-strong` | `rgba(18,25,52,0.92)` | Diyalog ve kart zemini |
-| `--color-border` | `rgba(160,180,255,0.22)` | İnce kenarlık |
-| `--color-overlay` | `rgba(5,8,18,0.78)` | Duraklatma ve oyun sonu karartması |
+| `--color-text` | `#ffffff` | Ana metin |
+| `--color-muted` | `#b9c2f2` | İkincil metin, pasif ikon |
+| `--color-ink` | `#12163d` | Dış çizgi, sekme çubuğu, rozet zemini (görsellerdeki dış çizgiyle aynı) |
+| `--color-ink-soft` | `rgba(18,22,61,0.88)` | Çip zemini |
+| `--color-ink-shadow` | `rgba(18,22,61,0.5)` | Yazı gölgesi |
+| `--color-well` | `rgba(14,18,58,0.5)` | Panel içindeki oyuk (istatistik, yetenek etiketi) |
+| `--color-line` | `rgba(255,255,255,0.2)` | Çiplerin ince kenarlığı |
+| `--color-on-accent` | `#3a2600` | Sarı zeminin üstündeki yazı ve ikon |
+| `--color-showcase` | `#8794f2` | Mağaza görselinin vitrin zemini |
+| `--color-locked` | `#9aa2cf` | Otomatikleşen mesleğin portresini soluklaştıran boya |
+| `--color-overlay` | `rgba(14,18,58,0.74)` | Duraklatma ve oyun sonu karartması |
 
-Anlam sabittir: kırmızı = tehlike / ana eylem, sarı = para ve ödül, camgöbeği = teknoloji ve yetenek. Aynı rengi başka anlamda kullanma.
+Panel ve butonların kendi renkleri (çivit mavisi panel, kırmızı / sarı / mavi buton) görsellerin içindedir; `UiKitBuilder`'daki tabloda durur.
 
-Sahne: gece gökyüzü (koyu lacivertten mor ufka), sis mor (`#2B1A4F` dolayı), 40 m'de başlar, 125 m'de kapanır. Ayrıntı `docs/GORSEL_DIL.md`, "Sahnenin havası".
+Anlam sabittir: kırmızı = tehlike / ana eylem, sarı = para ve ödül, camgöbeği = teknoloji ve yetenek. Mavi (ikincil buton, şerit başlık) nötrdür. Aynı rengi başka anlamda kullanma.
+
+Sahne: gündüz gökyüzü (parlak maviden açık ufka), sis ufuk renginde (`#B3E0FF` dolayı), 62 m'de başlar, 135 m'de kapanır. Ayrıntı `docs/GORSEL_DIL.md`, "Sahnenin havası".
 
 ## Yazı
 
@@ -33,8 +40,13 @@ Sahne: gece gökyüzü (koyu lacivertten mor ufka), sis mor (`#2B1A4F` dolayı),
 
 - Boşluk ölçeği: `--space-xs` 8, `--space-sm` 16, `--space-md` 28, `--space-lg` 48. Aradaki değerleri uydurma.
 - Köşeler belirgin yuvarlak; çipler hap biçimli. Keskin köşeli kutu yok.
-- Derinlik gölgeyle değil görselle verilir: butonlar ve kartlar 9 dilimli PNG'dir (`UI/Sprites`: `btn_primary`, `btn_secondary`, `btn_accent`, `card`, `glow`, `fade_top`, `fade_bottom`). Butonların altında kalın bir "taban" vardır; basılınca %96'ya küçülür.
-- İkonlar tek renkli, çizgi tarzı SVG'dir (`UI/Icons`, 24x24 viewBox, ~2,2 kalınlık, beyaz). Rengi USS'te `-unity-background-image-tint-color` ile verilir. Yeni ikon aynı tarzda çizilir; emoji ya da renkli görsel kullanılmaz.
+- **Biçimli parçalar 9 dilimli görseldir** (`UI/Sprites`; `UiKitBuilder` koddan üretir, elle düzenlenmez): `panel`, `slot`, `btn_primary`, `btn_accent`, `btn_secondary`, `frame_selected`, `spot`. Hepsinde aynı reçete: koyu dış çizgi, düşey renk geçişi, altta kalın "taban", butonlarda üstte parlama. Görseller 2x çizilir (`-unity-slice-scale: 0.5px`); aynı görselin küçük hali için ölçek düşürülür (satın alma butonu, etkin sekme).
+- **Düz parçalar USS rengiyle çizilir:** çipler (`--color-ink-soft` + ince kenarlık), oyuklar (`--color-well`), rozetler.
+- Basılan her şey küçülür (%92-96).
+- **Sahnenin üstünde çıplak duran yazı** (logo, skor) `.over-scene` alır: koyu dış çizgi ve gölge. Gündüz gökyüzünde beyaz yazı başka türlü okunmaz. Panelin içindeki yazıya dış çizgi verilmez.
+- Eylem ikonları (oynat, duraklat, ev, kupa, kilit...) tek renkli, çizgi tarzı SVG'dir (`UI/Icons`, 24x24 viewBox, ~2,2 kalınlık, beyaz). Rengi USS'te `-unity-background-image-tint-color` ile verilir. Yeni ikon aynı tarzda çizilir; emoji kullanılmaz. Sarı butonun üstünde çizgi ikon koyu olur.
+- **İçerik görselleri gerçektir:** meslek portresi karakterin kendi 3B modelinden (`UI/Portraits`), eşya görseli eşyanın oyundaki modelinden çekilir (`UI/Items`). Oyunda modeli olmayan eşya (giriş kartı) aynı tema diliyle çizilir. Yerine çizgi ikon ya da temsili şekil konmaz.
+- **Eşya her yerde aynı görselle gösterilir:** altın, giriş kartı ve sandalye için `.icon-coin`, `.icon-key`, `.icon-chair` sınıfları mağazadaki görselin küçüğünü kullanır (sayaç çipleri, satın alma butonları, oyun sonu ödülleri, HUD). Bu ikonlar boyanmaz.
 
 ## Bileşenler
 
@@ -42,13 +54,17 @@ Var olan sınıfları kullan, benzerini yeniden yazma.
 
 | Bileşen | Sınıflar |
 |---|---|
-| Buton | `.btn` + `.btn-primary` / `.btn-secondary` / `.btn-accent`, büyük için `.btn-large`; yazı `.btn-label` |
-| Çip (üst bardaki sayaçlar) | `.chip`, `.chip-value`, `.chip-button` |
-| Kart ve diyalog | `.card`, `.card--dialog`, `.dialog-title`, `.dialog-hint` |
-| Üst başlık yazısı | `.eyebrow`, tehlike için `.eyebrow--danger` |
+| Buton | `.btn` + `.btn-primary` / `.btn-secondary` / `.btn-accent`, büyük için `.btn-large`; yazı `.btn-label` (sarıda `.btn-label-dark`) |
+| Küçük satın alma butonu | `.buy-button`, `.buy-label` |
+| Kare ikon butonu | `.icon-button` (duraklat, önceki / sonraki) |
+| Çip (sayaçlar) | `.chip`, `.chip-value`, `.chip-label`, `.chip-button` |
+| Panel ve diyalog | `.card`, `.card--dialog`, `.page--panel`; başlığı `.ribbon` + `.ribbon-label` (tehlike için `.ribbon--danger`) |
+| Portre | `.portrait-tile` (zemini mesleğin tema rengi), içinde `.portrait-spot` ve `.portrait-image`; kilitli için `.portrait-image--locked` |
+| İsim plakası (ana sayfa) | `.nameplate`, `.nameplate-portrait`, `.selector-info`, `.selector-name` |
+| Üst başlık yazısı | `.eyebrow`, tehlike için `.eyebrow--danger`, sahne üstünde `.eyebrow--over-scene` |
 | Sekme çubuğu | `.tab-bar`, `.tab`, `.tab--active` |
-| Koleksiyon kartı | `.char-card`, `.char-card--selected`, `.char-avatar--locked` |
-| Mağaza satırı | `.store-row`, `.store-name`, `.store-amount` |
+| Koleksiyon kartı | `.char-card`, `.char-card--selected` (çerçeve ve "SEÇİLİ" etiketi), `.char-lock`, `.char-price` |
+| Mağaza satırı | `.store-row`, `.store-icon` + `.store-icon-image`, `.store-name`, `.store-amount` |
 | İkon | `.icon` + `.icon-<ad>`; boyut `.icon-small` / `.icon-large` |
 | Yetenek halkası | `RadialProgress` özel elemanı (`.ability-ring`) |
 
@@ -58,11 +74,15 @@ Adlandırma: sınıflar kebab-case, durum ekleri `--` ile (`.tab--active`, `.scr
 
 Tek UXML (`GameUI.uxml`), dört ekran: `menuScreen`, `hudScreen`, `pauseScreen`, `gameOverScreen`. Hangisinin görüneceğine `ScreenRouter` oyun durumuna göre karar verir; geçiş 0,22 sn'lik soluklaşma ve hafif kaymadır.
 
-- **Menü:** altta sekme çubuğu (Ana Sayfa, Koleksiyon, Mağaza). Üstte altın ve giriş kartı sayaçları, dil düğmesi. Ana sayfada logo, seçili meslek ve büyük OYNA butonu.
-- **HUD:** üstte duraklat, skor, altın. Altta aksesuar ve yetenek düğmesi. Etkin güçlendirme rozeti. Oyun alanını kapatmayacak kadar az şey.
-- **Duraklatma ve oyun sonu:** karartma üstünde tek kart. Oyun sonunda önce devam teklifi (varsa), sonra skor, rekor ve paketlerden çıkanlar.
+- **Menü:** altta sekme çubuğu (Ana Sayfa, Koleksiyon, Mağaza); etkin sekme sarı ve çubuktan yukarı taşar. Üstte altın ve giriş kartı sayaçları, dil düğmesi.
+  - **Ana sayfa:** logo, rekor, ortada sahnedeki gerçek karakter, altında isim plakası (portre, meslek adı, yetenek ya da "OTOMATİKLEŞTİ"), aksesuar satırı ve büyük OYNA butonu. Menü kamerası karakteri logo ile plakanın arasına oturtur (`GameConfig.menuCameraOffset`, `menuLookAt`); araya eleman eklenirse karakterin üstünü kapatmamalı.
+  - **Koleksiyon:** her meslek için portreli kart. Seçili kart sarı çerçeve ve "SEÇİLİ" etiketi alır; otomatikleşen mesleğin portresi soluklaşır, köşesine kilit ve altına geri alma bedeli gelir.
+  - **Mağaza:** her ürün bir satır: vitrin karesinde ürünün gerçek görseli, adı, adedi, sarı satın alma butonu.
+  - Koleksiyon ve mağaza paneli içeriği kadar yer kaplar; altında sahne görünür.
+- **HUD:** üstte duraklat, skor, altın. Altta aksesuar ve yetenek düğmesi. Etkin güçlendirme rozeti. Oyun alanını kapatmayacak kadar az şey; karartma ya da geçiş bandı yok.
+- **Duraklatma ve oyun sonu:** karartma üstünde tek panel, üst kenarında şerit başlık (oyun sonunda kırmızı). Oyun sonunda önce devam teklifi (varsa), sonra skor, rekor ve paketlerden çıkanlar.
 
-Ekran kenarlarında `SafeArea` kullanılır (çentik ve köşeler). Panel 1080x1920'ye göre ölçeklenir (genişlik-yükseklik dengesi 0,5).
+Ekran kenarlarında `SafeArea` kullanılır (çentik ve köşeler). Panel 1080x1920'ye göre ölçeklenir (genişlik-yükseklik dengesi 0,5). Başlık boyutu en uzun dile göre seçilir: İngilizce "OUT OF OFFICE" tek satıra sığmalıdır.
 
 ## Metin tonu
 
@@ -72,15 +92,15 @@ Kısa, büyük harfli, emir kipinde düğmeler: OYNA, TEKRAR DENE, VAZGEÇ. Duru
 
 Karakterler, İK-9000, engeller, toplananlar ve dekor gerçek modeldir; yalnızca zemin ve bariyer koddan kurulur. Modellerin bağlayıcı kuralı, bütçeleri ve üretim reçetesi `docs/GORSEL_DIL.md`'dedir; aşağısı özetidir.
 
-**Karakter dili:** renkli, stilize mobil koşu oyunu çizgisi ile cyberpunk karışımı. İri baş, büyük ayakkabı, sade ve okunaklı biçimler; doygun tek bir ana renk (mesleğin tema rengi) ve üstünde neon ayrıntılar (devre çizgisi, parlayan taban, AR gözlük, kimlik kartı). Gerçekçi oran, kirli ya da karanlık "distopya" dokusu yok; karakter koyu sahnede en parlak şeydir. Her meslek kıyafetinden tanınır: Yazılımcı mavi kapüşonlu, kulaklık ve sırt çantası; Grafiker macenta ceket, sarı bere ve sırtında çizim tableti; Stajyer bol gri gömlek, turuncu kravat, boyun askısında kimlik kartı ve kahve bardağı. Yeni karakter aynı reçeteyle üretilir (T pozu, boş eller, tek parça gövde).
+**Karakter dili:** renkli, stilize mobil koşu oyunu çizgisi ile cyberpunk karışımı. İri baş, büyük ayakkabı, sade ve okunaklı biçimler; doygun tek bir ana renk (mesleğin tema rengi) ve üstünde neon ayrıntılar (devre çizgisi, parlayan taban, AR gözlük, kimlik kartı). Gerçekçi oran, kirli ya da karanlık "distopya" dokusu yok; karakter sahnedeki en doygun renkli şeydir. Her meslek kıyafetinden tanınır: Yazılımcı mavi kapüşonlu, kulaklık ve sırt çantası; Grafiker macenta ceket, sarı bere ve sırtında çizim tableti; Stajyer bol gri gömlek, turuncu kravat, boyun askısında kimlik kartı ve kahve bardağı. Yeni karakter aynı reçeteyle üretilir (T pozu, boş eller, tek parça gövde).
 
-Geçerken korunacak dil:
+Korunacak dil:
 
-- Koyu, soğuk zemin ve duvarlar; üstünde doygun renkli, okunaklı nesneler.
+- Açık, pastel bir dünya; üstünde koyu gövdeli ve neonlu, okunaklı nesneler.
 - Oyuncunun kaçması ya da toplaması gereken her şey ışıldar (emisyon + bloom): robotun kırmızısı, altının sarısı, güçlendirmelerin kendi rengi.
 - Her nesne siluetinden tanınır. Engelin nasıl geçileceği (zıpla, kay, şerit değiştir) biçiminden anlaşılmalı.
-- Mesleklerin birer tema rengi vardır (Yazılımcı mavi, Grafiker macenta, Stajyer gri); robotları aynı rengi taşır.
-- Zemin koyu lacivert, şerit çizgileri ve bariyerin üst kenarı ışıyan camgöbeğidir. Yolun iki yanında neon kolonlar, terk edilmiş çalışma masaları, hologram panolar; arkada pencereleri yanan kuleler.
+- Mesleklerin birer tema rengi vardır (Yazılımcı mavi, Grafiker macenta, Stajyer gri); robotları aynı rengi taşır, portrelerinin zemini de o renktir.
+- Zemin açık mavi-lila taş, bariyer krem; şerit çizgileri ve bariyerin üst kenarı turkuaz. Yolun iki yanında krem kolonlar, çalışma masaları, hologram panolar; arkada şeker renkli binalar (pembe, nane, sarı, lavanta).
 - İçinden geçilebilir (hayalet) engeller açık camgöbeğine boyanır.
 
 ## His
@@ -89,13 +109,15 @@ Geçerken korunacak dil:
 - Çarpışmada kısa sarsıntı ve ağır çekim; yakalanmada daha uzun.
 - Toplama, tökezleme, iniş, kalkan kırılması ve yakalanma parçacık efektiyle vurgulanır.
 - Karakter animasyonları: bekleme, koşu, zıplama, kayma, tökezleme, yakalanınca düşme, sandalyede oturma, drona asılma.
-- Bloom, renk tonlaması, kenar karartması, parlak zemin ve ince yağmur sahneye derinlik verir.
-- Ses henüz yok.
+- Gündüz ışığı, pamuk bulutlar, hafif bloom ve canlı doygunluk sahneye neşe verir.
+- **Ses efektleri:** zıplama, kayma, şerit değiştirme, altın (art arda toplanınca incelir), güçlendirme, tökezleme, kalkan kırılması, yakalanma, düğme. Sesler kısa, yumuşak ve çizgi film tadındadır; sert, metalik ya da korkutucu ses yok. Müzik henüz yok.
 
-Bütün bu sayılar `GameConfig`'dedir.
+Bütün bu sayılar `GameConfig`'dedir (ses düzeyleri `SfxLibrary`'de).
 
 ## Yapma
 
 - Başka bir oyunun arayüz çizimini, ikonunu, karakterini ya da adını kopyalama. Düzen benzeyebilir, çizim özgün olmalı.
-- Düz beyaz ya da açık temalı ekran yapma; oyun baştan sona koyu temadır.
+- Beyaz ya da açık zeminli panel yapma: paneller çivit mavisidir, yazı beyazdır. Açık olan sahnedir, arayüz değil.
+- Dış çizgisiz, tabansız düz kutu buton yapma; buton her zaman `UiKitBuilder` görselidir.
 - Tek ekranda üçten fazla vurgu rengi kullanma.
+- Sahneyi karartan bant ya da geçiş koyma (eski `fade` görselleri kaldırıldı); okunurluk yazının dış çizgisinden gelir.

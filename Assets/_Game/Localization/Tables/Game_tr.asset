@@ -202,6 +202,10 @@ MonoBehaviour:
     m_Localized: "Oynamak istedi\u011Fin mesle\u011Fi se\xE7."
     m_Metadata:
       m_Items: []
+  - m_Id: 157972297670656
+    m_Localized: "SE\xC7\u0130L\u0130"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

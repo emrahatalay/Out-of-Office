@@ -202,6 +202,10 @@ MonoBehaviour:
     m_Localized: Pick the profession you want to play.
     m_Metadata:
       m_Items: []
+  - m_Id: 157972297670656
+    m_Localized: SELECTED
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

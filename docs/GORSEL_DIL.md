@@ -9,9 +9,9 @@ Oyundaki her model bu kurala uyar. Yeni model üretmeden ya da var olanı deği�
 | Kaynak | Ondan alınan |
 |---|---|
 | Renkli mobil koşu oyunları (Subway Surfers'ın da içinde olduğu tür) | Abartılı tombul oranlar, kalın yuvarlak pahlar, doygun renkler, boyanmış gibi temiz yüzey, uzaktan okunan siluet, neşeli ton |
-| Cyberpunk | Koyu zemin, neon ışık çizgileri, hologram ekranlar, görünür teknoloji parçaları, kurumsal distopya mizahı |
+| Cyberpunk | Koyu gövdeli makineler, neon ışık çizgileri, hologram ekranlar, görünür teknoloji parçaları, kurumsal distopya mizahı |
 
-Karışımın dengesi: **biçim birinciden, ışık ikinciden gelir.** Nesne önce sevimli ve tombul bir oyuncaktır; cyberpunk ona ışığı, ekranı ve koyu gövdeyi verir.
+Karışımın dengesi: **biçim birinciden, ışık ikinciden gelir.** Nesne önce sevimli ve tombul bir oyuncaktır; cyberpunk ona ışığı, ekranı ve koyu gövdeyi verir. **Dünya ise aydınlık ve neşelidir** (gündüz, mavi gökyüzü, şeker renkli binalar); koyu gövdeli robotlar ve makineler bu açık sahnede kendiliğinden öne çıkar.
 
 Ne değildir: gerçekçi oran, kirli ya da paslı yüzey, kan, korku, gri-kahverengi "distopya" paleti. Başka bir oyunun karakteri, aracı ya da nesnesi kopyalanmaz; tür aynı, içerik özgündür.
 
@@ -49,7 +49,7 @@ Mobil hedef. Aşılacaksa gerekçesi `docs/DURUM.md`'ye yazılır.
 | Güçlendirme, paket, aksesuar | ≤ 1.200 | 256 | |
 | Altın | ≤ 300 | 128 | Ekranda onlarcası olur; mesh'i betik kurar (160 üçgen) |
 | Dekor (kolon, masa, pano) | ≤ 1.500 | 512 | |
-| Uzak dekor (kule) | ≤ 600 | 256 | Sisin içinde durur |
+| Bina (kule) | ≤ 600 | 256 | Boyanabilir: her kopya ayrı pastel renk alır |
 
 - Model başına **tek materyal, tek doku**. Shader her zaman `Out of Office/Curved Lit`.
 - Doku ASTC 6x6 (Android, iOS), mipmap'li.
@@ -60,13 +60,15 @@ Mobil hedef. Aşılacaksa gerekçesi `docs/DURUM.md`'ye yazılır.
 
 Modeller kadar bağlayıcıdır; hepsi `PlaceholderContentBuilder.Atmosphere.cs` içinde koddan kurulur.
 
-- **Gece, ama okunaklı.** Gökyüzü koyu lacivertten mor ufka iner; ufukta şehir ışığı, yıldızlar, iri soluk mavi bir ay ve uzak şehir silueti vardır (`Night Sky` shader'ı, doku kullanmaz).
-- **Sis ufkun rengindedir** (mor). Uzaktaki nesne gökyüzüne karışarak kaybolur; aniden belirmez.
-- **İki ışık.** Arkadan soğuk mavi ay ışığı (gölgeyi o atar), karşıdan macenta kenar ışığı (siluetleri koyu zeminden ayırır). Ortam ışığı üstten mavi, yandan mor, alttan koyu.
-- **Zemin parlaktır** ve ufkun ışığını yansıtır (ıslak asfalt). Gerçek zamanlı yansıma yok; gökyüzünün küçük bir küp haritası kullanılır.
-- **Post-processing ölçülüdür:** bloom neonu yayar, kontrast ve doygunluk hafif artar, gölgeler soğuk / parlak yerler sıcak tonlanır, kenarlar hafif kararır. Alan derinliği, hareket bulanıklığı, renk sapması, film greni yok (mobilde pahalı ve görüntüyü bulandırır).
-- **İnce neon yağmuru** kameraya bağlıdır; hızlandıkça öne yatar. Az sayıda ince çizgi; ekranı kapatmaz.
-- Parlaklık sırası değişmez: toplanacak ve kaçılacak nesneler > oyuncu > dekor > gökyüzü.
+- **Gündüz, açık ve iç açıcı.** Gökyüzü parlak maviden açık ufka iner; ufkun üstündeki kuşakta yavaşça kayan pamuk bulutlar vardır (`Out of Office/Sky` shader'ı, doku kullanmaz).
+- **Gökyüzüne yere basan şekil çizilmez** (bina silueti, dağ). Yol uzakta aşağı kıvrıldığı için böyle bir şekil havada asılı görünür. Ufkun altı ufuk renginde kalır.
+- **Sis ufuk rengiyle aynıdır** (62 m'de başlar, 135 m'de kapanır). Uzaktaki nesne gökyüzüne karışarak kaybolur; aniden belirmez.
+- **Binalar şeker renklidir.** Aynı iki kule modeli boyanarak dizilir: mercan pembesi, nane, bal sarısı, lavanta (`TowerPalette`). Yan yana ve karşı karşıya gelen binalar farklı renktedir. Kolonlar krem beyazıdır, neon çizgilerini korur. Yeni bina rengi pastel ve doygun olmalı; gri, kahverengi, koyu lacivert bina yok.
+- **Zemin açık serin bir taştır** (mavi-lila), bariyer krem; şerit çizgileri ve bariyerin üst kenarı turkuazdır. Zemin fazla parlak yapılmaz: ufka doğru beyaza keser.
+- **İki ışık.** Arkadan sıcak güneş (gölgeyi o atar, gölgeler ileriye düşer), karşıdan gök mavisi dolgu ışığı (gölgede kalan yüzler kararmaz). Ortam ışığı üstten mavi, yandan açık gri, alttan zeminden seken ton.
+- **Post-processing ölçülüdür:** bloom yalnızca ışıyan parçaları yayar (eşik yüksek), doygunluk ve kontrast hafif artar, kenar karartması çok hafiftir. Alan derinliği, hareket bulanıklığı, renk sapması, film greni yok (mobilde pahalı ve görüntüyü bulandırır).
+- **Yağmur yok.**
+- Okunurluk sırası değişmez: toplanacak ve kaçılacak nesneler > oyuncu > dekor > gökyüzü. Açık sahnede bunu parlaklık değil **renk doygunluğu ve koyu gövde** sağlar: engeller koyu gövdeli ve neonludur, dekor pastel ve soluktur.
 
 ## Üretim reçetesi (Meshy)
 

@@ -12,19 +12,22 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 - Meslek otomasyonu ve artan bedelle geri alma.
 - Aksesuar (Ofis Sandalyesi), sürpriz paketler, giriş kartıyla devam, altınla mağaza.
 - Arayüz: sekmeli menü (Ana Sayfa, Koleksiyon, Mağaza), HUD, duraklatma, oyun sonu. Türkçe ve İngilizce.
+- **Arayüz teması (UI kit):** koyu dış çizgili, tabanlı, parlamalı panel ve butonlar; hepsi koddan üretilir (`UiKitBuilder`). Meslek portreleri gerçek karakter modellerinden (`PortraitBuilder`), eşya görselleri gerçek eşya modellerinden çekilir (`ItemIconBuilder`); giriş kartı temayla çizilir. Altın, giriş kartı ve sandalye her yerde aynı görselle gösterilir.
 - His: kamera takibi, görüş açısı, sarsıntı, ağır çekim, parçacık efektleri.
 - Kıvrımlı dünya (yol sağa/sola kıvrılır, uzakta aşağı eğilir).
 - **Bütün modeller gerçek** (Meshy ile üretildi; kural `docs/GORSEL_DIL.md`): üç meslek ve İK-9000 iskeletli; 5 engel, 2 meslek robotu, altın, 7 güçlendirme, sürpriz paket, ofis sandalyesi, taşıyıcı dron ve dekor (kolon, masa, pano, iki kule). Yalnızca zemin ve bariyer koddan kurulur.
 - Karakter animasyonları: bekleme, koşu, zıplama, kayma, tökezleme, yakalanınca düşme, sandalyede oturma, drona asılma. Tek klip seti bütün karakterlerde ortak; İK-9000 koşu ve beklemeyi kullanır.
 - Model hattı (`Tools/ModelPipeline`): ölçek, yön, doku boşluğu doldurma, alfada ışıma maskesi, dokusuz FBX.
-- Sahne havası: gece gökyüzü (yıldız, ay, şehir silueti), ay ve kenar ışığı, mor sis, yansıtan zemin, post-processing (bloom, tonlama, kenar karartması), ince yağmur.
+- Sahne havası: gündüz gökyüzü (bulutlu), güneş ve dolgu ışığı, ufuk rengi sis, açık zemin, şeker renkli binalar (aynı iki kule modeli köşe rengiyle boyanır), krem kolonlar, ölçülü post-processing.
+- Ses efektleri: zıplama, kayma, şerit değiştirme, altın, güçlendirme, tökezleme, kalkan kırılması, yakalanma, düğme (`SfxSystem`, `SfxLibrary`; klipler `Tools/Audio/make_sfx.py` ile sentezlenir).
 - Performans: havuzlama ve ön üretim, materyal başına birleştirilmiş mesh'ler. Ölçümde oynanış sistemleri koşu sırasında bellek ayırmıyordu (aksesuar, mağaza ve kıvrımlı dünyadan önce ölçüldü).
 
 ## Eksikler
 
 Hikâyede ve tasarımda olup yapılmayanlar:
 
-- **Ses ve müzik:** hiç yok.
+- **Müzik** ve ses ayarı (kısma, kapatma) yok. Ses efektleri sentezlenmiş ilk sürümdür; kulakla dinlenip ayarlanmadı (aşağıya bak).
+- Menü sekmeleri düğme sesi çıkarmaz (istek sinyali atmadıkları için).
 - **Eksik animasyonlar:** şerit değiştirme (yalnızca gövde yatması var), İK-9000'in yakalama hareketi (başına gelip bekler), engellerin kendi hareketi (dron pervanesi, taksi tekerleği dönmüyor).
 - **Zemin ve bariyer** hâlâ düz renkli, koddan kurulan kutular; dokulu gerçek zemin yok.
 - **Güçlendirmeler:** Prompt Injection, Fişi Çek.
@@ -49,11 +52,17 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Modeller ve animasyonlar** editörde, Play modunda gözle denendi: koşu, zıplama, kayma, tökezleme, yakalanma, sandalye, dron uçuşu, üç karakter. **Gerçek cihazda denenmedi.**
 - **Bellek ayırma (14 Kasım 2026, editör, `PerfProbe`):** kare başına ortanca ~45 KB; animasyonlu gerçek modellerle, animasyonsuz küp modelle ve menüde (koşu yokken) aynı. Yani bu editörün kendi yükü; animasyon ve yeni modeller ölçülebilir ek ayırma yapmıyor. Oyunun payını editörden ayıran ölçüm (build'de profil) yapılmadı.
 - **Çizim yükü (editör):** koşuda ~150-190 draw call, 32 set-pass, ~220-250 bin üçgen (gölge ve derinlik geçişleri dahil). Zemin parçası başına ~13.000 üçgen dekor var; düşük uçlu cihazda ağır gelirse `BuildDecor`'daki dekor sayısı azaltılır.
+- **Sandalyede oturuş** üç karakterde üstten ve yandan bakılarak doğrulandı (14 Kasım 2026): gövde şeridin ortasında (yana sapma ≤ 1 cm), sandalye 22 cm geride. Yazılımcı'nın sırt çantası sırtlığa birkaç cm girer.
 - **Kayma pozu** çarpışma kapsülünden (0,8 m) alçak ama yana doğru geniş; Çerez Duvarı'nın altından geçerken görsel taşma olup olmadığına bakılmadı.
 - **Havada yakalanma:** görsel yere indirilir ama düşüş animasyonu yoktur, bir karede iner.
 - **Meslek robotlarının kolları** çarpışma kutusundan (1,5 m) taşar (model ~2,2 m geniş); kola değmek çarpışma sayılmaz.
-- **Taşıyıcı dronun tutamağı** Yazılımcı'nın el yüksekliğine göre ayarlı; daha kısa Stajyer'de eller tutamağın biraz altında kalır.
-- **Yağmur ve diğer parçacıklar** kıvrımlı dünyayla bükülmüyor (kameraya yakın oldukları için göze batmıyor).
+- **Parçacıklar** kıvrımlı dünyayla bükülmüyor (kameraya yakın oldukları için göze batmıyor).
+- **Ses efektleri (14 Kasım 2026)** yalnızca programla doğrulandı: Play'de zıplama, şerit değiştirme ve düğme olaylarında doğru klibin doğru düzeyde çaldığı okundu, dosyaların düzeyi ölçüldü. **Kimse kulakla dinlemedi;** tını ve ses düzeyi dengesi (`SfxLibrary`) dinlenerek ayarlanmalı.
+- **Gündüz sahnesi ve yeni arayüz (14 Kasım 2026)** editörde ekran görüntüsüyle denendi: menü (TR/EN), koleksiyon, mağaza, HUD, duraklatma, oyun sonu, otomatikleşmiş meslek. Devam teklifi (giriş kartıyla) ve paket ödülleri satırı yeni temayla görülmedi. Düğmeler gerçek dokunuşla değil sinyal ve "gönder" olayıyla tetiklendi. Cihazda denenmedi.
+- **Play modunda USS / UXML kaydedilirse** arayüz kaybolur (Unity arayüzü yeniden kurar, sunucuların bağı kopar). Yalnızca editörde olur; Play'i yeniden başlat.
+- **Aksesuar ikonu** (`.icon-chair`) USS'te sabit sandalye görselidir. İkinci bir aksesuar eklenirse görsel veriden gelmelidir (`AccessoryChangedSignal` kimlik taşımıyor).
+- **Binalar** parça başına dört renkte, 30 m'de bir aynı sırayla tekrar eder.
+- **Zemin mesh'leri** artık silinip yeniden oluşturulmuyor, yerinde güncelleniyor: eski yöntem ara sıra prefab'daki mesh bağını koparıyordu (zemin görünmüyordu). Üç ardışık üretimde doğrulandı.
 - **Karakter FBX'leri** (4 model + 3 klip dosyası) Meshy'den geldiği gibi duruyor ve içlerinde kullanılmayan 2K doku gömülü (dosya başına ~3,5 MB, toplam ~30 MB depo yükü). Build'e girmez; iskelet bozulmasın diye yeniden dışa aktarılmadı. Eşya modelleri dokusuzdur (toplam ~6 MB).
 - **Kaynak GLB'ler depoda yok;** `Tools/ModelPipeline/props.json`'daki Meshy görev kimlikleriyle yeniden indirilir (Meshy görevleri bir süre sonra silinebilir).
 

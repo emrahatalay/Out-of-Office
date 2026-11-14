@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using OutOfOffice.Core.Services;
 using OutOfOffice.Core.Signals;
 using UnityEngine.UIElements;
 using VContainer.Unity;
@@ -8,15 +9,17 @@ namespace OutOfOffice.UI
 {
     /// <summary>
     /// Koleksiyon ızgarası. Kartlar, oyunun duyurduğu mesleklerden kendiliğinden oluşur;
-    /// kataloğa yeni meslek eklenince burada da görünür.
+    /// kataloğa yeni meslek eklenince burada da görünür. Her kartta mesleğin gerçek çizimi
+    /// (portresi) durur; otomatikleşen mesleğin portresi kararır ve üstüne kilit gelir.
     /// </summary>
     public sealed class CollectionPresenter : IStartable, IDisposable
     {
         sealed class Card
         {
             public Button Root;
-            public VisualElement Avatar;
-            public VisualElement Icon;
+            public VisualElement Tile;
+            public VisualElement Portrait;
+            public VisualElement Lock;
             public Label Name;
             public Label Sub;
             public VisualElement Price;
@@ -25,14 +28,16 @@ namespace OutOfOffice.UI
 
         readonly UIDocument _document;
         readonly ISignalBus _bus;
+        readonly IArtProvider _art;
         readonly Dictionary<string, Card> _cards = new Dictionary<string, Card>();
         IDisposable _subscription;
         VisualElement _grid;
 
-        public CollectionPresenter(UIDocument document, ISignalBus bus)
+        public CollectionPresenter(UIDocument document, ISignalBus bus, IArtProvider art)
         {
             _document = document;
             _bus = bus;
+            _art = art;
         }
 
         public void Start()
@@ -50,10 +55,9 @@ namespace OutOfOffice.UI
             }
 
             // Renk veriden gelir; bu yüzden satır içi stil kullanılır.
-            card.Avatar.style.backgroundColor = signal.Color;
-            card.Avatar.EnableInClassList("char-avatar--locked", signal.IsAutomated);
-            card.Icon.EnableInClassList("icon-lock", signal.IsAutomated);
-            card.Icon.EnableInClassList("icon-person", !signal.IsAutomated);
+            card.Tile.style.backgroundColor = signal.Color;
+            card.Portrait.EnableInClassList("portrait-image--locked", signal.IsAutomated);
+            card.Lock.EnableInClassList(ScreenRouter.HiddenClass, !signal.IsAutomated);
 
             card.Name.Localize(signal.NameKey);
             card.Sub.Localize(signal.IsAutomated ? "ui.automated" : signal.AbilityNameKey);
@@ -69,9 +73,15 @@ namespace OutOfOffice.UI
             var card = new Card { Root = new Button(() => _bus.Fire(new CharacterSelectRequestedSignal(id))) };
             card.Root.AddToClassList("char-card");
 
-            card.Avatar = Child(card.Root, "char-avatar");
-            card.Icon = Child(card.Avatar, "icon");
-            card.Icon.AddToClassList("char-avatar-icon");
+            card.Tile = Child(card.Root, "portrait-tile");
+            card.Tile.AddToClassList("char-portrait-tile");
+            Child(card.Tile, "portrait-spot");
+            card.Portrait = Child(card.Tile, "portrait-image");
+            // Görsel veriden gelir (satır içi); meslek değişmediği için bir kez bağlanır.
+            card.Portrait.style.backgroundImage = new StyleBackground(_art.GetCharacterPortrait(id));
+            card.Lock = Child(card.Tile, "char-lock");
+            var lockIcon = Child(Child(card.Lock, "char-lock-badge"), "icon");
+            lockIcon.AddToClassList("icon-lock");
 
             card.Name = Text(card.Root, "char-name");
             card.Sub = Text(card.Root, "char-sub");
@@ -81,6 +91,10 @@ namespace OutOfOffice.UI
             coin.AddToClassList("icon-small");
             coin.AddToClassList("icon-coin");
             card.PriceValue = Text(card.Price, "char-price-value");
+
+            // Seçim göstergeleri; yalnızca "char-card--selected" sınıfıyla görünür.
+            Child(card.Root, "char-frame");
+            Text(Child(card.Root, "char-check"), "char-check-label").Localize("ui.selected");
 
             _grid.Add(card.Root);
             return card;

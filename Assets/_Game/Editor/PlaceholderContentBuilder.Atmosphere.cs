@@ -6,68 +6,67 @@ using UnityEngine.Rendering.Universal;
 namespace OutOfOffice.EditorTools
 {
     /// <summary>
-    /// Sahnenin havası: gökyüzü, ışık, sis, yansıma, post-processing ve yağmur. Hepsi koddan
+    /// Sahnenin havası: gündüz gökyüzü, güneş, sis, yansıma ve post-processing. Hepsi koddan
     /// kurulur ki sahne her üretildiğinde aynı görünüm gelsin; ayar değiştirmek için buradaki
     /// sayıları değiştirip üreticiyi yeniden çalıştır.
     /// </summary>
     public static partial class PlaceholderContentBuilder
     {
-        const string SkyShaderPath = Root + "/Shaders/NightSky.shader";
+        const string SkyShaderPath = Root + "/Shaders/Sky.shader";
         const string AtmosphereDir = Root + "/Art/Atmosphere";
-        const string SkyMaterialPath = AtmosphereDir + "/NightSky.mat";
+        const string SkyMaterialPath = AtmosphereDir + "/Sky.mat";
         const string ReflectionPath = AtmosphereDir + "/SkyReflection.cubemap";
         const string VolumeProfilePath = AtmosphereDir + "/GameVolume.asset";
 
-        // Gökyüzünün renkleri. Sis ufka yakın bir tondadır: uzaktaki nesneler gökyüzüne karışır.
-        static readonly Color SkyZenith = new Color(0.015f, 0.02f, 0.07f);
-        static readonly Color SkyHorizon = new Color(0.13f, 0.08f, 0.27f);
-        static readonly Color SkyGround = new Color(0.05f, 0.05f, 0.12f);
-        static readonly Color SkyGlowA = new Color(0.8f, 0.25f, 0.85f);
-        static readonly Color SkyGlowB = new Color(0.2f, 0.75f, 1f);
-        static readonly Color FogColor = new Color(0.17f, 0.1f, 0.31f);
-        const float SkyGlowStrength = 0.3f;
-        const float SkyGlowFalloff = 11f;
-        const float SkyExponent = 0.42f;
+        // Gökyüzünün renkleri. Sis ufuk rengiyle AYNIDIR: uzaktaki nesneler gökyüzüne karışır ve
+        // aşağı kıvrılan yolun ucunda dikiş görünmez.
+        static readonly Color SkyZenith = new Color(0.16f, 0.5f, 1f);
+        static readonly Color SkyHorizon = new Color(0.7f, 0.88f, 1f);
+        const float SkyExponent = 0.55f;
+
+        // Güneşin sahnedeki yönü; hem ışık hem gökyüzündeki disk bundan türetilir.
+        static readonly Quaternion SunRotation = Quaternion.Euler(50f, -30f, 0f);
 
         /// <summary>Işık, ortam, sis, gökyüzü ve yansıma. Sahne kurulurken çağrılır.</summary>
         static void BuildAtmosphere()
         {
             EnsureFolder(AtmosphereDir);
 
-            // ---- Ana ışık: ay. Kameranın arkasından gelir ki oyuncunun kameraya dönük sırtı aydınlık kalsın.
-            var moon = new GameObject("Moon Light").AddComponent<Light>();
-            moon.type = LightType.Directional;
-            moon.color = new Color(0.72f, 0.82f, 1f);
-            moon.intensity = 1.25f;
-            moon.shadows = LightShadows.Soft;
-            moon.shadowStrength = 0.75f;
-            moon.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
+            // ---- Ana ışık: güneş. Kameranın arkasından gelir ki oyuncunun kameraya dönük sırtı
+            // aydınlık kalsın ve gölgeler ileriye, yolun üstüne düşsün.
+            var sun = new GameObject("Sun Light").AddComponent<Light>();
+            sun.type = LightType.Directional;
+            sun.color = new Color(1f, 0.96f, 0.86f);
+            sun.intensity = 1.45f;
+            sun.shadows = LightShadows.Soft;
+            sun.shadowStrength = 0.55f;
+            sun.transform.rotation = SunRotation;
 
-            // ---- Kenar ışığı: karşıdan gelen macenta. Siluetleri koyu zeminden ayırır; gölge atmaz.
-            var rim = new GameObject("Rim Light").AddComponent<Light>();
-            rim.type = LightType.Directional;
-            rim.color = new Color(1f, 0.35f, 0.8f);
-            rim.intensity = 0.55f;
-            rim.shadows = LightShadows.None;
-            rim.transform.rotation = Quaternion.Euler(28f, 155f, 0f);
+            // ---- Dolgu ışığı: karşıdan gelen gök mavisi. Güneşe dönük olmayan yüzler kararmaz; gölge atmaz.
+            var fill = new GameObject("Fill Light").AddComponent<Light>();
+            fill.type = LightType.Directional;
+            fill.color = new Color(0.7f, 0.85f, 1f);
+            fill.intensity = 0.35f;
+            fill.shadows = LightShadows.None;
+            fill.transform.rotation = Quaternion.Euler(28f, 155f, 0f);
 
-            // ---- Ortam ışığı: üstten soğuk mavi, yandan mor, alttan koyu.
+            // ---- Ortam ışığı: üstten gök mavisi, yandan sıcak beyaz, alttan zeminden seken açık ton.
             RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.36f, 0.42f, 0.66f);
-            RenderSettings.ambientEquatorColor = new Color(0.4f, 0.32f, 0.58f);
-            RenderSettings.ambientGroundColor = new Color(0.14f, 0.13f, 0.26f);
+            RenderSettings.ambientSkyColor = new Color(0.58f, 0.72f, 0.95f);
+            RenderSettings.ambientEquatorColor = new Color(0.62f, 0.64f, 0.74f);
+            RenderSettings.ambientGroundColor = new Color(0.4f, 0.4f, 0.48f);
 
             RenderSettings.fog = true;
             RenderSettings.fogMode = FogMode.Linear;
-            RenderSettings.fogColor = FogColor;
-            RenderSettings.fogStartDistance = 40f;
-            RenderSettings.fogEndDistance = 125f;
+            RenderSettings.fogColor = SkyHorizon;
+            RenderSettings.fogStartDistance = 62f;
+            RenderSettings.fogEndDistance = 135f;
 
             RenderSettings.skybox = BuildSkyMaterial();
-            RenderSettings.sun = moon;
+            RenderSettings.sun = sun;
 
-            // ---- Yansıma: gökyüzünün küçük bir küp haritası. Parlak zemin ufkun ışığını yansıtır
-            // (ıslak asfalt hissi); gerçek zamanlı yansıma yok, maliyeti sıfıra yakın.
+            // ---- Yansıma: gökyüzünün küçük bir küp haritası. Zemin gökyüzünün açık rengini hafifçe
+            // yansıtır; gerçek zamanlı yansıma yok, maliyeti sıfıra yakın.
             RenderSettings.defaultReflectionMode = DefaultReflectionMode.Custom;
             RenderSettings.customReflectionTexture = BuildReflectionCubemap();
             RenderSettings.reflectionIntensity = 1f;
@@ -88,26 +87,24 @@ namespace OutOfOffice.EditorTools
             if (material.shader != shader) material.shader = shader;
             material.SetColor("_ZenithColor", SkyZenith);
             material.SetColor("_HorizonColor", SkyHorizon);
-            material.SetColor("_GroundColor", SkyGround);
-            material.SetColor("_GlowColorA", SkyGlowA);
-            material.SetColor("_GlowColorB", SkyGlowB);
-            material.SetFloat("_GlowStrength", SkyGlowStrength);
-            material.SetFloat("_GlowFalloff", SkyGlowFalloff);
             material.SetFloat("_Exponent", SkyExponent);
-            material.SetFloat("_StarDensity", 0.06f);
-            material.SetFloat("_StarBrightness", 1.6f);
-            // Ay ileride, alçakta ve biraz sağda: kulelerin arasından görünür.
-            material.SetVector("_MoonDirection", new Vector4(0.1f, 0.2f, 1f, 0f));
-            material.SetColor("_MoonColor", new Color(0.7f, 0.88f, 1f));
-            material.SetFloat("_MoonSize", 3.6f);
-            material.SetFloat("_SkylineHeight", 0.085f);
-            material.SetColor("_SkylineColor", new Color(0.035f, 0.035f, 0.09f));
-            material.SetColor("_WindowColor", new Color(1.2f, 0.85f, 0.45f));
+            // Güneş ışığın geldiği yöndedir (kameranın arkasında); koşarken görünmez, menüde görünebilir.
+            Vector3 toSun = SunRotation * Vector3.back;
+            material.SetVector("_SunDirection", new Vector4(toSun.x, toSun.y, toSun.z, 0f));
+            material.SetColor("_SunColor", new Color(1.6f, 1.45f, 1.1f));
+            material.SetFloat("_SunSize", 3f);
+            material.SetColor("_CloudColor", Color.white);
+            material.SetColor("_CloudShadeColor", new Color(0.86f, 0.92f, 1f));
+            material.SetFloat("_CloudCount", 14f);
+            material.SetFloat("_CloudHeightScale", 8f);
+            material.SetFloat("_CloudCoverage", 0.47f);
+            material.SetFloat("_CloudSoftness", 0.07f);
+            material.SetFloat("_CloudSpeed", 0.01f);
             EditorUtility.SetDirty(material);
             return material;
         }
 
-        /// <summary>Gökyüzünün geçişini ve şehir ışığını (yıldız ve ay olmadan) küçük bir küp haritasına yazar.</summary>
+        /// <summary>Gökyüzünün geçişini (güneş ve bulut olmadan) küçük bir küp haritasına yazar.</summary>
         static Cubemap BuildReflectionCubemap()
         {
             const int size = 32;
@@ -158,22 +155,17 @@ namespace OutOfOffice.EditorTools
             }
         }
 
-        // NightSky.shader'daki geçiş ve şehir ışığının aynısı (sRGB renkleriyle; küp haritası sRGB'dir).
+        // Sky.shader'daki tepe-ufuk geçişinin aynısı (sRGB renkleriyle; küp haritası sRGB'dir).
         static Color SkyColor(Vector3 direction)
         {
-            float up = Mathf.Clamp01(direction.y);
-            float azimuth = Mathf.Atan2(direction.x, direction.z);
-            var color = Color.Lerp(SkyHorizon, SkyZenith, Mathf.Pow(up, SkyExponent));
-            var glow = Color.Lerp(SkyGlowA, SkyGlowB, 0.5f + 0.5f * Mathf.Sin(azimuth * 2f - 1.2f));
-            color += glow * (Mathf.Exp(-up * SkyGlowFalloff) * SkyGlowStrength);
-            color = Color.Lerp(color, SkyGround, Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(-direction.y / 0.08f)));
+            var color = Color.Lerp(SkyHorizon, SkyZenith, Mathf.Pow(Mathf.Clamp01(direction.y), SkyExponent));
             color.a = 1f;
             return color;
         }
 
         /// <summary>
-        /// Post-processing: ışımayı yayan bloom, kontrast ve doygunluk, soğuk gölge / sıcak
-        /// parlaklık tonlaması, hafif kenar karartması. Mobil için pahalı etkiler (alan
+        /// Post-processing: ışıyan parçaları hafifçe yayan bloom, canlı doygunluk, serin gölge /
+        /// sıcak parlaklık tonlaması, çok hafif kenar karartması. Mobil için pahalı etkiler (alan
         /// derinliği, hareket bulanıklığı, renk sapması) yoktur.
         /// </summary>
         static VolumeProfile BuildVolumeProfile()
@@ -189,28 +181,29 @@ namespace OutOfOffice.EditorTools
             var tonemapping = Override<Tonemapping>(profile);
             tonemapping.mode.Override(TonemappingMode.Neutral);
 
+            // Gündüz sahnesi zaten aydınlıktır; eşik yüksek tutulur ki yalnızca ışıyan parçalar yayılsın.
             var bloom = Override<Bloom>(profile);
-            bloom.threshold.Override(0.95f);
-            bloom.intensity.Override(0.75f);
-            bloom.scatter.Override(0.66f);
-            bloom.tint.Override(new Color(0.92f, 0.9f, 1f));
+            bloom.threshold.Override(1.05f);
+            bloom.intensity.Override(0.4f);
+            bloom.scatter.Override(0.6f);
+            bloom.tint.Override(Color.white);
             bloom.highQualityFiltering.Override(false);
 
             var color = Override<ColorAdjustments>(profile);
-            color.postExposure.Override(0.12f);
-            color.contrast.Override(14f);
-            color.saturation.Override(12f);
-            color.colorFilter.Override(new Color(0.97f, 0.98f, 1f));
+            color.postExposure.Override(0f);
+            color.contrast.Override(10f);
+            color.saturation.Override(22f);
+            color.colorFilter.Override(Color.white);
 
             var toning = Override<SplitToning>(profile);
-            toning.shadows.Override(new Color(0.42f, 0.48f, 0.62f));
-            toning.highlights.Override(new Color(0.6f, 0.5f, 0.52f));
-            toning.balance.Override(-10f);
+            toning.shadows.Override(new Color(0.46f, 0.5f, 0.6f));
+            toning.highlights.Override(new Color(0.56f, 0.52f, 0.46f));
+            toning.balance.Override(0f);
 
             var vignette = Override<Vignette>(profile);
-            vignette.color.Override(new Color(0.03f, 0.02f, 0.1f));
-            vignette.intensity.Override(0.3f);
-            vignette.smoothness.Override(0.45f);
+            vignette.color.Override(new Color(0.16f, 0.26f, 0.5f));
+            vignette.intensity.Override(0.14f);
+            vignette.smoothness.Override(0.5f);
 
             EditorUtility.SetDirty(profile);
             return profile;
@@ -227,45 +220,6 @@ namespace OutOfOffice.EditorTools
 
             component.active = true;
             return component;
-        }
-
-        /// <summary>
-        /// Kameraya bağlı ince neon yağmuru. Damlalar dünya uzayında düşer; oyuncu hızlandıkça
-        /// kameraya doğru akar ve hız hissini artırır. Az sayıda, ince, yarı saydam çizgi.
-        /// </summary>
-        static void BuildRain(Transform camera)
-        {
-            var particles = NewParticles("Rain", new Color(0.62f, 0.86f, 1f, 0.3f), 1.1f, 0.03f, 220);
-            particles.transform.SetParent(camera, false);
-            particles.transform.localPosition = new Vector3(0f, 7f, 16f);
-            particles.transform.localRotation = Quaternion.identity;
-
-            var main = particles.main;
-            main.loop = true;
-            main.startSpeed = 0f;
-            main.simulationSpace = ParticleSystemSimulationSpace.World;
-            main.prewarm = true;
-
-            var emission = particles.emission;
-            emission.rateOverTime = 150f;
-
-            var shape = particles.shape;
-            shape.shapeType = ParticleSystemShapeType.Box;
-            shape.scale = new Vector3(16f, 1f, 34f);
-
-            var velocity = particles.velocityOverLifetime;
-            velocity.enabled = true;
-            velocity.space = ParticleSystemSimulationSpace.World;
-            velocity.x = new ParticleSystem.MinMaxCurve(-0.6f);
-            velocity.y = new ParticleSystem.MinMaxCurve(-13f);
-            velocity.z = new ParticleSystem.MinMaxCurve(0f);
-
-            var renderer = particles.GetComponent<ParticleSystemRenderer>();
-            renderer.renderMode = ParticleSystemRenderMode.Stretch;
-            renderer.velocityScale = 0.035f;
-            renderer.lengthScale = 2f;
-            // Kameranın kendi hızı da çizgiyi uzatır: koşarken yağmur öne doğru yatar.
-            renderer.cameraVelocityScale = 0.02f;
         }
     }
 }

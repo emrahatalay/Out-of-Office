@@ -13,6 +13,10 @@ namespace OutOfOffice.EditorTools
     ///
     /// Kaynak dosyalar Art/Props altındadır (&lt;Ad&gt;.fbx + &lt;Ad&gt;_BaseColor.png); onları
     /// Tools/ModelPipeline betikleri üretir. Dokunun alfası ışıma maskesidir.
+    ///
+    /// Boyanabilir modeller (kuleler): kaynak dokudan açık, renksiz bir kopya üretilir
+    /// (&lt;Ad&gt;_Neutral.png). Rengi yerleştirirken verilen boya belirler; boya mesh'in köşe
+    /// rengine yazılır, böylece aynı model tek materyalle farklı renklerde durur.
     /// </summary>
     public static class PropModelBuilder
     {
@@ -28,13 +32,16 @@ namespace OutOfOffice.EditorTools
             public readonly float Glow;
             /// <summary>Kendi dokusu yerine başka bir modelin materyalini kullanır (aynı modelin farklı ölçüsü).</summary>
             public readonly string SharedMaterial;
+            /// <summary>Dokusu renksiz açık tona çevrilir; rengi yerleştirirken verilen boya belirler.</summary>
+            public readonly bool Tintable;
 
-            public PropSpec(string name, int textureSize, float glow, string sharedMaterial = null)
+            public PropSpec(string name, int textureSize, float glow, string sharedMaterial = null, bool tintable = false)
             {
                 Name = name;
                 TextureSize = textureSize;
                 Glow = glow;
                 SharedMaterial = sharedMaterial;
+                Tintable = tintable;
             }
         }
 
@@ -61,13 +68,20 @@ namespace OutOfOffice.EditorTools
             new PropSpec("Package", 256, 2f),
             new PropSpec("OfficeChair", 256, 2.5f),
             // Çevre
-            new PropSpec("Column", 512, 2f),
+            // Kolon da boyanabilir: gövdesi açık renge döner, neon çizgileri kendi renginde kalır.
+            new PropSpec("Column", 512, 1.4f, tintable: true),
             new PropSpec("Kiosk", 512, 2f),
             new PropSpec("Billboard", 512, 2f),
-            // Uzak dekor oynanış nesnelerinden sönük kalır.
-            new PropSpec("TowerA", 256, 1.1f),
-            new PropSpec("TowerB", 256, 1.1f),
+            // Binalar boyanabilir: her kopya ayrı bir pastel renk alır. Gündüz pencereler ışık
+            // saçmaz, gökyüzünü yansıtan cam gibi hafifçe parlar.
+            new PropSpec("TowerA", 256, 0.15f, tintable: true),
+            new PropSpec("TowerB", 256, 0.15f, tintable: true),
         };
+
+        // Renksiz dokunun ayarları: gövdenin en koyu ve en açık yeri bu aralığa yayılır (boya
+        // çarpılınca renk canlı kalsın diye taban yüksek). Işıyan pikseller kendi rengini korur.
+        const float NeutralFloor = 0.6f;
+        const float NeutralCeiling = 1f;
 
         [MenuItem("Out of Office/Eşya ve Çevre Modellerini Kur")]
         public static void BuildAllFromMenu()
@@ -90,6 +104,12 @@ namespace OutOfOffice.EditorTools
                 if (spec.SharedMaterial == null)
                 {
                     ConfigureTexture(TexturePath(spec.Name), spec.TextureSize);
+                    if (spec.Tintable)
+                    {
+                        BuildNeutralTexture(TexturePath(spec.Name), NeutralTexturePath(spec.Name));
+                        ConfigureTexture(NeutralTexturePath(spec.Name), spec.TextureSize);
+                    }
+
                     BuildMaterial(spec);
                 }
 
@@ -105,11 +125,16 @@ namespace OutOfOffice.EditorTools
         /// Gerçek model kuruluysa <paramref name="parent"/>'ın altına görsel olarak ekler ve true döner.
         /// Çarpışma şekli eklenmez; onu çağıran koyar.
         /// </summary>
-        public static bool TryAddModel(Transform parent, string prop, bool castShadows, Vector3 localPosition = default, float yaw = 0f)
+        /// <param name="tint">
+        /// Verilirse model bu renge boyanır (mesh'in kopyasının köşe rengine yazılır). Kopya
+        /// asset değildir: çağıran onu birleştirilmiş bir mesh'e katmalıdır (CombineByMaterial).
+        /// </param>
+        public static bool TryAddModel(Transform parent, string prop, bool castShadows, Vector3 localPosition = default, float yaw = 0f, Color? tint = null)
         {
             var mesh = LoadMesh(prop);
             var material = LoadMaterial(prop);
             if (mesh == null || material == null) return false;
+            if (tint.HasValue) mesh = Tinted(mesh, tint.Value);
 
             // Model iç içe prefab olarak değil düz mesh olarak eklenir: tek nesne, tek draw call;
             // üretici isterse aynı materyalli kopyaları tek mesh'te birleştirebilir.
@@ -134,7 +159,76 @@ namespace OutOfOffice.EditorTools
 
         static string ModelPath(string name) { return $"{ArtDir}/{name}.fbx"; }
         static string TexturePath(string name) { return $"{ArtDir}/{name}_BaseColor.png"; }
+        static string NeutralTexturePath(string name) { return $"{ArtDir}/{name}_Neutral.png"; }
         static string MaterialPath(string name) { return $"{ArtDir}/{name}.mat"; }
+
+        static Mesh Tinted(Mesh source, Color tint)
+        {
+            var mesh = Object.Instantiate(source);
+            mesh.name = source.name;
+            var colors = new Color32[mesh.vertexCount];
+            Color32 color = tint;
+            for (int i = 0; i < colors.Length; i++) colors[i] = color;
+            mesh.colors32 = colors;
+            return mesh;
+        }
+
+        /// <summary>
+        /// Kaynak dokunun açık ve renksiz kopyasını yazar. Kaynak dosya değişmez (onu model hattı
+        /// üretir), bu yüzden tekrar çalıştırmak aynı sonucu verir. Işıma maskesi (alfa) korunur.
+        /// </summary>
+        static void BuildNeutralTexture(string sourcePath, string targetPath)
+        {
+            // İçe aktarılmış doku okunamaz ve sıkıştırılmıştır; dosyanın kendisi okunur.
+            var texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            texture.LoadImage(File.ReadAllBytes(sourcePath));
+            var pixels = texture.GetPixels32();
+
+            // Gövdenin (ışımayan piksellerin) parlaklık aralığı: uçtaki %5'ler atılır.
+            var histogram = new int[256];
+            int body = 0;
+            foreach (var pixel in pixels)
+            {
+                if (pixel.a < 250) continue;
+                histogram[Luminance(pixel)]++;
+                body++;
+            }
+
+            int low = Percentile(histogram, body, 0.05f);
+            int high = Mathf.Max(low + 1, Percentile(histogram, body, 0.95f));
+
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                var pixel = pixels[i];
+                float value = Mathf.Lerp(NeutralFloor, NeutralCeiling, Mathf.InverseLerp(low, high, Luminance(pixel)));
+                var color = Color.Lerp(new Color(value, value, value), (Color)pixel, 1f - pixel.a / 255f);
+                color.a = pixel.a / 255f;
+                pixels[i] = color;
+            }
+
+            texture.SetPixels32(pixels);
+            File.WriteAllBytes(targetPath, texture.EncodeToPNG());
+            Object.DestroyImmediate(texture);
+            AssetDatabase.ImportAsset(targetPath);
+        }
+
+        static int Luminance(Color32 pixel)
+        {
+            return (pixel.r * 299 + pixel.g * 587 + pixel.b * 114) / 1000;
+        }
+
+        static int Percentile(int[] histogram, int total, float fraction)
+        {
+            int target = Mathf.RoundToInt(total * fraction);
+            int seen = 0;
+            for (int i = 0; i < histogram.Length; i++)
+            {
+                seen += histogram[i];
+                if (seen >= target) return i;
+            }
+
+            return histogram.Length - 1;
+        }
 
         static Mesh LoadMesh(string prop)
         {
@@ -217,7 +311,8 @@ namespace OutOfOffice.EditorTools
             }
 
             if (material.shader != shader) material.shader = shader;
-            material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(TexturePath(spec.Name)));
+            string texturePath = spec.Tintable ? NeutralTexturePath(spec.Name) : TexturePath(spec.Name);
+            material.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath));
             material.SetColor("_BaseColor", Color.white);
             material.SetFloat("_Smoothness", 0.2f);
             material.SetFloat("_Metallic", 0f);

@@ -24,8 +24,9 @@ namespace OutOfOffice.EditorTools
             var config = AssetDatabase.LoadAssetAtPath<GameConfig>(ConfigPath);
             var catalog = AssetDatabase.LoadAssetAtPath<ContentCatalog>(CatalogPath);
             var vfxLibrary = AssetDatabase.LoadAssetAtPath<VfxLibrary>(VfxLibraryPath);
-            if (config == null || catalog == null || vfxLibrary == null)
-                throw new System.InvalidOperationException("GameConfig, ContentCatalog ya da VfxLibrary bulunamadı.");
+            var sfxLibrary = AssetDatabase.LoadAssetAtPath<SfxLibrary>(SfxLibraryPath);
+            if (config == null || catalog == null || vfxLibrary == null || sfxLibrary == null)
+                throw new System.InvalidOperationException("GameConfig, ContentCatalog, VfxLibrary ya da SfxLibrary bulunamadı.");
 
             // ---- Işık, gökyüzü, sis, yansıma (PlaceholderContentBuilder.Atmosphere.cs)
             BuildAtmosphere();
@@ -34,10 +35,10 @@ namespace OutOfOffice.EditorTools
             var cameraObject = new GameObject("Main Camera") { tag = "MainCamera" };
             var camera = cameraObject.AddComponent<Camera>();
             camera.clearFlags = CameraClearFlags.Skybox;
-            camera.backgroundColor = FogColor;
+            camera.backgroundColor = SkyHorizon;
             camera.fieldOfView = config.baseFieldOfView;
-            // Sis 125 m'de tamamen kapanır; ötesini çizmeye gerek yok.
-            camera.farClipPlane = 140f;
+            // Sis 135 m'de tamamen kapanır; ötesini çizmeye gerek yok.
+            camera.farClipPlane = 145f;
             camera.allowHDR = true;
             cameraObject.AddComponent<AudioListener>();
             cameraObject.transform.position = config.menuCameraOffset;
@@ -47,8 +48,6 @@ namespace OutOfOffice.EditorTools
             cameraData.renderPostProcessing = true;
             // FXAA: render ölçeği düşük mobilde kenar tırtıklarını ucuza yumuşatır.
             cameraData.antialiasing = AntialiasingMode.FastApproximateAntialiasing;
-
-            BuildRain(cameraObject.transform);
 
             // ---- Post-processing
             var volume = new GameObject("Global Volume").AddComponent<Volume>();
@@ -84,6 +83,7 @@ namespace OutOfOffice.EditorTools
             serialized.FindProperty("config").objectReferenceValue = config;
             serialized.FindProperty("catalog").objectReferenceValue = catalog;
             serialized.FindProperty("vfxLibrary").objectReferenceValue = vfxLibrary;
+            serialized.FindProperty("sfxLibrary").objectReferenceValue = sfxLibrary;
             serialized.FindProperty("gameCamera").objectReferenceValue = camera;
             serialized.FindProperty("uiDocument").objectReferenceValue = document;
             serialized.ApplyModifiedPropertiesWithoutUndo();

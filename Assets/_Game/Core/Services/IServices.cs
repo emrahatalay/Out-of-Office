@@ -19,6 +19,19 @@ namespace OutOfOffice.Core.Services
         string Get(string key);
     }
 
+    /// <summary>
+    /// Arayüzün göstereceği içerik görselleri. Arayüz veri katmanını tanımaz ve sinyaller nesne
+    /// taşımaz; bu yüzden görsel, sinyaldeki kimlikle buradan sorulur.
+    /// </summary>
+    public interface IArtProvider
+    {
+        /// <summary>Kimliği verilen mesleğin portresi; tanımlı değilse null.</summary>
+        Texture2D GetCharacterPortrait(string characterId);
+
+        /// <summary>Kimliği verilen mağaza ürününün görseli; tanımlı değilse null.</summary>
+        Texture2D GetStoreIcon(string itemId);
+    }
+
     /// <summary>Sık üretilip yok edilen nesneler (engel, altın, zemin) buradan alınır.</summary>
     public interface IPoolService
     {

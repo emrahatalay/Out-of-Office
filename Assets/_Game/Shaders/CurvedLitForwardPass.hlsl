@@ -10,6 +10,9 @@ struct Attributes
     float3 normalOS : NORMAL;
     float2 texcoord : TEXCOORD0;
     float2 staticLightmapUV : TEXCOORD1;
+    // Köşe rengi yüzeyi boyar (ör. aynı kule modelinin farklı renkli kopyaları). Köşe rengi
+    // olmayan mesh'te Unity beyaz verir, yani hiçbir şey değişmez.
+    half4 color : COLOR;
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -18,6 +21,7 @@ struct Varyings
     float2 uv : TEXCOORD0;
     float3 positionWS : TEXCOORD1;
     float3 normalWS : TEXCOORD2;
+    half3 tint : TEXCOORD3;
 #ifdef _ADDITIONAL_LIGHTS_VERTEX
     half4 fogFactorAndVertexLight : TEXCOORD5; // x: sis, yzw: köşe ışığı
 #else
@@ -54,6 +58,7 @@ Varyings CurvedLitVertex(Attributes input)
     output.uv = TRANSFORM_TEX(input.texcoord, _BaseMap);
     output.positionWS = vertexInput.positionWS;
     output.normalWS = normalWS;
+    output.tint = input.color.rgb;
 
     OUTPUT_LIGHTMAP_UV(input.staticLightmapUV, unity_LightmapST, output.staticLightmapUV);
     OUTPUT_SH4(vertexInput.positionWS, output.normalWS.xyz, GetWorldSpaceNormalizeViewDir(vertexInput.positionWS), output.vertexSH, output.probeOcclusion);
@@ -77,8 +82,10 @@ half4 CurvedLitFragment(Varyings input) : SV_Target
 
     half4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv);
     half4 albedo = baseMap * _BaseColor;
+    albedo.rgb *= input.tint;
     // Işıma maskesi dokunun alfasındadır (1 = ışımaz, 0 = tam ışır): neon çizgiler ayrı doku
-    // olmadan parlar. Alfasız dokuda alfa 1 okunur, yani ışıma olmaz.
+    // olmadan parlar. Alfasız dokuda alfa 1 okunur, yani ışıma olmaz. Işıma boyanmaz: pencere
+    // ve neon kendi renginde kalır.
     half3 glow = baseMap.rgb * ((1.0h - baseMap.a) * _GlowStrength);
 
     SurfaceData surfaceData = (SurfaceData)0;

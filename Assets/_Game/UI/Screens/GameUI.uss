@@ -1,13 +1,24 @@
+/* Son Mesai arayüz teması. Kurallar: docs/TASARIM.md.
+   Biçim dili oyunla aynıdır: kalın koyu dış çizgi, tombul köşe, altta kalın taban, üstte parlama.
+   Bu biçimli parçalar 9 dilimli görseldir (UI/Sprites; UiKitBuilder üretir, 2x çizilir:
+   -unity-slice-scale 0.5px). Düz oyuklar ve çipler USS rengiyle çizilir. */
+
 :root {
     --color-primary: #ff4d5f;
     --color-accent: #ffc83d;
     --color-tech: #4ee3ff;
-    --color-text: #f3f6ff;
-    --color-muted: #93a0c2;
-    --color-surface: rgba(12, 17, 36, 0.74);
-    --color-surface-strong: rgba(18, 25, 52, 0.92);
-    --color-border: rgba(160, 180, 255, 0.22);
-    --color-overlay: rgba(5, 8, 18, 0.78);
+    --color-text: #ffffff;
+    --color-muted: #b9c2f2;
+    --color-ink: #12163d;
+    --color-ink-soft: rgba(18, 22, 61, 0.88);
+    --color-ink-shadow: rgba(18, 22, 61, 0.5);
+    --color-well: rgba(14, 18, 58, 0.5);
+    --color-line: rgba(255, 255, 255, 0.2);
+    --color-on-accent: #3a2600;
+    --color-overlay: rgba(14, 18, 58, 0.74);
+    --color-locked: #9aa2cf;
+    --color-showcase: #8794f2;
+    --color-clear: rgba(0, 0, 0, 0);
     --space-xs: 8px;
     --space-sm: 16px;
     --space-md: 28px;
@@ -15,12 +26,26 @@
     --font-bold: url("project://database/Assets/_Game/UI/Fonts/ChakraPetch-Bold.ttf");
     --font-semibold: url("project://database/Assets/_Game/UI/Fonts/ChakraPetch-SemiBold.ttf");
     --font-medium: url("project://database/Assets/_Game/UI/Fonts/ChakraPetch-Medium.ttf");
+    --sprite-panel: url("project://database/Assets/_Game/UI/Sprites/panel.png");
+    --sprite-slot: url("project://database/Assets/_Game/UI/Sprites/slot.png");
+    --sprite-primary: url("project://database/Assets/_Game/UI/Sprites/btn_primary.png");
+    --sprite-accent: url("project://database/Assets/_Game/UI/Sprites/btn_accent.png");
+    --sprite-secondary: url("project://database/Assets/_Game/UI/Sprites/btn_secondary.png");
+    --sprite-frame: url("project://database/Assets/_Game/UI/Sprites/frame_selected.png");
+    --sprite-spot: url("project://database/Assets/_Game/UI/Sprites/spot.png");
 }
 
 .root {
     flex-grow: 1;
     color: var(--color-text);
     -unity-font-definition: var(--font-semibold);
+}
+
+/* Sahnenin (gökyüzü, yol) üstünde çıplak duran yazı: koyu dış çizgi ve gölgeyle okunur. */
+.over-scene {
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: var(--color-ink);
+    text-shadow: 0 7px 0 var(--color-ink-shadow);
 }
 
 /* ---------------------------------------------------------------- Ekranlar */
@@ -65,28 +90,6 @@
     flex-grow: 1;
 }
 
-.fade {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 620px;
-}
-
-.fade-top {
-    top: 0;
-    background-image: url("project://database/Assets/_Game/UI/Sprites/fade_top.png");
-}
-
-.fade-hud {
-    height: 360px;
-}
-
-.fade-bottom {
-    bottom: 0;
-    height: 760px;
-    background-image: url("project://database/Assets/_Game/UI/Sprites/fade_bottom.png");
-}
-
 /* ---------------------------------------------------------------- İkonlar */
 
 .icon {
@@ -106,9 +109,8 @@
     height: 72px;
 }
 
-.icon-coin {
-    background-image: url("project://database/Assets/_Game/UI/Icons/coin.svg");
-    -unity-background-image-tint-color: var(--color-accent);
+.icon-gap {
+    margin-left: 18px;
 }
 
 .icon-trophy {
@@ -148,6 +150,81 @@
     background-image: url("project://database/Assets/_Game/UI/Icons/chevron-right.svg");
 }
 
+.icon-person {
+    background-image: url("project://database/Assets/_Game/UI/Icons/person.svg");
+}
+
+.icon-lock {
+    background-image: url("project://database/Assets/_Game/UI/Icons/lock.svg");
+}
+
+.icon-package {
+    background-image: url("project://database/Assets/_Game/UI/Icons/package.svg");
+    -unity-background-image-tint-color: var(--color-muted);
+}
+
+/* Sarı butonun üstündeki çizgi ikon koyu olur (beyaz ikon sarıda kaybolur). */
+.btn-accent > .icon,
+.buy-button > .icon {
+    -unity-background-image-tint-color: var(--color-on-accent);
+}
+
+/* Eşya ikonları çizgi ikon değil, eşyanın gerçek görselidir (UI/Items; mağazadakiyle aynı):
+   altın ve sandalye oyundaki modelinden çekilir, giriş kartı temayla çizilir. Boyanmazlar;
+   küçük boyda okunsun diye yerleşimdeki yerlerinden biraz taşarlar.
+   Not: sınıf adı "icon-key" kaldı; görseli personel giriş kartıdır. */
+.icon-coin,
+.icon-key,
+.icon-chair {
+    width: 60px;
+    height: 60px;
+    margin: -8px 0 -8px -8px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.icon-coin {
+    background-image: url("project://database/Assets/_Game/UI/Items/Coin.png");
+}
+
+.icon-key {
+    background-image: url("project://database/Assets/_Game/UI/Items/AccessCard.png");
+}
+
+/* Sandalye koyu renklidir; koyu çipte kaybolmasın diye açık bir diskin üstünde durur. */
+.icon-chair {
+    background-color: var(--color-showcase);
+    border-radius: 30px;
+    background-image: url("project://database/Assets/_Game/UI/Items/OfficeChair.png");
+}
+
+.icon-coin,
+.icon-key,
+.icon-chair,
+.btn-accent > .icon-coin,
+.btn-accent > .icon-key,
+.btn-accent > .icon-chair,
+.buy-button > .icon-coin,
+.buy-button > .icon-key,
+.buy-button > .icon-chair {
+    -unity-background-image-tint-color: var(--color-text);
+}
+
+.icon-small.icon-coin,
+.icon-small.icon-key,
+.icon-small.icon-chair {
+    width: 44px;
+    height: 44px;
+    margin: -6px 0 -6px -6px;
+}
+
+.icon-gap.icon-coin,
+.icon-gap.icon-key,
+.icon-gap.icon-chair {
+    margin-left: 12px;
+}
+
 /* ---------------------------------------------------------------- Üst çubuk ve çipler */
 
 .top-bar {
@@ -157,25 +234,37 @@
     align-self: stretch;
 }
 
+.chip-group {
+    flex-direction: row;
+}
+
 .chip {
     flex-direction: row;
     align-items: center;
-    height: 84px;
+    height: 88px;
     margin: 0;
-    padding: 0 var(--space-md) 0 20px;
-    background-color: var(--color-surface);
-    border-width: 2px;
-    border-color: var(--color-border);
-    border-radius: 42px;
+    padding: 0 30px 0 20px;
+    background-color: var(--color-ink-soft);
+    border-width: 3px;
+    border-color: var(--color-line);
+    border-radius: 44px;
     transition-duration: 0.1s;
 }
 
+.chip--next {
+    margin-left: var(--space-sm);
+}
+
 .chip-button:hover {
-    background-color: var(--color-surface-strong);
+    background-color: var(--color-ink);
 }
 
 .chip-button:active {
     scale: 0.94 0.94;
+}
+
+.chip-button:disabled {
+    opacity: 0.45;
 }
 
 .chip-label {
@@ -200,57 +289,72 @@
     scale: 1.16 1.16;
 }
 
+/* Kare ikon butonu (duraklat, önceki / sonraki): mavi buton görselinin küçük hali. */
 .icon-button {
     align-items: center;
     justify-content: center;
-    width: 96px;
-    height: 96px;
+    flex-shrink: 0;
+    width: 124px;
+    height: 132px;
     margin: 0;
-    padding: 0;
-    background-color: var(--color-surface);
-    border-width: 2px;
-    border-color: var(--color-border);
-    border-radius: 48px;
+    padding: 0 0 12px 0;
+    border-width: 0;
+    background-color: var(--color-clear);
+    background-image: var(--sprite-secondary);
+    -unity-slice-left: 96;
+    -unity-slice-top: 124;
+    -unity-slice-right: 96;
+    -unity-slice-bottom: 114;
+    -unity-slice-scale: 0.5px;
     transition-duration: 0.1s;
 }
 
-.icon-button:hover {
-    background-color: var(--color-surface-strong);
-}
-
 .icon-button:active {
-    scale: 0.9 0.9;
+    scale: 0.92 0.92;
 }
 
 /* ---------------------------------------------------------------- Logo */
 
 .logo {
     align-items: center;
-    margin-top: 72px;
+    margin-top: 64px;
 }
 
 .logo-title {
     margin: 0;
     padding: 0;
     color: var(--color-text);
-    font-size: 132px;
-    letter-spacing: 6px;
+    /* İngilizce başlık (13 harf) da tek satıra sığacak boyut. */
+    font-size: 108px;
+    letter-spacing: 2px;
     -unity-font-definition: var(--font-bold);
     -unity-text-align: middle-center;
+    -unity-text-outline-width: 4px;
+    text-shadow: 0 10px 0 var(--color-ink-shadow);
     white-space: normal;
 }
 
 .logo-rule {
-    width: 160px;
-    height: 8px;
-    margin: var(--space-sm) 0;
+    width: 180px;
+    height: 12px;
+    margin: 6px 0 var(--space-sm) 0;
     background-color: var(--color-primary);
-    border-radius: 4px;
+    border-width: 3px;
+    border-color: var(--color-ink);
+    border-radius: 8px;
+}
+
+.logo-tag {
+    padding: 10px 30px;
+    background-color: var(--color-ink-soft);
+    border-radius: 34px;
 }
 
 .logo-tagline {
-    color: var(--color-muted);
-    font-size: 38px;
+    margin: 0;
+    padding: 0;
+    color: var(--color-text);
+    font-size: 36px;
     -unity-font-definition: var(--font-medium);
     -unity-text-align: middle-center;
     white-space: normal;
@@ -266,54 +370,186 @@
     -unity-text-align: middle-center;
 }
 
-.eyebrow--danger {
-    color: var(--color-primary);
+.eyebrow--start {
+    -unity-text-align: middle-left;
 }
 
-/* ---------------------------------------------------------------- Kart */
+.eyebrow--left {
+    margin-left: 10px;
+}
 
-.card {
+.eyebrow--danger {
+    margin-top: var(--space-sm);
+    color: var(--color-primary);
+    -unity-font-definition: var(--font-bold);
+}
+
+.eyebrow--over-scene {
+    color: var(--color-text);
+    -unity-font-definition: var(--font-bold);
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: var(--color-ink);
+    text-shadow: 0 4px 0 var(--color-ink-shadow);
+}
+
+/* ---------------------------------------------------------------- Panel, şerit başlık */
+
+.card,
+.page--panel {
     align-self: stretch;
     align-items: center;
-    margin: 0 -20px;
-    padding: 56px 60px 64px 60px;
-    background-image: url("project://database/Assets/_Game/UI/Sprites/card.png");
-    -unity-slice-left: 128;
-    -unity-slice-top: 128;
-    -unity-slice-right: 128;
-    -unity-slice-bottom: 128;
+    background-image: var(--sprite-panel);
+    -unity-slice-left: 114;
+    -unity-slice-top: 114;
+    -unity-slice-right: 114;
+    -unity-slice-bottom: 130;
     -unity-slice-scale: 0.5px;
 }
 
-.card--dialog {
-    padding-bottom: 44px;
+.card {
+    margin: 0 -15px;
+    padding: 0 60px 72px 60px;
 }
 
-.selector-row {
+.card--dialog {
+    padding-bottom: 64px;
+}
+
+/* Panelin üst kenarına oturan başlık şeridi. */
+.ribbon {
+    align-items: center;
+    justify-content: center;
+    min-width: 520px;
+    height: 136px;
+    margin: -46px 0 var(--space-sm) 0;
+    padding: 0 76px 14px 76px;
+    background-image: var(--sprite-secondary);
+    -unity-slice-left: 96;
+    -unity-slice-top: 124;
+    -unity-slice-right: 96;
+    -unity-slice-bottom: 114;
+    -unity-slice-scale: 0.5px;
+}
+
+.ribbon--danger {
+    background-image: var(--sprite-primary);
+}
+
+.ribbon-label {
+    margin: 0;
+    padding: 0;
+    color: var(--color-text);
+    font-size: 56px;
+    letter-spacing: 3px;
+    -unity-font-definition: var(--font-bold);
+    -unity-text-align: middle-center;
+    text-shadow: 0 4px 0 var(--color-ink-shadow);
+}
+
+.dialog-title {
+    margin: var(--space-xs) 0 var(--space-sm) 0;
+    padding: 0;
+    font-size: 76px;
+    letter-spacing: 2px;
+    -unity-font-definition: var(--font-bold);
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.dialog-group {
+    align-self: stretch;
+    align-items: center;
+}
+
+.dialog-hint {
+    margin: var(--space-xs) 0 var(--space-sm) 0;
+    padding: 0;
+    color: var(--color-muted);
+    font-size: 36px;
+    -unity-font-definition: var(--font-medium);
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+/* ---------------------------------------------------------------- Portre
+   Zemin rengi mesleğin tema rengidir; veriden geldiği için sunucu satır içi verir. */
+
+.portrait-tile {
+    flex-shrink: 0;
+    overflow: hidden;
+    background-color: var(--color-ink);
+    border-width: 5px;
+    border-color: var(--color-ink);
+    border-radius: 34px;
+}
+
+.portrait-spot {
+    position: absolute;
+    left: -10%;
+    top: -10%;
+    right: -10%;
+    bottom: -10%;
+    background-image: var(--sprite-spot);
+}
+
+.portrait-image {
+    position: absolute;
+    left: 0;
+    top: 4px;
+    right: 0;
+    bottom: -4px;
+    background-size: contain;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+}
+
+.portrait-image--locked {
+    -unity-background-image-tint-color: var(--color-locked);
+}
+
+/* ---------------------------------------------------------------- Ana sayfa: isim plakası */
+
+.nameplate {
     flex-direction: row;
     align-items: center;
     align-self: stretch;
-    margin-top: var(--space-sm);
+    margin: 0 -7px;
+    padding: 26px 30px 36px 30px;
+    background-image: var(--sprite-slot);
+    -unity-slice-left: 72;
+    -unity-slice-top: 72;
+    -unity-slice-right: 72;
+    -unity-slice-bottom: 84;
+    -unity-slice-scale: 0.5px;
+}
+
+.nameplate-portrait {
+    width: 156px;
+    height: 156px;
+    margin-left: 22px;
 }
 
 .selector-info {
     flex-grow: 1;
-    align-items: center;
+    flex-shrink: 1;
+    align-items: flex-start;
+    margin: 0 var(--space-sm) 0 24px;
 }
 
 .selector-name {
     margin: 0;
     padding: 0;
-    font-size: 68px;
+    font-size: 64px;
     -unity-font-definition: var(--font-bold);
+    text-shadow: 0 4px 0 var(--color-ink-shadow);
 }
 
 .ability-chip {
     flex-direction: row;
     align-items: center;
-    margin-top: var(--space-xs);
+    margin-top: 4px;
     padding: 6px 22px 6px 14px;
-    background-color: rgba(78, 227, 255, 0.14);
+    background-color: var(--color-well);
     border-radius: 26px;
 }
 
@@ -322,9 +558,18 @@
 }
 
 .ability-chip-label {
-    margin-left: 6px;
+    margin: 0 0 0 6px;
+    padding: 0;
     color: var(--color-tech);
     font-size: 32px;
+}
+
+.accessory-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    align-self: stretch;
+    margin-top: var(--space-sm);
 }
 
 /* ---------------------------------------------------------------- Butonlar */
@@ -334,39 +579,43 @@
     align-items: center;
     justify-content: center;
     align-self: stretch;
-    height: 150px;
-    margin: var(--space-sm) -8px 0 -8px;
-    padding: 0 0 14px 0;
+    height: 160px;
+    margin: var(--space-sm) -11px 0 -11px;
+    padding: 0 0 18px 0;
     border-width: 0;
-    background-color: rgba(0, 0, 0, 0);
-    -unity-slice-left: 108;
-    -unity-slice-top: 120;
-    -unity-slice-right: 108;
-    -unity-slice-bottom: 116;
+    background-color: var(--color-clear);
+    -unity-slice-left: 96;
+    -unity-slice-top: 124;
+    -unity-slice-right: 96;
+    -unity-slice-bottom: 114;
     -unity-slice-scale: 0.5px;
     transition-duration: 0.1s;
 }
 
-.btn:hover {
-    -unity-background-image-tint-color: #e9edff;
-}
-
 .btn:active {
     scale: 0.96 0.96;
-    -unity-background-image-tint-color: #c9cfe6;
+    -unity-background-image-tint-color: #d5d9ee;
+}
+
+.btn:disabled {
+    opacity: 0.5;
 }
 
 .btn-primary {
-    background-image: url("project://database/Assets/_Game/UI/Sprites/btn_primary.png");
+    background-image: var(--sprite-primary);
 }
 
 .btn-secondary {
-    height: 132px;
-    background-image: url("project://database/Assets/_Game/UI/Sprites/btn_secondary.png");
+    height: 144px;
+    background-image: var(--sprite-secondary);
+}
+
+.btn-accent {
+    background-image: var(--sprite-accent);
 }
 
 .btn-large {
-    height: 190px;
+    height: 200px;
     margin-top: var(--space-md);
 }
 
@@ -374,19 +623,67 @@
     margin: 0 0 0 16px;
     padding: 0;
     color: var(--color-text);
-    font-size: 48px;
+    font-size: 50px;
     letter-spacing: 3px;
     -unity-font-definition: var(--font-bold);
+    text-shadow: 0 4px 0 rgba(18, 22, 61, 0.35);
 }
 
 .btn-label-large {
-    font-size: 72px;
+    font-size: 76px;
     letter-spacing: 8px;
 }
 
-.btn-large > .icon {
+.btn-label-dark {
+    color: var(--color-on-accent);
+    text-shadow: 0 0 0 var(--color-clear);
+}
+
+.btn-large > .icon-play {
     width: 60px;
     height: 60px;
+}
+
+.btn-large > .icon-coin {
+    width: 76px;
+    height: 76px;
+}
+
+/* Küçük satın alma butonu (mağaza satırı, aksesuar): sarı buton görselinin küçük hali. */
+.buy-button {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    height: 108px;
+    min-width: 210px;
+    margin: 0 -8px 0 0;
+    padding: 0 30px 12px 30px;
+    border-width: 0;
+    background-color: var(--color-clear);
+    background-image: var(--sprite-accent);
+    -unity-slice-left: 96;
+    -unity-slice-top: 124;
+    -unity-slice-right: 96;
+    -unity-slice-bottom: 114;
+    -unity-slice-scale: 0.42px;
+    transition-duration: 0.1s;
+}
+
+.buy-button:active {
+    scale: 0.94 0.94;
+}
+
+.buy-button:disabled {
+    opacity: 0.45;
+}
+
+.buy-label {
+    margin: 0 0 0 10px;
+    padding: 0;
+    color: var(--color-on-accent);
+    font-size: 40px;
+    -unity-font-definition: var(--font-bold);
 }
 
 /* ---------------------------------------------------------------- HUD */
@@ -398,20 +695,20 @@
 .score-value {
     margin: -8px 0 0 0;
     padding: 0;
-    font-size: 104px;
+    font-size: 108px;
     -unity-font-definition: var(--font-bold);
 }
 
 .effect-badge {
     flex-direction: row;
     align-items: center;
-    height: 72px;
+    height: 76px;
     margin-top: var(--space-md);
     padding: 0 var(--space-md) 0 18px;
-    background-color: rgba(78, 227, 255, 0.16);
-    border-width: 2px;
-    border-color: rgba(78, 227, 255, 0.55);
-    border-radius: 36px;
+    background-color: var(--color-ink-soft);
+    border-width: 3px;
+    border-color: var(--color-tech);
+    border-radius: 38px;
 }
 
 .effect-badge > .icon {
@@ -449,8 +746,9 @@
     height: 220px;
     margin: 0;
     padding: 0;
-    background-color: var(--color-surface-strong);
-    border-width: 0;
+    background-color: var(--color-ink-soft);
+    border-width: 6px;
+    border-color: var(--color-ink);
     border-radius: 110px;
     transition-duration: 0.1s;
 }
@@ -460,7 +758,7 @@
 }
 
 .ability-button:disabled {
-    opacity: 0.75;
+    opacity: 0.8;
 }
 
 .ability-button > .icon {
@@ -478,7 +776,7 @@
     right: 0;
     bottom: 0;
     --ring-width: 12;
-    --ring-track-color: rgba(255, 255, 255, 0.12);
+    --ring-track-color: rgba(255, 255, 255, 0.14);
     --ring-fill-color: #4ee3ff;
 }
 
@@ -490,36 +788,31 @@
     -unity-text-align: middle-center;
 }
 
-/* ---------------------------------------------------------------- Diyaloglar */
-
-.dialog-title {
-    margin: var(--space-xs) 0 var(--space-sm) 0;
-    padding: 0;
-    font-size: 76px;
-    letter-spacing: 2px;
-    -unity-font-definition: var(--font-bold);
-    -unity-text-align: middle-center;
-    white-space: normal;
-}
+/* ---------------------------------------------------------------- Oyun sonu */
 
 .final-score {
-    margin: 0;
+    margin: var(--space-xs) 0 0 0;
     padding: 0;
     color: var(--color-accent);
     font-size: 168px;
     -unity-font-definition: var(--font-bold);
+    -unity-text-outline-width: 3px;
+    -unity-text-outline-color: var(--color-ink);
+    text-shadow: 0 8px 0 var(--color-ink-shadow);
 }
 
 .new-best {
     padding: 8px var(--space-md);
     background-color: var(--color-accent);
-    border-radius: 30px;
+    border-width: 4px;
+    border-color: var(--color-ink);
+    border-radius: 34px;
 }
 
 .new-best-label {
     margin: 0;
     padding: 0;
-    color: #1a1405;
+    color: var(--color-on-accent);
     font-size: 34px;
     -unity-font-definition: var(--font-bold);
 }
@@ -534,11 +827,11 @@
 .stat {
     flex-direction: row;
     align-items: center;
-    height: 84px;
+    height: 88px;
     margin: 0 var(--space-xs);
     padding: 0 var(--space-md) 0 20px;
-    background-color: rgba(255, 255, 255, 0.06);
-    border-radius: 42px;
+    background-color: var(--color-well);
+    border-radius: 44px;
 }
 
 .stat-label {
@@ -554,50 +847,6 @@
     -unity-font-definition: var(--font-bold);
 }
 
-/* ---------------------------------------------------------------- Giriş kartı (devam hakkı), paket ve ödüller
-   Not: sınıf adı "icon-key" kaldı; görseli personel giriş kartıdır. */
-
-.icon-key {
-    background-image: url("project://database/Assets/_Game/UI/Icons/key.svg");
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    -unity-background-image-tint-color: var(--color-tech);
-}
-
-.icon-key-dark {
-    margin-left: 22px;
-    -unity-background-image-tint-color: #04222e;
-}
-
-.icon-package {
-    background-image: url("project://database/Assets/_Game/UI/Icons/package.svg");
-    -unity-background-image-tint-color: var(--color-muted);
-}
-
-.chip-group {
-    flex-direction: row;
-}
-
-.chip--next {
-    margin-left: var(--space-sm);
-}
-
-.dialog-group {
-    align-self: stretch;
-    align-items: center;
-}
-
-.dialog-hint {
-    margin: 0 0 var(--space-sm) 0;
-    padding: 0;
-    color: var(--color-muted);
-    font-size: 36px;
-    -unity-font-definition: var(--font-medium);
-    -unity-text-align: middle-center;
-    white-space: normal;
-}
-
 .rewards-block {
     align-self: stretch;
     align-items: center;
@@ -609,10 +858,6 @@
     align-items: center;
 }
 
-.eyebrow--left {
-    margin-left: 10px;
-}
-
 .rewards-row {
     flex-direction: row;
     flex-wrap: wrap;
@@ -622,7 +867,8 @@
 
 .reward {
     margin-top: var(--space-xs);
-    background-color: rgba(78, 227, 255, 0.12);
+    border-width: 3px;
+    border-color: var(--color-tech);
 }
 
 /* ---------------------------------------------------------------- Sayfalar ve sekme çubuğu */
@@ -631,29 +877,27 @@
     flex-grow: 1;
     align-self: stretch;
     align-items: center;
+    margin-bottom: var(--space-sm);
 }
 
+/* Panel içeriği kadar yer kaplar; altında sahne görünür. */
 .page--panel {
-    margin: var(--space-md) -20px 0 -20px;
-    padding: 64px 56px 72px 56px;
-    background-image: url("project://database/Assets/_Game/UI/Sprites/card.png");
-    -unity-slice-left: 128;
-    -unity-slice-top: 128;
-    -unity-slice-right: 128;
-    -unity-slice-bottom: 128;
-    -unity-slice-scale: 0.5px;
+    flex-grow: 0;
+    margin: 74px -15px 0 -15px;
+    padding: 0 46px 72px 46px;
 }
 
 .tab-bar {
     flex-direction: row;
     align-self: stretch;
-    height: 156px;
-    margin-top: var(--space-sm);
-    padding: 10px;
-    background-color: var(--color-surface-strong);
-    border-width: 2px;
-    border-color: var(--color-border);
-    border-radius: 44px;
+    height: 168px;
+    /* Sayfa kısa olsa da sekme çubuğu ekranın altında kalır. */
+    margin-top: auto;
+    padding: 10px 10px 6px 10px;
+    background-color: var(--color-ink);
+    border-width: 4px;
+    border-color: var(--color-line);
+    border-radius: 48px;
 }
 
 .tab {
@@ -662,16 +906,16 @@
     align-items: center;
     justify-content: center;
     margin: 0;
-    padding: 0;
-    background-color: rgba(0, 0, 0, 0);
+    padding: 0 0 8px 0;
+    background-color: var(--color-clear);
     border-width: 0;
-    border-radius: 34px;
+    border-radius: 36px;
     transition-duration: 0.12s;
 }
 
 .tab:hover,
 .tab:focus {
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: var(--color-clear);
 }
 
 .tab:active {
@@ -692,26 +936,24 @@
     -unity-font-definition: var(--font-bold);
 }
 
-.tab--active,
-.tab--active:hover,
-.tab--active:focus {
-    background-color: var(--color-accent);
+/* Etkin sekme: sarı buton görseli, çubuktan hafifçe yukarı taşar. */
+.tab--active {
+    margin: -14px 0 -6px 0;
+    padding-bottom: 18px;
+    background-image: var(--sprite-accent);
+    -unity-slice-left: 96;
+    -unity-slice-top: 124;
+    -unity-slice-right: 96;
+    -unity-slice-bottom: 114;
+    -unity-slice-scale: 0.46px;
 }
 
 .tab--active > .tab-icon {
-    -unity-background-image-tint-color: #1a1405;
+    -unity-background-image-tint-color: var(--color-on-accent);
 }
 
 .tab--active > .tab-label {
-    color: #1a1405;
-}
-
-.icon-person {
-    background-image: url("project://database/Assets/_Game/UI/Icons/person.svg");
-}
-
-.icon-lock {
-    background-image: url("project://database/Assets/_Game/UI/Icons/lock.svg");
+    color: var(--color-on-accent);
 }
 
 /* ---------------------------------------------------------------- Koleksiyon kartları */
@@ -721,68 +963,75 @@
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
-    margin-top: var(--space-sm);
+    margin-top: var(--space-xs);
 }
 
 .char-card {
     align-items: center;
-    width: 46%;
-    margin: 2%;
-    padding: 26px 16px 22px 16px;
-    background-color: rgba(255, 255, 255, 0.06);
-    border-width: 5px;
-    border-color: rgba(160, 180, 255, 0.28);
-    border-radius: 44px;
+    width: 47%;
+    margin: 1.5%;
+    padding: 24px 24px 36px 24px;
+    border-width: 0;
+    background-color: var(--color-clear);
+    background-image: var(--sprite-slot);
+    -unity-slice-left: 72;
+    -unity-slice-top: 72;
+    -unity-slice-right: 72;
+    -unity-slice-bottom: 84;
+    -unity-slice-scale: 0.5px;
     transition-duration: 0.12s;
-}
-
-.char-card:hover,
-.char-card:focus {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(160, 180, 255, 0.28);
 }
 
 .char-card:active {
     scale: 0.96 0.96;
 }
 
-.char-card--selected,
-.char-card--selected:hover,
-.char-card--selected:focus {
-    background-color: rgba(255, 200, 61, 0.14);
-    border-color: var(--color-accent);
+.char-portrait-tile {
+    align-self: stretch;
+    height: 300px;
+    margin-bottom: var(--space-sm);
 }
 
-.char-avatar {
+/* Otomatikleşen mesleğin portresi soluklaşır, köşesine kilit gelir (yüz tanınır kalır). */
+.char-lock {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 14px;
+    background-color: rgba(18, 22, 61, 0.22);
+}
+
+.char-lock-badge {
     align-items: center;
     justify-content: center;
-    width: 190px;
-    height: 190px;
-    margin-bottom: var(--space-sm);
-    border-width: 6px;
-    border-color: rgba(255, 255, 255, 0.35);
-    border-radius: 95px;
+    width: 88px;
+    height: 88px;
+    background-color: var(--color-ink);
+    border-width: 5px;
+    border-color: var(--color-primary);
+    border-radius: 44px;
 }
 
-.char-avatar--locked {
-    border-color: rgba(255, 77, 95, 0.7);
-}
-
-.char-avatar-icon {
-    width: 110px;
-    height: 110px;
+.char-lock-badge > .icon {
+    width: 48px;
+    height: 48px;
 }
 
 .char-name {
     margin: 0;
     padding: 0;
     color: var(--color-text);
-    font-size: 44px;
+    font-size: 46px;
     -unity-font-definition: var(--font-bold);
+    text-shadow: 0 4px 0 var(--color-ink-shadow);
 }
 
 .char-sub {
-    margin: 4px 0 0 0;
+    margin: 2px 0 0 0;
     padding: 0;
     color: var(--color-tech);
     font-size: 30px;
@@ -790,12 +1039,17 @@
 
 .char-sub--locked {
     color: var(--color-primary);
+    letter-spacing: 2px;
+    -unity-font-definition: var(--font-bold);
 }
 
 .char-price {
     flex-direction: row;
     align-items: center;
     margin-top: 10px;
+    padding: 6px 22px 6px 14px;
+    background-color: var(--color-ink);
+    border-radius: 28px;
 }
 
 .char-price-value {
@@ -806,32 +1060,102 @@
     -unity-font-definition: var(--font-bold);
 }
 
-/* ---------------------------------------------------------------- Mağaza */
-
-.icon-light {
-    -unity-background-image-tint-color: var(--color-text);
+/* Seçili kart: sarı ışıyan çerçeve ve köşesinde "SEÇİLİ" etiketi. */
+.char-frame {
+    position: absolute;
+    left: -3px;
+    top: -3px;
+    right: -3px;
+    bottom: -1px;
+    display: none;
+    background-image: var(--sprite-frame);
+    -unity-slice-left: 88;
+    -unity-slice-top: 88;
+    -unity-slice-right: 88;
+    -unity-slice-bottom: 88;
+    -unity-slice-scale: 0.5px;
 }
+
+.char-check {
+    position: absolute;
+    left: 30px;
+    top: -18px;
+    display: none;
+    padding: 4px 20px;
+    background-color: var(--color-accent);
+    border-width: 4px;
+    border-color: var(--color-ink);
+    border-radius: 26px;
+}
+
+.char-check-label {
+    margin: 0;
+    padding: 0;
+    color: var(--color-on-accent);
+    font-size: 26px;
+    letter-spacing: 2px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.char-card--selected > .char-frame,
+.char-card--selected > .char-check {
+    display: flex;
+}
+
+/* ---------------------------------------------------------------- Mağaza */
 
 .store-list {
     align-self: stretch;
-    margin: var(--space-md) 0 var(--space-xs) 0;
+    margin: var(--space-sm) 0 0 0;
 }
 
 .store-row {
     flex-direction: row;
     align-items: center;
-    margin-bottom: var(--space-sm);
-    padding: 14px 14px 14px 24px;
-    background-color: rgba(255, 255, 255, 0.05);
+    margin: 0 -7px var(--space-xs) -7px;
+    padding: 22px 26px 32px 26px;
+    background-image: var(--sprite-slot);
+    -unity-slice-left: 72;
+    -unity-slice-top: 72;
+    -unity-slice-right: 72;
+    -unity-slice-bottom: 84;
+    -unity-slice-scale: 0.5px;
+}
+
+.store-icon {
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    width: 128px;
+    height: 128px;
+    margin: -6px 0;
+    background-color: var(--color-showcase);
+    border-width: 5px;
+    border-color: var(--color-ink);
     border-radius: 34px;
+}
+
+/* Ürünün görseli: oyundaki modelinden çekilmiş ya da temayla çizilmiş. */
+.store-icon-image {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .store-name {
     flex-grow: 1;
-    margin: 0 0 0 16px;
+    flex-shrink: 1;
+    margin: 0 0 0 20px;
     padding: 0;
     font-size: 40px;
     -unity-font-definition: var(--font-bold);
+    text-shadow: 0 3px 0 var(--color-ink-shadow);
 }
 
 .store-amount {
@@ -842,43 +1166,16 @@
     -unity-font-definition: var(--font-bold);
 }
 
-/* ---------------------------------------------------------------- Aksesuar */
-
-.icon-chair {
-    background-image: url("project://database/Assets/_Game/UI/Icons/chair.svg");
-    -unity-background-image-tint-color: var(--color-tech);
-}
-
-.icon-gap {
-    margin-left: 14px;
-}
-
-.chip-value--first {
-    margin-left: 0;
-}
-
-.accessory-row {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    align-self: stretch;
-    margin-top: var(--space-sm);
-}
-
-.chip-button:disabled {
-    opacity: 0.45;
-}
-
 /* ---------------------------------------------------------------- Otomasyon */
 
 .danger-chip {
     flex-direction: row;
     align-items: center;
-    margin-top: var(--space-xs);
+    margin-top: 4px;
     padding: 6px 22px;
-    background-color: rgba(255, 77, 95, 0.16);
-    border-width: 2px;
-    border-color: rgba(255, 77, 95, 0.6);
+    background-color: var(--color-ink);
+    border-width: 3px;
+    border-color: var(--color-primary);
     border-radius: 26px;
 }
 
@@ -899,38 +1196,32 @@
     margin-left: 10px;
 }
 
-.btn-accent {
-    background-image: url("project://database/Assets/_Game/UI/Sprites/btn_accent.png");
-}
-
-.btn:disabled {
-    opacity: 0.5;
-}
-
-.btn-label-dark {
-    color: #04222e;
-}
-
-.icon-coin-dark {
-    margin-left: 22px;
-}
-
 /* ---------------------------------------------------------------- Varsayılan buton temasını bastır */
 
 .btn:hover,
 .btn:active,
-.btn:focus {
-    background-color: rgba(0, 0, 0, 0);
+.btn:focus,
+.icon-button:hover,
+.icon-button:active,
+.icon-button:focus,
+.buy-button:hover,
+.buy-button:active,
+.buy-button:focus,
+.char-card:hover,
+.char-card:active,
+.char-card:focus,
+.tab:active {
+    background-color: var(--color-clear);
 }
 
 .ability-button:hover,
 .ability-button:active,
 .ability-button:focus {
-    background-color: var(--color-surface-strong);
+    background-color: var(--color-ink-soft);
+    border-color: var(--color-ink);
 }
 
-.icon-button:focus,
 .chip-button:focus {
-    border-color: var(--color-border);
-    background-color: var(--color-surface);
+    border-color: var(--color-line);
+    background-color: var(--color-ink-soft);
 }

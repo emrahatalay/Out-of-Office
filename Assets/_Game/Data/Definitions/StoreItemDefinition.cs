@@ -9,6 +9,8 @@ namespace OutOfOffice.Data
     {
         public string id;
         public string nameKey;
+        [Tooltip("Mağaza satırındaki görsel (saydam zeminli). ItemIconBuilder üretir; boşsa türün çizgi ikonu görünür.")]
+        public Texture2D icon;
         public RewardKind kind = RewardKind.Accessory;
         [Min(1)] public int amount = 1;
         [Min(0)] public int price = 100;

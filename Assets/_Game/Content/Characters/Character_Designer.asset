@@ -15,6 +15,7 @@ MonoBehaviour:
   id: designer
   nameKey: char.designer
   themeColor: {r: 0.9, g: 0.3, b: 0.7, a: 1}
+  portrait: {fileID: 2800000, guid: 2a4fc94b5cbfe4e85b667735d0a334d1, type: 3}
   prefab: {fileID: 7626122148476822734, guid: e3819b981c5a8483b902952327b36421, type: 3}
   ability: {fileID: 11400000, guid: 6c1142b1a28a948c19cc3d5aa7dc3104, type: 2}
   canBeAutomated: 1

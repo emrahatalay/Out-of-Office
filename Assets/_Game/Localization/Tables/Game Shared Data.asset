@@ -199,6 +199,10 @@ MonoBehaviour:
     m_Key: ui.collection.hint
     m_Metadata:
       m_Items: []
+  - m_Id: 157972297670656
+    m_Key: ui.selected
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
