@@ -6,11 +6,11 @@ namespace OutOfOffice.EditorTools
     {
         sealed class PlaceholderPrefabs
         {
-            public GameObject Developer, Designer, Intern, Chaser;
-            public GameObject DevBot, DesignBot;
+            public GameObject Developer, Designer, Driver, Intern, Chaser;
+            public GameObject DevBot, DesignBot, DriverBot;
             public GameObject ServerRack, CookieWall, RobotVacuum, CargoDrone, AutoTaxi;
             public GameObject Coin, Captcha, Hallucination, Shield;
-            public GameObject DronePickup, Magnet, Overtime, Espresso, OfficeChair, Package, CarrierDrone;
+            public GameObject DronePickup, Magnet, Overtime, Espresso, OfficeChair, DriverPod, Package, CarrierDrone;
             public GameObject PromptInjection, Unplug;
             public GameObject Ground;
         }
@@ -31,6 +31,7 @@ namespace OutOfOffice.EditorTools
             var green = Mat("CaptchaGreen", new Color(0.25f, 0.85f, 0.45f), 0.6f, 1.5f);
             var purple = Mat("HallucinationPurple", new Color(0.62f, 0.35f, 0.95f), 0.6f, 1.5f);
             var pink = Mat("PromptPink", new Color(0.98f, 0.35f, 0.6f), 0.6f, 1.5f);
+            var amber = Mat("DriverAmber", new Color(1f, 0.55f, 0.1f));
             var cyan = Mat("ShieldCyan", new Color(0.25f, 0.85f, 0.95f), 0.6f, 1.5f);
             var espresso = Mat("EspressoBrown", new Color(0.55f, 0.33f, 0.18f), 0.5f, 1.2f);
             var internGrey = Mat("InternGrey", new Color(0.62f, 0.66f, 0.72f));
@@ -44,10 +45,12 @@ namespace OutOfOffice.EditorTools
                 // Gerçek modeli kurulmuş karakter (CharacterModelBuilder) geçici küpün yerini alır.
                 Developer = CharacterModelBuilder.PrefabOr("Character_Developer", BuildCharacter("Character_Developer", blue, white, dark, false)),
                 Designer = CharacterModelBuilder.PrefabOr("Character_Designer", BuildCharacter("Character_Designer", magenta, white, yellow, true)),
+                Driver = CharacterModelBuilder.PrefabOr("Character_Driver", BuildCharacter("Character_Driver", amber, white, dark, false)),
                 Intern = CharacterModelBuilder.PrefabOr("Character_Intern", BuildIntern(internGrey, white, orange)),
                 Chaser = CharacterModelBuilder.PrefabOr("Chaser_HR9000", BuildChaser(steel, red, glowWhite)),
                 DevBot = BuildProfessionBot("Obstacle_DevBot", "DevBot", steel, blue, green),
                 DesignBot = BuildProfessionBot("Obstacle_DesignBot", "DesignBot", steel, magenta, yellow),
+                DriverBot = BuildProfessionBot("Obstacle_DriverBot", "DriverBot", steel, amber, cyan),
                 ServerRack = BuildServerRack(dark, green),
                 CookieWall = BuildCookieWall(orange, steel),
                 RobotVacuum = BuildRobotVacuum(steel, red),
@@ -64,6 +67,7 @@ namespace OutOfOffice.EditorTools
                 PromptInjection = BuildPowerUp("Pickup_PromptInjection", "PromptInjection", pink, white),
                 Unplug = BuildPowerUp("Pickup_Unplug", "Unplug", steel, yellow),
                 OfficeChair = BuildOfficeChair(dark, steel),
+                DriverPod = BuildDriverPod(dark, amber),
                 CarrierDrone = BuildCarrierDrone(white, dark),
                 Package = BuildPackage(espresso, yellow),
                 Ground = BuildGround(curb, laneGlow, dark),
@@ -135,6 +139,19 @@ namespace OutOfOffice.EditorTools
                 Part(root.transform, PrimitiveType.Cylinder, "Stem", new Vector3(0f, 0.25f, 0f), new Vector3(0.12f, 0.2f, 0.12f), metal);
                 Part(root.transform, PrimitiveType.Cube, "Seat", new Vector3(0f, 0.48f, 0f), new Vector3(0.95f, 0.14f, 0.9f), seat);
                 Part(root.transform, PrimitiveType.Cube, "Back", new Vector3(0f, 1.05f, -0.48f), new Vector3(0.9f, 1.1f, 0.12f), seat);
+            }
+
+            return SavePrefab(root);
+        }
+
+        // Şoför'ün yeteneğinde bindiği açık tepeli otonom kapsül. Yalnızca görsel; oyuncuya takılır.
+        static GameObject BuildDriverPod(Material body, Material trim)
+        {
+            var root = new GameObject("Accessory_DriverPod");
+            if (!Model(root, "DriverPod"))
+            {
+                Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 0.4f, 0f), new Vector3(1.5f, 0.5f, 2.2f), body);
+                Part(root.transform, PrimitiveType.Cube, "Seat", new Vector3(0f, 0.8f, -0.4f), new Vector3(0.8f, 0.5f, 0.8f), trim);
             }
 
             return SavePrefab(root);

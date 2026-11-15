@@ -55,6 +55,7 @@ namespace OutOfOffice.EditorTools
             new PropSpec("AutoTaxi", 512, 3f),
             new PropSpec("DevBot", 512, 2.5f),
             new PropSpec("DesignBot", 512, 2.5f),
+            new PropSpec("DriverBot", 512, 2.5f),
             // Toplananlar ve aksesuar
             // Altının dokusu koddan çizilir (make_coin.py); ışıma çok hafif: fazlası bloom'la beyaza kaçıp amblemi siliyordu.
             new PropSpec("Coin", 256, 1f),
@@ -70,6 +71,7 @@ namespace OutOfOffice.EditorTools
             new PropSpec("Unplug", 256, 2.5f),
             new PropSpec("Package", 256, 2f),
             new PropSpec("OfficeChair", 256, 2.5f),
+            new PropSpec("DriverPod", 256, 2.5f),
             // Çevre
             // Kolon da boyanabilir: gövdesi açık renge döner, neon çizgileri kendi renginde kalır.
             new PropSpec("Column", 512, 1.4f, tintable: true),

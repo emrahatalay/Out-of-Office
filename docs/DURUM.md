@@ -8,7 +8,7 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 - Kovalayan robot (İK-9000): tökezlemede yaklaşır, ikinci çarpışmada yakalar.
 - Öğrenen engel yönetmeni (şerit alışkanlığına göre engel dizer).
 - 5 engel, 2 meslek robotu, 10 güçlendirme (liste `docs/HIKAYE.md`'de).
-- 3 meslek (Yazılımcı, Grafiker, Stajyer), 2 yetenek.
+- 4 meslek (Yazılımcı, Grafiker, Şoför, Stajyer), 3 yetenek. Şoför'ün yeteneği (Sür) yeni kod gerektirmedi: kalkan + araç görseli etkileri birleşir.
 - Meslek otomasyonu ve artan bedelle geri alma.
 - Aksesuar (Ofis Sandalyesi), sürpriz paketler, giriş kartıyla devam, altınla mağaza.
 - Arayüz: sekmeli menü (Ana Sayfa, Koleksiyon, Mağaza, Ayarlar), HUD, duraklatma, oyun sonu. Türkçe ve İngilizce.
@@ -33,7 +33,7 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - Menü sekmeleri düğme sesi çıkarmaz (istek sinyali atmadıkları için).
 - **Eksik animasyonlar:** şerit değiştirme (yalnızca gövde yatması var), İK-9000'in yakalama hareketi (başına gelip bekler), engellerin kendi hareketi (dron pervanesi, taksi tekerleği dönmüyor).
 - **Prompt Injection ve Fişi Çek** kodlandı ama henüz oyunda denenmedi, modelleri yok (geçici top + halka; Meshy ile üretilmeli). Aşağıya bak.
-- **Meslek:** Şoför (ve başka meslekler).
+- **Meslek:** başka meslekler (Şoför yapıldı).
 - **Diğer dünyalar** ve dünyalar arası geçiş: otonom şehir, lojistik deposu, veri merkezi, Analog Kasaba.
 - **Final sürprizi:** yeni robot modelinin gelişi, İK-9000'in oynanabilir olması.
 - Görevler, günlük ödül, başarımlar, lider tablosu.
@@ -75,6 +75,8 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Kaynak GLB'ler depoda yok;** `Tools/ModelPipeline/props.json`'daki Meshy görev kimlikleriyle yeniden indirilir (Meshy görevleri bir süre sonra silinebilir).
 
 - **Prompt Injection / Fişi Çek (15 Kasım 2026):** yeni etkiler (`AutoCollectEffect`, `UnplugRobotsEffect`), `IPlayerStatus.AutoCollectRange`, `IObstacleField.BeginUnplugRobots`, `ObstacleDefinition.isRobot`. Derleme temiz, içerik üretici çalıştı, Play'de eval ile denendi: Prompt Injection 8 sn'de 31 altın topladı (aynı sürede etkisiz 3); Fişi Çek'te robotlar hayalet olup yerinde dondu (yaşları ilerlemedi), robot olmayan engeller etkilenmedi, 5 sn sonra robotlar normale döndü. **Denenmeyenler:** kovalayanın durması (CAPTCHA ile aynı etki, ayrıca bakılmadı), gerçek oynanışta toplanma, kulak/göz hissi, cihaz. Modelleri üretildi ve oyunda görüldü (Prompt Injection: komut istemli konuşma balonu, Fişi Çek: kırmızı neonlu fiş; ikisi de `PropModelBuilder`'da). Fiş modeli 1.246 üçgen (bütçe 1.200'ü biraz aşıyor) ve ışıma payı düşük (%4). Fişi Çek'te robotlar hayalet rengine boyanıyor, ayrı bir "kapalı" görünümü yok.
+
+- **Şoför (15 Kasım 2026):** karakter (iskeletli, `Art/Characters/Driver`), robotu (`DriverBot`) ve kapsülü (`DriverPod`) Meshy ile üretildi. Editörde Play'de görüldü: menüde seçim ve portre, kapsülde oturan karakter (yetenek anında, kalkan etkisiyle), yolda robot. **Denenmeyenler:** kapsüldeyken gerçek çarpışmada kalkanın kırılıp kapsülün kaybolması, Şoför'ün otomatikleşip robotunun tekrar tekrar çıkışı, cihaz. Karakterin ışıma payı çok düşük (%0,6: yalnızca şapka şeridi); robot %0,4, kapsül %1,5. `docs/GORSEL_DIL.md` bütçesine göre robot 2.595 üçgen (büyük engel ≤3.000), kapsül 1.758.
 
 ## Yayın öncesi yapılacaklar
 

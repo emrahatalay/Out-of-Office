@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 686b6fc2d4f0c4c66be2b4bc3ac1acf0, type: 3}
+  m_Name: Character_Driver
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.CharacterDefinition
+  id: driver
+  nameKey: char.driver
+  themeColor: {r: 1, g: 0.55, b: 0.1, a: 1}
+  portrait: {fileID: 2800000, guid: 4476ac1cf16bc44958e7a08b5ea2be2d, type: 3}
+  prefab: {fileID: 690485616462078275, guid: 8d6b771ec72574458955a4084ed9df05, type: 3}
+  ability: {fileID: 11400000, guid: c446eebf7389c43a0964061078e75b67, type: 2}
+  canBeAutomated: 1
+  buybackCost: 100
+  buybackGrowth: 1.5
+  buybackMaxCost: 0
+  automatedObstacle: {fileID: 11400000, guid: 540d16c3e3ee74453a8c91ef65e2cafd, type: 2}

@@ -207,7 +207,7 @@ Prefab'da Animator yoksa (geçici küp modeller) `PlayerRig` eski elle esnetme y
 
 ## Eşya ve çevre modelleri
 
-Engeller, toplananlar, aksesuar ve dekor da Meshy ile üretildi (25 model). Altın tek istisnadır: 160 üçgenlik diski ve dokusunu betik kurar (`make_coin.py -- <çıktı klasörü>`; doku koddan çizilir: doygun altın, ışığı dokuya gömülü kabartma kenar, çip amblemi).
+Engeller, toplananlar, aksesuar ve dekor da Meshy ile üretildi (27 model). Altın tek istisnadır: 160 üçgenlik diski ve dokusunu betik kurar (`make_coin.py -- <çıktı klasörü>`; doku koddan çizilir: doygun altın, ışığı dokuya gömülü kabartma kenar, çip amblemi).
 
 **Hat (depo kökünde `Tools/ModelPipeline`, Blender gerekir):**
 

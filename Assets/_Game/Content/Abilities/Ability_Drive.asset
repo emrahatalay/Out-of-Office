@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a45aa34b0a48489bb54ca6ce3c1d34e, type: 3}
+  m_Name: Ability_Drive
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.AbilityDefinition
+  id: drive
+  nameKey: ability.drive
+  cooldown: 25
+  duration: 6
+  effects:
+  - {fileID: 11400000, guid: c5f664de0bf82479cb204c0b6c7178ff, type: 2}
+  - {fileID: 11400000, guid: 0984111bc92384f4594b221f5589007d, type: 2}

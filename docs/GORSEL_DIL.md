@@ -28,7 +28,7 @@ Ne değildir: gerçekçi oran, kirli ya da paslı yüzey, kan, korku, gri-kahver
    | Camgöbeği | Teknoloji, yardımcı güç | Kalkan, sandalye, yazılımcı |
    | Yeşil | Doğrulama, sunucu | CAPTCHA, sunucu kabini |
    | Mor | Yanılsama | Halüsinasyon |
-   | Turuncu | Kargo, çerez, kahve | Kargo dronu, çerez duvarı, espresso |
+   | Turuncu | Kargo, çerez, kahve, sürüş | Kargo dronu, çerez duvarı, espresso, Şoför ve kapsülü |
    | Macenta | Tasarım | Grafiker ve robotu |
    | Pembe | Komut, istem | Prompt Injection |
 

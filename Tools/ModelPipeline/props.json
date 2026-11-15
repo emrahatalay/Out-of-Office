@@ -18,6 +18,8 @@
     "Espresso": {"source": "espresso", "task": "01a1d6af-9ff1-7036-9561-9763fe85938e", "fit": {"max": 0.9}, "center_z": 1.1, "texture": 256, "tris": 1000, "glow": {"hues": [[15, 42]], "v": [0.9, 1.0], "s": [0.45, 0.7]}},
     "PromptInjection": {"source": "prompt_injection", "task": "01a1dee7-b155-7025-ad1b-a05d0af1ad4b", "fit": {"max": 0.9}, "center_z": 1.1, "texture": 256, "tris": 1000, "glow": {"hues": [[310, 350]], "v": [0.8, 1.0], "gain": 0.8}},
     "Unplug": {"source": "unplug", "task": "01a1dee7-b5c2-73f6-b7c8-39ffa24a243c", "fit": {"max": 0.95}, "center_z": 1.1, "texture": 256, "tris": 1200, "glow": {"hues": [[345, 25]], "v": [0.55, 1.0], "s": [0.4, 1.0], "gain": 0.8}},
+    "DriverBot": {"source": "driver_bot", "task": "01a1deed-b342-716c-9428-f04ce034d748", "fit": {"height": 2.4, "max_width": 2.3}, "texture": 512, "tris": 2500, "glow": {"hues": [[160, 205], [345, 15]], "v": [0.55, 0.9], "s": [0.15, 0.4]}},
+    "DriverPod": {"source": "driver_pod", "task": "01a1def0-f159-7582-97b8-710d0998ba0f", "fit": {"depth": 2.2, "max_width": 1.8}, "texture": 256, "tris": 1800, "glow": {"hues": [[160, 205]], "v": [0.7, 0.95], "s": [0.15, 0.45]}, "face": "forward", "yaw": 90},
     "Package": {"source": "package", "task": "01a1d6af-a499-77f6-a55d-af6d63307332", "fit": {"max": 0.95}, "center_z": 1.05, "texture": 256, "tris": 800, "glow": {"hues": [[40, 70], [160, 205]], "v": [0.85, 1.0]}},
     "OfficeChair": {"source": "office_chair", "task": "01a1d6af-a8c4-7497-a045-e9a1b65fb277", "fit": {"height": 1.15}, "texture": 256, "tris": 1500, "glow": {"hues": [[160, 205]]}, "face": "forward"},
     "Column": {"source": "column", "task": "01a1d6af-acf5-7191-9685-8cf8816870bc", "fit": {"height": 5.0}, "texture": 512, "tris": 800, "glow": {"hues": [[160, 205], [280, 330]]}},
@@ -30,6 +32,7 @@
   "characters": {
     "Developer": {"rig_task": "01a1d695-5eaa-72b3-89bd-e34ed2e843b5", "glow": {"hues": [[160, 200]], "v": [0.8, 0.98], "s": [0.5, 0.8]}},
     "Designer": {"rig_task": "01a1d695-6d47-7278-8789-c43b52745ff5", "glow": {"hues": [[57, 110], [165, 200]], "v": [0.8, 0.98], "s": [0.3, 0.6]}},
+    "Driver": {"rig_task": "01a1deee-7b89-7132-8308-051f008e4ec2", "glow": {"hues": [[160, 205]], "v": [0.7, 0.95], "s": [0.15, 0.4]}},
     "Intern": {"rig_task": "01a1d695-7ae6-7453-ac6e-24c7350d7fec", "glow": {"hues": [[160, 205]], "v": [0.8, 0.98], "s": [0.15, 0.4]}},
     "HR9000": {"rig_task": "01a1d6b1-6858-76f1-b8b7-d05a12605531", "glow": {"hues": [[345, 15]], "v": [0.85, 1.0], "s": [0.25, 0.5]}}
   }

@@ -38,9 +38,8 @@ Yeni içerik adlandırırken aynı kaynaktan beslen: ofis hayatı (mesai, kıdem
 |---|---|---|
 | Yazılımcı | **Debug:** öndeki 45 m içindeki engelleri siler. 18 sn bekleme. | Üstüne doğru koşan robot |
 | Grafiker | **Yeniden Çiz:** 3 sn boyunca engellerin içinden geçilir. 22 sn bekleme. | Şeritler arasında gidip gelen robot |
+| Şoför | **Sür:** 6 sn boyunca açık tepeli otonom kapsüle biner; tek çarpışmayı affeder (kalkan + araç görseli). 25 sn bekleme. | Hızla (9 m/sn) üstüne doğru süren robot |
 | Stajyer | Yok | Otomatikleşmez |
-
-İlk tasarımdaki **Şoför** (otonom araçları sürebilir) henüz yok.
 
 ## Engeller
 

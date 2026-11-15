@@ -58,6 +58,7 @@ namespace OutOfOffice.EditorTools
         {
             new CharacterSpec("Developer", 1.75f, 2.5f),
             new CharacterSpec("Designer", 1.7f, 2.5f),
+            new CharacterSpec("Driver", 1.75f, 2.5f),
             new CharacterSpec("Intern", 1.55f, 2f),
             new CharacterSpec("HR9000", 2.3f, 3f, "Chaser_HR9000", chaser: true),
         };

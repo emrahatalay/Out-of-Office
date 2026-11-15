@@ -283,6 +283,14 @@ MonoBehaviour:
     m_Key: powerup.unplug
     m_Metadata:
       m_Items: []
+  - m_Id: 633030564634624
+    m_Key: char.driver
+    m_Metadata:
+      m_Items: []
+  - m_Id: 633030568828928
+    m_Key: ability.drive
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

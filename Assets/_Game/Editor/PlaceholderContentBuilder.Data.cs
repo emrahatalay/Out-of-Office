@@ -32,10 +32,15 @@ namespace OutOfOffice.EditorTools
             // sandalye, sırt çantası sırtlığa dayanacak kadar geriye alınır (Play'de ölçüldü).
             var attachChair = Attach("Effect_AttachChair", prefabs.OfficeChair, new Vector3(0f, 0f, -0.22f), OutOfOffice.Core.Run.PlayerPose.Seated);
 
+            var attachPod = Attach("Effect_AttachPod", prefabs.DriverPod, new Vector3(0f, 0f, 0.1f), OutOfOffice.Core.Run.PlayerPose.Seated);
+
             // ---- Yetenekler
             var debug = Ability("Ability_Debug", "debug", "ability.debug", 18f, 0f, destroy);
             // Yeni kod yazmadan: var olan "hayalet" etkisini kısa süreli kullanan ikinci yetenek.
             var redraw = Ability("Ability_Redraw", "redraw", "ability.redraw", 22f, 3f, ghost);
+
+            // Şoför: otonom kapsüle biner; süre boyunca tek çarpışmayı affeder (kalkan + araç görseli).
+            var drive = Ability("Ability_Drive", "drive", "ability.drive", 25f, 6f, shield, attachPod);
 
             // ---- Karakterler
             // ---- Meslek robotları: meslek otomatikleşince engel olarak çıkar.
@@ -49,14 +54,22 @@ namespace OutOfOffice.EditorTools
             botSweep.frequency = 0.5f;
             EditorUtility.SetDirty(botSweep);
 
+            var botDash = LoadOrCreate<ApproachPattern>($"{DataDir}/Movement/Movement_BotDash.asset");
+            botDash.speed = 9f;
+            EditorUtility.SetDirty(botDash);
+
             var devBot = Obstacle("Obstacle_DevBot", "dev_bot", prefabs.DevBot, AvoidType.ChangeLane, botRush, 0f, 1.2f, robot: true);
             var designBot = Obstacle("Obstacle_DesignBot", "design_bot", prefabs.DesignBot, AvoidType.ChangeLane, botSweep, 0f, 1.2f, robot: true);
 
+            var driverBot = Obstacle("Obstacle_DriverBot", "driver_bot", prefabs.DriverBot, AvoidType.ChangeLane, botDash, 0f, 1f, robot: true);
+
             var developer = Character("Character_Developer", "developer", "char.developer", prefabs.Developer, debug, true, 100, devBot);
             var designer = Character("Character_Designer", "designer", "char.designer", prefabs.Designer, redraw, true, 100, designBot);
+            var driver = Character("Character_Driver", "driver", "char.driver", prefabs.Driver, drive, true, 100, driverBot);
             var intern = Character("Character_Intern", "intern", "char.intern", prefabs.Intern, null, false, 0, null);
             SetThemeColor(developer, new Color(0.2f, 0.5f, 0.95f));
             SetThemeColor(designer, new Color(0.9f, 0.3f, 0.7f));
+            SetThemeColor(driver, new Color(1f, 0.55f, 0.1f));
             SetThemeColor(intern, new Color(0.5f, 0.55f, 0.62f));
 
             // ---- Kovalayan
@@ -120,7 +133,7 @@ namespace OutOfOffice.EditorTools
             LoadOrCreate<GameConfig>(ConfigPath);
 
             var catalog = LoadOrCreate<ContentCatalog>(CatalogPath);
-            catalog.characters = new[] { developer, designer, intern };
+            catalog.characters = new[] { developer, designer, driver, intern };
             catalog.worlds = new[] { world };
 
             // ---- Aksesuar: kaykay karşılığı. Kalkan + sandalye görseli; çarpınca sandalye kırılır.

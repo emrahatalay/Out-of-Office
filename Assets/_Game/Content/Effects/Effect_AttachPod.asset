@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19a7c962b900c4d2e9eadee3b2b93670, type: 3}
+  m_Name: Effect_AttachPod
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.Effects.AttachVisualEffect
+  prefab: {fileID: 8342713910737137897, guid: abc9a1720f29d46cd889fb77bd59d223, type: 3}
+  localOffset: {x: 0, y: 0, z: 0.1}
+  pose: 1
