@@ -9,6 +9,18 @@ namespace OutOfOffice.Data
         Slide
     }
 
+    /// <summary>Engelin dönen bir parçası (dron pervanesi, tekerlek). Parça prefab'da ayrı bir çocuk nesnedir.</summary>
+    [System.Serializable]
+    public struct SpinPart
+    {
+        [Tooltip("Çocuk nesnenin adının başı (ör. \"Rotor\" Rotor0..Rotor3'ü yakalar).")]
+        public string childName;
+        [Tooltip("Dönüş ekseni (parçanın kendi yerelinde).")]
+        public Vector3 axis;
+        [Tooltip("Derece/sn. Eksi değer ters yöne döner.")]
+        public float degreesPerSecond;
+    }
+
     /// <summary>Tek şeritlik engel. Yeni engel = bu asset + bir prefab.</summary>
     [CreateAssetMenu(menuName = "Out of Office/Obstacle", fileName = "Obstacle_")]
     public sealed class ObstacleDefinition : ScriptableObject
@@ -24,6 +36,8 @@ namespace OutOfOffice.Data
         [Range(0f, 1f)] public float minDifficulty;
         [Tooltip("Robot mu? Fişi Çek güçlendirmesi yalnızca robotları durdurur.")]
         public bool isRobot;
+        [Tooltip("Sürekli dönen parçalar (pervane, tekerlek). Boşsa engel tek parça hareket eder.")]
+        public SpinPart[] spinParts;
         [Min(0f)] public float spawnWeight = 1f;
     }
 }

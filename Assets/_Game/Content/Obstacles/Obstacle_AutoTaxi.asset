@@ -18,4 +18,8 @@ MonoBehaviour:
   movement: {fileID: 11400000, guid: 21f81a58e857d4ebfb758eac3d99fd5a, type: 2}
   minDifficulty: 0.35
   isRobot: 1
+  spinParts:
+  - childName: Wheel
+    axis: {x: 1, y: 0, z: 0}
+    degreesPerSecond: -720
   spawnWeight: 0.6

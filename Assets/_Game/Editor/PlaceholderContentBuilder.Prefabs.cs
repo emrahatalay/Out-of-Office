@@ -281,7 +281,14 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildCargoDrone(Material body, Material rotor, Material cargo)
         {
             var root = new GameObject("Obstacle_CargoDrone");
-            bool real = Model(root, "CargoDrone");
+            // Dört pervane ayrı çocuk nesne olarak ayrılır; ObstacleDefinition.spinParts onları döndürür.
+            bool real = PropModelBuilder.TryAddSplitModel(root.transform, "CargoDrone", new[]
+            {
+                new PropModelBuilder.SplitPart("Rotor0", new Vector3(-0.62f, 2.07f, -0.42f), Vector3.up, 0.27f, 0.15f),
+                new PropModelBuilder.SplitPart("Rotor1", new Vector3(0.62f, 2.07f, -0.42f), Vector3.up, 0.27f, 0.15f),
+                new PropModelBuilder.SplitPart("Rotor2", new Vector3(-0.62f, 2.07f, 0.42f), Vector3.up, 0.27f, 0.15f),
+                new PropModelBuilder.SplitPart("Rotor3", new Vector3(0.62f, 2.07f, 0.42f), Vector3.up, 0.27f, 0.15f),
+            });
             if (!real)
             {
                 Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 1.95f, 0f), new Vector3(1f, 0.3f, 1f), body);
@@ -304,7 +311,14 @@ namespace OutOfOffice.EditorTools
         static GameObject BuildAutoTaxi(Material body, Material glass)
         {
             var root = new GameObject("Obstacle_AutoTaxi");
-            bool real = Model(root, "AutoTaxi");
+            // Dört tekerlek ayrı çocuk nesne olarak ayrılır (yatay eksen etrafında döner).
+            bool real = PropModelBuilder.TryAddSplitModel(root.transform, "AutoTaxi", new[]
+            {
+                new PropModelBuilder.SplitPart("Wheel0", new Vector3(-0.77f, 0.43f, -0.84f), Vector3.right, 0.40f, 0.22f),
+                new PropModelBuilder.SplitPart("Wheel1", new Vector3(0.77f, 0.43f, -0.84f), Vector3.right, 0.40f, 0.22f),
+                new PropModelBuilder.SplitPart("Wheel2", new Vector3(-0.77f, 0.43f, 0.84f), Vector3.right, 0.40f, 0.22f),
+                new PropModelBuilder.SplitPart("Wheel3", new Vector3(0.77f, 0.43f, 0.84f), Vector3.right, 0.40f, 0.22f),
+            });
             if (!real)
             {
                 Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 0.6f, 0f), new Vector3(1.8f, 0.9f, 3.6f), body);

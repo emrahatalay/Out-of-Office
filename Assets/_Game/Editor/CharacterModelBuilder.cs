@@ -75,9 +75,13 @@ namespace OutOfOffice.EditorTools
             public readonly bool KeepHeight;
             /// <summary>Yatay hareket pozda kalsın mı? İleri giden kayıtlarda kapalıdır: konumu oynanış verir.</summary>
             public readonly bool KeepPlanar;
+            /// <summary>Kök yüksekliği ayaklara göre hesaplansın mı? Meshy'nin metinden ürettiği hareketlerde kök yüksekliği
+            /// ölçek olarak kayık geliyor (karakter gökyüzüne çıkıyordu); ayaklara göre alınınca yere oturur.</summary>
+            public readonly bool HeightFromFeet;
 
-            public ClipSpec(string name, string file, string take, bool loop, int firstFrame, int lastFrame, bool keepHeight, bool keepPlanar)
+            public ClipSpec(string name, string file, string take, bool loop, int firstFrame, int lastFrame, bool keepHeight, bool keepPlanar, bool heightFromFeet = false)
             {
+                HeightFromFeet = heightFromFeet;
                 Name = name;
                 File = file;
                 Take = take;
@@ -108,6 +112,11 @@ namespace OutOfOffice.EditorTools
             new ClipSpec("Caught", "Actions2", "falling_down", false, 3, 68, true, true),
             new ClipSpec("Seated", "Actions2", "Chair_Sit", true, 0, 38, true, false),
             new ClipSpec("Hanging", "Actions2", "Bar_Hang", true, 0, 0, true, true),
+            // Şerit değiştirme: yana hızlı adım (6-36; kaydın başı ve sonu durağan). Yatay kayma pozdan çıkarılır,
+            // yer değiştirmeyi oynanış verir. Sağ için aynı klip ayna çevrilir (LaneMirror).
+            new ClipSpec("LaneShift", "Actions3", "Stand_Dodge", false, 3, 30, true, false),
+            // Kovalayanın yakalama hareketi: öne eğilip kollarını uzatır (0-70), son pozda kalır.
+            new ClipSpec("Grab", "Actions3", "Push_Forward_and_Stop", false, 0, 60, true, false),
         };
 
         /// <summary>Gerçek prefab kuruluysa onu, değilse verilen geçici prefab'ı döndürür.</summary>
@@ -444,7 +453,7 @@ namespace OutOfOffice.EditorTools
                 keepOriginalOrientation = true,
                 lockRootHeightY = spec.KeepHeight,
                 keepOriginalPositionY = true,
-                heightFromFeet = false,
+                heightFromFeet = spec.HeightFromFeet,
                 lockRootPositionXZ = spec.KeepPlanar,
                 keepOriginalPositionXZ = spec.KeepPlanar,
             };
@@ -468,6 +477,8 @@ namespace OutOfOffice.EditorTools
             controller.AddParameter("Pose", AnimatorControllerParameterType.Int);
             controller.AddParameter("Caught", AnimatorControllerParameterType.Bool);
             controller.AddParameter("Stumble", AnimatorControllerParameterType.Trigger);
+            controller.AddParameter("LaneShift", AnimatorControllerParameterType.Trigger);
+            controller.AddParameter("LaneMirror", AnimatorControllerParameterType.Bool);
 
             var machine = controller.layers[0].stateMachine;
             var idle = State(machine, clips, "Idle", 260f, 0f);
@@ -545,6 +556,8 @@ namespace OutOfOffice.EditorTools
             Link(seated.AddTransition(run), 0.15f).AddCondition(AnimatorConditionMode.NotEqual, 1f, "Pose");
             Link(hanging.AddTransition(run), 0.15f).AddCondition(AnimatorConditionMode.NotEqual, 2f, "Pose");
 
+            AddLaneShiftLayer(controller, clips);
+
             EditorUtility.SetDirty(controller);
             return controller;
         }
@@ -560,11 +573,12 @@ namespace OutOfOffice.EditorTools
 
             var machine = controller.layers[0].stateMachine;
             var run = State(machine, clips, "Run", 260f, 0f);
-            var idle = State(machine, clips, "Idle", 260f, 90f);
+            var grab = State(machine, clips, "Grab", 260f, 90f);
             machine.defaultState = run;
 
-            Link(run.AddTransition(idle), 0.25f).AddCondition(AnimatorConditionMode.If, 0f, "Caught");
-            Link(idle.AddTransition(run), 0.15f).AddCondition(AnimatorConditionMode.IfNot, 0f, "Caught");
+            // Yakalayınca öne eğilip kollarını uzatır ve o pozda bekler.
+            Link(run.AddTransition(grab), 0.2f).AddCondition(AnimatorConditionMode.If, 0f, "Caught");
+            Link(grab.AddTransition(run), 0.15f).AddCondition(AnimatorConditionMode.IfNot, 0f, "Caught");
 
             EditorUtility.SetDirty(controller);
             return controller;
@@ -579,6 +593,8 @@ namespace OutOfOffice.EditorTools
             if (controller == null) controller = AnimatorController.CreateAnimatorControllerAtPath(path);
 
             for (int i = controller.parameters.Length - 1; i >= 0; i--) controller.RemoveParameter(i);
+
+            for (int i = controller.layers.Length - 1; i > 0; i--) controller.RemoveLayer(i);
 
             var machine = controller.layers[0].stateMachine;
             foreach (var child in machine.states) machine.RemoveState(child.state);
@@ -604,6 +620,80 @@ namespace OutOfOffice.EditorTools
         static AnimationClip ClipOrNull(Dictionary<string, AnimationClip> clips, string name)
         {
             return clips.TryGetValue(name, out var clip) ? clip : null;
+        }
+
+        /// <summary>
+        /// Şerit değiştirme: üst gövde maskeli ikinci katman. Bacaklar ve kök taban katmandaki koşuyu
+        /// sürdürür, yalnızca gövde, baş ve kollar yana adım hareketini oynar; böylece ayaklar durmaz ve
+        /// iki hareket birbirine bağlı kalır. Katmandaki boş durum "taban katman aynen geçsin" demektir.
+        /// </summary>
+        static void AddLaneShiftLayer(AnimatorController controller, Dictionary<string, AnimationClip> clips)
+        {
+            controller.AddLayer("LaneShift");
+            var layers = controller.layers;
+            var layer = layers[layers.Length - 1];
+            layer.defaultWeight = 1f;
+            layer.blendingMode = AnimatorLayerBlendingMode.Override;
+            layer.avatarMask = BuildUpperBodyMask();
+            layers[layers.Length - 1] = layer;
+            controller.layers = layers;
+
+            var machine = layer.stateMachine;
+            foreach (var child in machine.states) machine.RemoveState(child.state);
+
+            var none = machine.AddState("None", new Vector3(260f, 0f));
+            var shift = State(machine, clips, "LaneShift", 520f, 0f);
+            machine.defaultState = none;
+
+            // Klip ~1 sn; gövde hareketi koşunun temposuna yetişsin diye hızlandırılır. Sağa geçişte ayna.
+            shift.speed = 2f;
+            shift.mirrorParameterActive = true;
+            shift.mirrorParameter = "LaneMirror";
+
+            // Yalnızca yerde, koşarken, duruş ve sendeleme yokken oynar.
+            var start = Link(none.AddTransition(shift), 0.06f);
+            start.AddCondition(AnimatorConditionMode.If, 0f, "LaneShift");
+            start.AddCondition(AnimatorConditionMode.Equals, 0f, "Pose");
+            start.AddCondition(AnimatorConditionMode.If, 0f, "Grounded");
+            start.AddCondition(AnimatorConditionMode.IfNot, 0f, "Caught");
+            start.AddCondition(AnimatorConditionMode.IfNot, 0f, "Sliding");
+            start.AddCondition(AnimatorConditionMode.If, 0f, "Moving");
+
+            // Klip bitince ya da başka bir hareket girince taban katmana bırak.
+            var end = shift.AddTransition(none);
+            end.hasExitTime = true;
+            end.exitTime = 0.8f;
+            end.hasFixedDuration = true;
+            end.duration = 0.12f;
+
+            Link(shift.AddTransition(none), 0.08f).AddCondition(AnimatorConditionMode.If, 0f, "Caught");
+            Link(shift.AddTransition(none), 0.08f).AddCondition(AnimatorConditionMode.IfNot, 0f, "Grounded");
+            Link(shift.AddTransition(none), 0.08f).AddCondition(AnimatorConditionMode.If, 0f, "Sliding");
+            Link(shift.AddTransition(none), 0.08f).AddCondition(AnimatorConditionMode.NotEqual, 0f, "Pose");
+        }
+
+        /// <summary>Üst gövde maskesi: gövde, baş, kollar ve parmaklar açık; bacaklar ve kök kapalı.</summary>
+        static AvatarMask BuildUpperBodyMask()
+        {
+            const string path = AnimationDir + "/UpperBody.mask";
+            var mask = AssetDatabase.LoadAssetAtPath<AvatarMask>(path);
+            if (mask == null)
+            {
+                mask = new AvatarMask();
+                AssetDatabase.CreateAsset(mask, path);
+            }
+
+            foreach (AvatarMaskBodyPart part in System.Enum.GetValues(typeof(AvatarMaskBodyPart)))
+            {
+                if (part == AvatarMaskBodyPart.LastBodyPart) continue;
+                bool active = part == AvatarMaskBodyPart.Body || part == AvatarMaskBodyPart.Head
+                    || part == AvatarMaskBodyPart.LeftArm || part == AvatarMaskBodyPart.RightArm
+                    || part == AvatarMaskBodyPart.LeftFingers || part == AvatarMaskBodyPart.RightFingers;
+                mask.SetHumanoidBodyPartActive(part, active);
+            }
+
+            EditorUtility.SetDirty(mask);
+            return mask;
         }
 
         static AnimatorStateTransition Link(AnimatorStateTransition transition, float seconds)

@@ -56,6 +56,7 @@ namespace OutOfOffice.Gameplay
             _bus.Subscribe<CharacterSelectedSignal>(_ => _rig.SetVisual(_selection.Current.prefab)).AddTo(_subscriptions);
             _bus.Subscribe<GameStateChangedSignal>(OnStateChanged).AddTo(_subscriptions);
             _bus.Subscribe<PlayerStumbledSignal>(_ => _rig.Stumble()).AddTo(_subscriptions);
+            _bus.Subscribe<LaneChangedSignal>(s => _rig.LaneShift(s.To - s.From)).AddTo(_subscriptions);
 
             ResetToStart();
         }

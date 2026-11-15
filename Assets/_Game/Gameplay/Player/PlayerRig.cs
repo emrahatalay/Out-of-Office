@@ -48,6 +48,8 @@ namespace OutOfOffice.Gameplay
         static readonly int PoseParam = Animator.StringToHash("Pose");
         static readonly int CaughtParam = Animator.StringToHash("Caught");
         static readonly int StumbleParam = Animator.StringToHash("Stumble");
+        static readonly int LaneShiftParam = Animator.StringToHash("LaneShift");
+        static readonly int LaneMirrorParam = Animator.StringToHash("LaneMirror");
         static readonly int ShadowStrengthId = Shader.PropertyToID("_Strength");
 
         public Transform Root { get; }
@@ -190,6 +192,15 @@ namespace OutOfOffice.Gameplay
             if (_animator != null && !_caught && CurrentPose == PlayerPose.None) _animator.SetTrigger(StumbleParam);
         }
 
+        /// <summary>Şerit değiştirirken yana adım hareketi (-1 sol, +1 sağ). Sağ için klip ayna çevrilir.</summary>
+        public void LaneShift(int direction)
+        {
+            if (_animator == null || _caught || direction == 0) return;
+
+            _animator.SetBool(LaneMirrorParam, direction > 0);
+            _animator.SetTrigger(LaneShiftParam);
+        }
+
         /// <summary>
         /// Yakalanma duruşu. Havadayken yakalanırsa görsel yere indirilir; koşu sürmediği için
         /// konumu oynanış değil bu çağrı belirler.
@@ -203,6 +214,7 @@ namespace OutOfOffice.Gameplay
             if (caught)
             {
                 _animator.ResetTrigger(StumbleParam);
+                _animator.ResetTrigger(LaneShiftParam);
                 VisualRoot.localPosition = new Vector3(0f, -Root.position.y, 0f);
             }
 

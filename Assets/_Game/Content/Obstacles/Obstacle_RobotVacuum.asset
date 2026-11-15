@@ -18,4 +18,5 @@ MonoBehaviour:
   movement: {fileID: 0}
   minDifficulty: 0
   isRobot: 1
+  spinParts: []
   spawnWeight: 0.8

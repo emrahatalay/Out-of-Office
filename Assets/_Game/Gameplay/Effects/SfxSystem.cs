@@ -49,6 +49,7 @@ namespace OutOfOffice.Gameplay
 
             // Arayüz Gameplay'i tanımaz; düğmelerin attığı istek sinyalleri "tık" sesini tetikler.
             bus.Subscribe<StartRunRequestedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);
+            bus.Subscribe<MenuTabClickedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);
             bus.Subscribe<PauseRequestedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);
             bus.Subscribe<PauseToggleRequestedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);
             bus.Subscribe<ResumeRequestedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);

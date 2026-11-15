@@ -18,6 +18,9 @@ namespace OutOfOffice.Core.Signals
     public readonly struct ReturnToMenuRequestedSignal { }
     public readonly struct AbilityRequestedSignal { }
 
+    /// <summary>Oyuncu menünün alt çubuğundaki bir sekmeye dokundu (ses ve geri bildirim için).</summary>
+    public readonly struct MenuTabClickedSignal { }
+
     // ---- Ayarlar sekmesi
 
     /// <summary>Dili seç. Kod, Localization'daki dilin kodudur ("tr", "en").</summary>

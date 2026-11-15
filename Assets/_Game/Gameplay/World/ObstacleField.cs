@@ -119,6 +119,8 @@ namespace OutOfOffice.Gameplay
                     view.transform.position = movement.Evaluate(view.Origin, view.Age, _config.laneWidth, halfTrack);
                 }
 
+                if (!IsUnplugged(view)) view.AdvanceSpin(dt);
+
                 if (view.transform.position.z < cullZ) RemoveAt(i);
             }
         }

@@ -162,6 +162,138 @@ namespace OutOfOffice.EditorTools
             return true;
         }
 
+        /// <summary>
+        /// Modelin ayrı dönecek bir parçası: ekseni etrafında, merkezinden yarıçap ve yarım uzunlukla
+        /// sınırlanan silindirin içindeki üçgenler ayrı bir çocuk nesne olur (pervane, tekerlek).
+        /// Değerler modelin kendi uzayındadır (ölçü: metre).
+        /// </summary>
+        public readonly struct SplitPart
+        {
+            public readonly string Name;
+            public readonly Vector3 Center;
+            public readonly Vector3 Axis;
+            public readonly float Radius;
+            public readonly float HalfLength;
+
+            public SplitPart(string name, Vector3 center, Vector3 axis, float radius, float halfLength)
+            {
+                Name = name;
+                Center = center;
+                Axis = axis.normalized;
+                Radius = radius;
+                HalfLength = halfLength;
+            }
+
+            public bool Contains(Vector3 point)
+            {
+                var d = point - Center;
+                float along = Vector3.Dot(d, Axis);
+                return Mathf.Abs(along) <= HalfLength && (d - Axis * along).magnitude <= Radius;
+            }
+        }
+
+        const string PartMeshDir = "Assets/_Game/Art/Placeholder/Meshes";
+
+        /// <summary>
+        /// <see cref="TryAddModel"/> gibi ama modelin verilen parçaları ayrı çocuk nesne olarak ekler: gövde
+        /// <paramref name="prop"/> adıyla, parçalar kendi adlarıyla. Çocukların orijini parçanın merkezidir, böylece
+        /// kendi ekseninde dönerler (ObstacleDefinition.spinParts). Üçgen, ağırlık merkezine göre bir parçaya atanır.
+        /// </summary>
+        public static bool TryAddSplitModel(Transform parent, string prop, SplitPart[] parts)
+        {
+            var source = LoadMesh(prop);
+            var material = LoadMaterial(prop);
+            if (source == null || material == null) return false;
+
+            var vertices = source.vertices;
+            var normals = source.normals;
+            var uvs = source.uv;
+            var triangles = source.triangles;
+            bool hasNormals = normals.Length == vertices.Length;
+            bool hasUvs = uvs.Length == vertices.Length;
+
+            // Her üçgenin hangi parçaya düştüğü: -1 gövde.
+            var owner = new int[triangles.Length / 3];
+            for (int t = 0; t < owner.Length; t++)
+            {
+                var centroid = (vertices[triangles[t * 3]] + vertices[triangles[t * 3 + 1]] + vertices[triangles[t * 3 + 2]]) / 3f;
+                owner[t] = -1;
+                for (int p = 0; p < parts.Length; p++)
+                {
+                    if (!parts[p].Contains(centroid)) continue;
+                    owner[t] = p;
+                    break;
+                }
+            }
+
+            var body = new GameObject(prop);
+            body.transform.SetParent(parent, false);
+            AddPartVisual(body, BuildSplitMesh(source.name + "_Body", -1, owner, vertices, normals, uvs, triangles, hasNormals, hasUvs, Vector3.zero, prop), material);
+
+            for (int p = 0; p < parts.Length; p++)
+            {
+                var child = new GameObject(parts[p].Name);
+                child.transform.SetParent(body.transform, false);
+                child.transform.localPosition = parts[p].Center;
+                AddPartVisual(child, BuildSplitMesh(source.name + "_" + parts[p].Name, p, owner, vertices, normals, uvs, triangles, hasNormals, hasUvs, parts[p].Center, prop), material);
+            }
+
+            return true;
+        }
+
+        static void AddPartVisual(GameObject target, Mesh mesh, Material material)
+        {
+            target.AddComponent<MeshFilter>().sharedMesh = mesh;
+            var renderer = target.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial = material;
+            renderer.shadowCastingMode = ShadowCastingMode.Off;
+            renderer.lightProbeUsage = LightProbeUsage.Off;
+            renderer.reflectionProbeUsage = ReflectionProbeUsage.Off;
+        }
+
+        // Verilen parçanın üçgenlerinden yeni bir mesh kurar (köşeler yeniden numaralanır, merkeze göre kaydırılır) ve asset olarak yazar.
+        static Mesh BuildSplitMesh(string name, int part, int[] owner, Vector3[] vertices, Vector3[] normals, Vector2[] uvs,
+            int[] triangles, bool hasNormals, bool hasUvs, Vector3 origin, string prop)
+        {
+            var remap = new System.Collections.Generic.Dictionary<int, int>();
+            var outVertices = new System.Collections.Generic.List<Vector3>();
+            var outNormals = new System.Collections.Generic.List<Vector3>();
+            var outUvs = new System.Collections.Generic.List<Vector2>();
+            var outTriangles = new System.Collections.Generic.List<int>();
+
+            for (int t = 0; t < owner.Length; t++)
+            {
+                if (owner[t] != part) continue;
+                for (int k = 0; k < 3; k++)
+                {
+                    int index = triangles[t * 3 + k];
+                    if (!remap.TryGetValue(index, out int mapped))
+                    {
+                        mapped = outVertices.Count;
+                        remap.Add(index, mapped);
+                        outVertices.Add(vertices[index] - origin);
+                        if (hasNormals) outNormals.Add(normals[index]);
+                        if (hasUvs) outUvs.Add(uvs[index]);
+                    }
+
+                    outTriangles.Add(mapped);
+                }
+            }
+
+            var mesh = new Mesh { name = name };
+            mesh.SetVertices(outVertices);
+            if (hasNormals) mesh.SetNormals(outNormals);
+            if (hasUvs) mesh.SetUVs(0, outUvs);
+            mesh.SetTriangles(outTriangles, 0);
+            mesh.RecalculateBounds();
+
+            if (!Directory.Exists(PartMeshDir)) Directory.CreateDirectory(PartMeshDir);
+            string path = $"{PartMeshDir}/{prop}_{name}.asset";
+            AssetDatabase.DeleteAsset(path);
+            AssetDatabase.CreateAsset(mesh, path);
+            return mesh;
+        }
+
         public static bool Exists(string prop)
         {
             return LoadMesh(prop) != null && LoadMaterial(prop) != null;

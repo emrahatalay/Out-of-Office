@@ -15,6 +15,9 @@ namespace OutOfOffice.Gameplay
 
         Renderer[] _renderers;
         Collider[] _colliders;
+        Transform[] _spinTargets;
+        Vector3[] _spinAxes;
+        float[] _spinSpeeds;
         bool _initialized;
 
         public ObstacleDefinition Definition { get; private set; }
@@ -31,10 +34,48 @@ namespace OutOfOffice.Gameplay
             if (_initialized) return;
             _initialized = true;
 
+            CollectSpinParts(definition);
             _renderers = GetComponentsInChildren<Renderer>();
             _colliders = GetComponentsInChildren<Collider>();
             if (_colliders.Length == 0) _colliders = new Collider[] { AddBoundsCollider() };
             foreach (var collider in _colliders) collider.isTrigger = true;
+        }
+
+        /// <summary>Dönen parçaları (pervane, tekerlek) bir adım ilerletir. Parça yoksa hiçbir şey yapmaz.</summary>
+        public void AdvanceSpin(float deltaTime)
+        {
+            if (_spinTargets == null) return;
+
+            for (int i = 0; i < _spinTargets.Length; i++)
+                _spinTargets[i].Rotate(_spinAxes[i], _spinSpeeds[i] * deltaTime, Space.Self);
+        }
+
+        // Tanımdaki adlara uyan çocukları bir kez toplar; koşu sırasında arama ya da bellek ayırma yok.
+        void CollectSpinParts(ObstacleDefinition definition)
+        {
+            var spec = definition.spinParts;
+            if (spec == null || spec.Length == 0) return;
+
+            var targets = new System.Collections.Generic.List<Transform>();
+            var axes = new System.Collections.Generic.List<Vector3>();
+            var speeds = new System.Collections.Generic.List<float>();
+            foreach (var child in GetComponentsInChildren<Transform>())
+            {
+                if (child == transform) continue;
+                for (int i = 0; i < spec.Length; i++)
+                {
+                    if (string.IsNullOrEmpty(spec[i].childName) || !child.name.StartsWith(spec[i].childName)) continue;
+                    targets.Add(child);
+                    axes.Add(spec[i].axis.normalized);
+                    speeds.Add(spec[i].degreesPerSecond);
+                    break;
+                }
+            }
+
+            if (targets.Count == 0) return;
+            _spinTargets = targets.ToArray();
+            _spinAxes = axes.ToArray();
+            _spinSpeeds = speeds.ToArray();
         }
 
         public void SetGhost(bool ghost)

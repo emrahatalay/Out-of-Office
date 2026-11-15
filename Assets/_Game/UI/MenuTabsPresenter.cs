@@ -39,7 +39,7 @@ namespace OutOfOffice.UI
                 int index = i;
                 _tabs[i] = screen.Q<Button>(Tabs[i].tab);
                 _pages[i] = screen.Q(Tabs[i].page);
-                _tabs[i].clicked += () => Select(index);
+                _tabs[i].clicked += () => { Select(index); _bus.Fire<MenuTabClickedSignal>(); };
             }
 
             Select(0);

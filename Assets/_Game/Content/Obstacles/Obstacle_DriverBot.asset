@@ -18,4 +18,5 @@ MonoBehaviour:
   movement: {fileID: 11400000, guid: 2d2d371e7fab744f1b8ea8906d752938, type: 2}
   minDifficulty: 0
   isRobot: 1
+  spinParts: []
   spawnWeight: 1

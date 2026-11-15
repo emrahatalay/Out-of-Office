@@ -5,6 +5,7 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 ## Yapılanlar
 
 - Öğretici: ilk koşuda üç gerçek engel (şerit, zıpla, kay); engele yaklaşınca oyun yavaşlar, 3B ok yönü gösterir, oyuncu hareketi yapınca hız normale döner (`TutorialSystem`, `TutorialGuide`, `TutorialPresenter`). Ayarlar'dan yeniden izlenemez (henüz).
+- Menü sekmeleri düğme sesi çıkarır (`MenuTabClickedSignal`). Şerit değiştirme yana adım klibi, İK-9000'in yakalama hareketi, dron pervanelerinin ve taksi tekerleklerinin dönmesi.
 - Çekirdek koşu: üç şerit, zıplama (tepe 3,2 m: en yüksek engel 2,6 m), kayma, girdi tamponu, hızlanma, zorluk eğrisi.
 - Kovalayan robot (İK-9000): tökezlemede yaklaşır, ikinci çarpışmada yakalar.
 - Öğrenen engel yönetmeni (şerit alışkanlığına göre engel dizer).
@@ -31,10 +32,9 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 Hikâyede ve tasarımda olup yapılmayanlar:
 
 - **Müzik** yok (ses efektleri Ayarlar'dan açılıp kapanır; ses düzeyi kaydırıcısı yok). Ses efektleri sentezlenmiş ilk sürümdür; kulakla dinlenip ayarlanmadı (aşağıya bak).
-- Menü sekmeleri düğme sesi çıkarmaz (istek sinyali atmadıkları için).
-- **Eksik animasyonlar:** şerit değiştirme (yalnızca gövde yatması var), İK-9000'in yakalama hareketi (başına gelip bekler), engellerin kendi hareketi (dron pervanesi, taksi tekerleği dönmüyor).
-- **Prompt Injection ve Fişi Çek** kodlandı ama henüz oyunda denenmedi, modelleri yok (geçici top + halka; Meshy ile üretilmeli). Aşağıya bak.
+- **Eksik animasyonlar:** yok (şerit değiştirme, yakalama hareketi, dron pervanesi ve taksi tekerleği yapıldı; aşağıya bak).
 - **Meslek:** başka meslekler (Şoför yapıldı).
+- **Öğretici** Ayarlar'dan yeniden izlenemez.
 - **Diğer dünyalar** ve dünyalar arası geçiş: otonom şehir, lojistik deposu, veri merkezi, Analog Kasaba.
 - **Final sürprizi:** yeni robot modelinin gelişi, İK-9000'in oynanabilir olması.
 - Görevler, günlük ödül, başarımlar, lider tablosu.
@@ -79,6 +79,8 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Şoför (15 Kasım 2026):** karakter (iskeletli, `Art/Characters/Driver`), robotu (`DriverBot`) ve kapsülü (`DriverPod`) Meshy ile üretildi. Editörde Play'de görüldü: menüde seçim ve portre, kapsülde oturan karakter (yetenek anında, kalkan etkisiyle), yolda robot. **Denenmeyenler:** kapsüldeyken gerçek çarpışmada kalkanın kırılıp kapsülün kaybolması, Şoför'ün otomatikleşip robotunun tekrar tekrar çıkışı, cihaz. Karakterin ışıma payı çok düşük (%0,6: yalnızca şapka şeridi); robot %0,4, kapsül %1,5. `docs/GORSEL_DIL.md` bütçesine göre robot 2.595 üçgen (büyük engel ≤3.000), kapsül 1.758.
 
 - **Öğretici (15 Kasım 2026):** editörde Play'de, sinyalle verilen hareketlerle uçtan uca denendi: engele yaklaşınca zaman ölçeği 0,2'ye düştü, ok ve ipucu doğru yönde çıktı (sola, yukarı, aşağı), hareketten sonra zaman ölçeği 1'e döndü, üç adım ve son mesaj bitince kayda `tutorial.done` yazıldı (test sonrası silindi). **Denenmeyenler:** gerçek parmakla kaydırma, yanlış hareketle engele çarpınca akış (kodda yavaşlatmayı bırakıp devam eder), yarım kalan koşunun yeniden başlaması, duraklatmada yavaşlatma/ok, cihaz, İngilizce metinlerin ekranda görünüşü. Okun yeri (`tutorialArrow*` ayarları) göz kararı; kaydırma okları dar ekranda binalarla çakışabilir. Mevcut oyuncular da bir kez görür (kayıtta anahtar yok).
+
+- **Animasyonlar ve sekme sesi (15 Kasım 2026):** editörde Play'de görüldü. Şerit değiştirme: yana adım ayrı bir üst gövde katmanında oynuyor, bacaklar koşuyu sürdürüyor (iki ekran görüntüsünde adım sırasında ayaklar koşu hareketinde; sol/sağ ayna gözle ayırt edilmedi). Yakalama: kovalayan öne eğilip kollarını uzatıyor (geçiş sırasında bir kare görüldü, tam poz değil). Pervane ve tekerlekler: dönüş açıları kareler arasında değişiyor, ekran görüntüsünde kopma yok. **Denenmeyenler:** gerçek yakalamada tam Grab pozu ve yakalama sonrası bekleyişi, şerit değiştirmenin hızlı art arda geçişlerde görünüşü (klip 0,35 sn, koşuyu böler), sekme sesinin kulakla duyulması ve gerçek dokunuşla tetiklenmesi, tekerlek yönünün hareketle uyumu, cihaz. Her `CharacterModelBuilder` çalışmasında konsolda `RightFoot 1,5 mm` kemik uzunluğu uyarısı çıkıyor (klip dosyalarının iskeleti; görsel etkisi yok).
 
 ## Yayın öncesi yapılacaklar
 

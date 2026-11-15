@@ -18,4 +18,17 @@ MonoBehaviour:
   movement: {fileID: 11400000, guid: caac2a01cfc3f403fa0d1d696b3f5d03, type: 2}
   minDifficulty: 0.2
   isRobot: 1
+  spinParts:
+  - childName: Rotor0
+    axis: {x: 0, y: 1, z: 0}
+    degreesPerSecond: 1500
+  - childName: Rotor1
+    axis: {x: 0, y: 1, z: 0}
+    degreesPerSecond: -1500
+  - childName: Rotor2
+    axis: {x: 0, y: 1, z: 0}
+    degreesPerSecond: -1500
+  - childName: Rotor3
+    axis: {x: 0, y: 1, z: 0}
+    degreesPerSecond: 1500
   spawnWeight: 0.6

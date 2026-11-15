@@ -99,6 +99,18 @@ namespace OutOfOffice.EditorTools
                 Obstacle("Obstacle_AutoTaxi", "auto_taxi", prefabs.AutoTaxi, AvoidType.ChangeLane, approach, 0.35f, 0.6f, robot: true),
             };
 
+            // Dönen parçalar: dron pervaneleri (dönüş yönü karşılıklı) ve taksi tekerlekleri (yere doğru gelirken ileri yuvarlanır).
+            obstacles[3].spinParts = new[]
+            {
+                new SpinPart { childName = "Rotor0", axis = Vector3.up, degreesPerSecond = 1500f },
+                new SpinPart { childName = "Rotor1", axis = Vector3.up, degreesPerSecond = -1500f },
+                new SpinPart { childName = "Rotor2", axis = Vector3.up, degreesPerSecond = -1500f },
+                new SpinPart { childName = "Rotor3", axis = Vector3.up, degreesPerSecond = 1500f },
+            };
+            obstacles[4].spinParts = new[] { new SpinPart { childName = "Wheel", axis = Vector3.right, degreesPerSecond = -720f } };
+            EditorUtility.SetDirty(obstacles[3]);
+            EditorUtility.SetDirty(obstacles[4]);
+
             // ---- Güçlendirmeler
             var powerUps = new[]
             {
