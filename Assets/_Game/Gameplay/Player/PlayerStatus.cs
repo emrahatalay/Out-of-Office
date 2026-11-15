@@ -11,6 +11,7 @@ namespace OutOfOffice.Gameplay
         public bool HasShield { get; set; }
         public float JumpMultiplier { get; set; } = 1f;
         public float MagnetRadius { get; set; }
+        public float AutoCollectRange { get; set; }
         public float ScoreMultiplier { get; set; } = 1f;
         public float FlightHeight { get; set; }
 
@@ -19,6 +20,7 @@ namespace OutOfOffice.Gameplay
             HasShield = false;
             JumpMultiplier = 1f;
             MagnetRadius = 0f;
+            AutoCollectRange = 0f;
             ScoreMultiplier = 1f;
             FlightHeight = 0f;
         }

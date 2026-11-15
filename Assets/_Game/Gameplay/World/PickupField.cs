@@ -16,6 +16,7 @@ namespace OutOfOffice.Gameplay
         const float BobSpeed = 3.2f;
         const float BobHeight = 0.12f;
         const float MagnetSpeed = 60f;
+        const float AutoCollectSpeed = 110f;
 
         readonly IPoolService _pool;
         readonly PlayerStatus _player;
@@ -63,8 +64,10 @@ namespace OutOfOffice.Gameplay
             float time = Time.time * BobSpeed;
 
             float magnet = _player.MagnetRadius;
+            float autoRange = _player.AutoCollectRange;
             var playerPosition = _player.Position;
             float step = MagnetSpeed * Time.deltaTime;
+            float autoStep = AutoCollectSpeed * Time.deltaTime;
 
             for (int i = _active.Count - 1; i >= 0; i--)
             {
@@ -75,6 +78,17 @@ namespace OutOfOffice.Gameplay
                 {
                     RemoveAt(i);
                     continue;
+                }
+
+                // Prompt Injection: ileride, her şeritteki altın hızla gelir (şerit sınırı yok).
+                if (autoRange > 0f && view.PowerUp == null)
+                {
+                    float ahead = position.z - playerPosition.z;
+                    if (ahead < autoRange && ahead > -2f)
+                    {
+                        transform.position = Vector3.MoveTowards(position, playerPosition, autoStep);
+                        continue;
+                    }
                 }
 
                 // Mıknatıs: menzildeki altınlar oyuncuya uçar, toplama yine çarpışmayla olur.

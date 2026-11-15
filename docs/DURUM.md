@@ -7,7 +7,7 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 - Çekirdek koşu: üç şerit, zıplama (tepe 3,2 m: en yüksek engel 2,6 m), kayma, girdi tamponu, hızlanma, zorluk eğrisi.
 - Kovalayan robot (İK-9000): tökezlemede yaklaşır, ikinci çarpışmada yakalar.
 - Öğrenen engel yönetmeni (şerit alışkanlığına göre engel dizer).
-- 5 engel, 2 meslek robotu, 8 güçlendirme (liste `docs/HIKAYE.md`'de).
+- 5 engel, 2 meslek robotu, 10 güçlendirme (liste `docs/HIKAYE.md`'de).
 - 3 meslek (Yazılımcı, Grafiker, Stajyer), 2 yetenek.
 - Meslek otomasyonu ve artan bedelle geri alma.
 - Aksesuar (Ofis Sandalyesi), sürpriz paketler, giriş kartıyla devam, altınla mağaza.
@@ -18,7 +18,7 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 - **Arayüz teması (UI kit):** koyu dış çizgili, tabanlı, parlamalı panel ve butonlar; hepsi koddan üretilir (`UiKitBuilder`). Meslek portreleri gerçek karakter modellerinden (`PortraitBuilder`), eşya görselleri gerçek eşya modellerinden çekilir (`ItemIconBuilder`); giriş kartı temayla çizilir. Altın, giriş kartı ve sandalye her yerde aynı görselle gösterilir.
 - His: kamera takibi, görüş açısı, sarsıntı, ağır çekim, parçacık efektleri.
 - Kıvrımlı dünya (yol sağa/sola kıvrılır, uzakta aşağı eğilir).
-- **Bütün modeller gerçek** (Meshy ile üretildi; kural `docs/GORSEL_DIL.md`): üç meslek ve İK-9000 iskeletli; 5 engel, 2 meslek robotu, altın, 7 güçlendirme, sürpriz paket, ofis sandalyesi, taşıyıcı dron ve dekor (kolon, masa, pano, iki kule). Yalnızca zemin (akıllı yol) koddan kurulur; dokuları da koddan çizilir.
+- **Bütün modeller gerçek** (Meshy ile üretildi; kural `docs/GORSEL_DIL.md`): üç meslek ve İK-9000 iskeletli; 5 engel, 2 meslek robotu, altın, 9 güçlendirme, sürpriz paket, ofis sandalyesi, taşıyıcı dron ve dekor (kolon, masa, pano, iki kule). Yalnızca zemin (akıllı yol) koddan kurulur; dokuları da koddan çizilir.
 - Karakter animasyonları: bekleme, koşu, zıplama, kayma, tökezleme, yakalanınca düşme, sandalyede oturma, drona asılma. Tek klip seti bütün karakterlerde ortak; İK-9000 koşu ve beklemeyi kullanır.
 - Model hattı (`Tools/ModelPipeline`): ölçek, yön, doku boşluğu doldurma, alfada ışıma maskesi, dokusuz FBX.
 - Sahne havası: gündüz gökyüzü (bulutlu), güneş ve dolgu ışığı, ufuk rengi sis, akıllı yol zemini (asfalt, ışıklı oklar, bordür, kaldırım), gerçek gölge yerine damla gölge, kontrastlı renk ayarı, şeker renkli binalar (aynı iki kule modeli köşe rengiyle boyanır), krem kolonlar, ölçülü post-processing.
@@ -32,7 +32,7 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Müzik** yok (ses efektleri Ayarlar'dan açılıp kapanır; ses düzeyi kaydırıcısı yok). Ses efektleri sentezlenmiş ilk sürümdür; kulakla dinlenip ayarlanmadı (aşağıya bak).
 - Menü sekmeleri düğme sesi çıkarmaz (istek sinyali atmadıkları için).
 - **Eksik animasyonlar:** şerit değiştirme (yalnızca gövde yatması var), İK-9000'in yakalama hareketi (başına gelip bekler), engellerin kendi hareketi (dron pervanesi, taksi tekerleği dönmüyor).
-- **Güçlendirmeler:** Prompt Injection, Fişi Çek.
+- **Prompt Injection ve Fişi Çek** kodlandı ama henüz oyunda denenmedi, modelleri yok (geçici top + halka; Meshy ile üretilmeli). Aşağıya bak.
 - **Meslek:** Şoför (ve başka meslekler).
 - **Diğer dünyalar** ve dünyalar arası geçiş: otonom şehir, lojistik deposu, veri merkezi, Analog Kasaba.
 - **Final sürprizi:** yeni robot modelinin gelişi, İK-9000'in oynanabilir olması.
@@ -73,6 +73,8 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Zemin mesh'leri** artık silinip yeniden oluşturulmuyor, yerinde güncelleniyor: eski yöntem ara sıra prefab'daki mesh bağını koparıyordu (zemin görünmüyordu). Üç ardışık üretimde doğrulandı.
 - **Karakter FBX'leri** (4 model + 3 klip dosyası) Meshy'den geldiği gibi duruyor ve içlerinde kullanılmayan 2K doku gömülü (dosya başına ~3,5 MB, toplam ~30 MB depo yükü). Build'e girmez; iskelet bozulmasın diye yeniden dışa aktarılmadı. Eşya modelleri dokusuzdur (toplam ~6 MB).
 - **Kaynak GLB'ler depoda yok;** `Tools/ModelPipeline/props.json`'daki Meshy görev kimlikleriyle yeniden indirilir (Meshy görevleri bir süre sonra silinebilir).
+
+- **Prompt Injection / Fişi Çek (15 Kasım 2026):** yeni etkiler (`AutoCollectEffect`, `UnplugRobotsEffect`), `IPlayerStatus.AutoCollectRange`, `IObstacleField.BeginUnplugRobots`, `ObstacleDefinition.isRobot`. Derleme temiz, içerik üretici çalıştı, Play'de eval ile denendi: Prompt Injection 8 sn'de 31 altın topladı (aynı sürede etkisiz 3); Fişi Çek'te robotlar hayalet olup yerinde dondu (yaşları ilerlemedi), robot olmayan engeller etkilenmedi, 5 sn sonra robotlar normale döndü. **Denenmeyenler:** kovalayanın durması (CAPTCHA ile aynı etki, ayrıca bakılmadı), gerçek oynanışta toplanma, kulak/göz hissi, cihaz. Modelleri üretildi ve oyunda görüldü (Prompt Injection: komut istemli konuşma balonu, Fişi Çek: kırmızı neonlu fiş; ikisi de `PropModelBuilder`'da). Fiş modeli 1.246 üçgen (bütçe 1.200'ü biraz aşıyor) ve ışıma payı düşük (%4). Fişi Çek'te robotlar hayalet rengine boyanıyor, ayrı bir "kapalı" görünümü yok.
 
 ## Yayın öncesi yapılacaklar
 

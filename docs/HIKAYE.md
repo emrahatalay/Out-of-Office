@@ -65,9 +65,9 @@ Yolda toplanır, süreleri bitince etkisi kalkar.
 | Maaş Mıknatısı | Altınları çeker | 10 sn |
 | Fazla Mesai x2 | Puanı ikiye katlar | 12 sn |
 | Çift Espresso | Daha yükseğe zıplatır | 10 sn |
+| Prompt Injection | Önündeki 30 m içindeki altınları, hangi şeritte olursa olsun, oyuncu yerine robot toplar (mıknatıstan farkı: şerit sınırı yok, menzil uzun) | 8 sn |
+| Fişi Çek | Kovalayan ve bütün robotlar (meslek robotları, süpürge, dron, taksi) durur ve çarpmaz | 5 sn |
 | Sürpriz Paket | Anında sayılır, içeriği koşu sonunda açılır | - |
-
-Tasarımda olup henüz yapılmayanlar: **Prompt Injection** (robot oyuncu yerine altın toplar), **Fişi Çek** (tüm robotlar birkaç saniye kapanır).
 
 ## Aksesuar, paket, giriş kartı, mağaza
 

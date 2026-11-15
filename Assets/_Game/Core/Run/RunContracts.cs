@@ -26,10 +26,12 @@ namespace OutOfOffice.Core.Run
         int Lane { get; }
         bool HasShield { get; set; }
 
-        // Etkilerin değiştirdiği değerler. Varsayılanlar: 1, 0, 1, 0.
+        // Etkilerin değiştirdiği değerler. Varsayılanlar: 1, 0, 0, 1, 0.
         float JumpMultiplier { get; set; }
         /// <summary>0'dan büyükse bu yarıçaptaki altınlar oyuncuya çekilir.</summary>
         float MagnetRadius { get; set; }
+        /// <summary>0'dan büyükse bu mesafedeki (ileride, her şeritteki) altınlar kendiliğinden toplanır.</summary>
+        float AutoCollectRange { get; set; }
         float ScoreMultiplier { get; set; }
         /// <summary>0'dan büyükse oyuncu bu yükseklikte uçar.</summary>
         float FlightHeight { get; set; }
@@ -72,6 +74,10 @@ namespace OutOfOffice.Core.Run
         /// <summary>Hayalet moddayken engeller çarpmaz. Begin/End çiftleri iç içe olabilir.</summary>
         void BeginGhost();
         void EndGhost();
+
+        /// <summary>Fişi çekilen robotlar durur ve çarpmaz. Begin/End çiftleri iç içe olabilir.</summary>
+        void BeginUnplugRobots();
+        void EndUnplugRobots();
 
         /// <summary>fromZ ile fromZ + range arasındaki engelleri yok eder, sayısını döner.</summary>
         int DestroyInRange(float fromZ, float range);

@@ -24,6 +24,7 @@ namespace OutOfOffice.Gameplay
         readonly SubscriptionBag _subscriptions = new SubscriptionBag();
         readonly List<ObstacleView> _active = new List<ObstacleView>(64);
         int _ghostCount;
+        int _unplugCount;
 
         public ObstacleField(IPoolService pool, PlayerStatus player, GameConfig config, IGameStateProvider state, ISignalBus bus)
         {
@@ -43,7 +44,7 @@ namespace OutOfOffice.Gameplay
             if (!instance.TryGetComponent<ObstacleView>(out var view)) view = instance.AddComponent<ObstacleView>();
 
             view.Bind(definition, position);
-            view.SetGhost(_ghostCount > 0);
+            view.SetGhost(IsHarmless(view));
             _active.Add(view);
             return view;
         }
@@ -69,6 +70,19 @@ namespace OutOfOffice.Gameplay
             if (_ghostCount == 0) return;
             _ghostCount--;
             if (_ghostCount == 0) ApplyGhost(false);
+        }
+
+        public void BeginUnplugRobots()
+        {
+            _unplugCount++;
+            if (_unplugCount == 1) RefreshGhost();
+        }
+
+        public void EndUnplugRobots()
+        {
+            if (_unplugCount == 0) return;
+            _unplugCount--;
+            if (_unplugCount == 0) RefreshGhost();
         }
 
         public int DestroyInRange(float fromZ, float range)
@@ -98,7 +112,8 @@ namespace OutOfOffice.Gameplay
             {
                 var view = _active[i];
                 var movement = view.Definition.movement;
-                if (movement != null)
+                // Fişi çekilmiş robot yerinde donar.
+                if (movement != null && !IsUnplugged(view))
                 {
                     view.Age += dt;
                     view.transform.position = movement.Evaluate(view.Origin, view.Age, _config.laneWidth, halfTrack);
@@ -112,11 +127,21 @@ namespace OutOfOffice.Gameplay
         {
             for (int i = _active.Count - 1; i >= 0; i--) RemoveAt(i);
             _ghostCount = 0;
+            _unplugCount = 0;
         }
 
         void ApplyGhost(bool ghost)
         {
-            for (int i = 0; i < _active.Count; i++) _active[i].SetGhost(ghost);
+            RefreshGhost();
+        }
+
+        bool IsUnplugged(ObstacleView view) => _unplugCount > 0 && view.Definition.isRobot;
+
+        bool IsHarmless(ObstacleView view) => _ghostCount > 0 || IsUnplugged(view);
+
+        void RefreshGhost()
+        {
+            for (int i = 0; i < _active.Count; i++) _active[i].SetGhost(IsHarmless(_active[i]));
         }
 
         void RemoveAt(int index)

@@ -43,6 +43,8 @@ namespace OutOfOffice.EditorTools
             new[] { "powerup.magnet", "Maaş Mıknatısı", "Salary Magnet" },
             new[] { "powerup.overtime", "Fazla Mesai x2", "Overtime x2" },
             new[] { "powerup.espresso", "Çift Espresso", "Double Espresso" },
+            new[] { "powerup.prompt_injection", "Prompt Injection", "Prompt Injection" },
+            new[] { "powerup.unplug", "Fişi Çek", "Pull the Plug" },
             new[] { "powerup.package", "Sürpriz Paket", "Surprise Package" },
             new[] { "ui.continue", "DEVAM ET", "CONTINUE" },
             new[] { "ui.giveup", "VAZGEÇ", "GIVE UP" },

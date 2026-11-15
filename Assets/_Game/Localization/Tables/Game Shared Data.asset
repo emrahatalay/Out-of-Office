@@ -275,6 +275,14 @@ MonoBehaviour:
     m_Key: ui.dev.github
     m_Metadata:
       m_Items: []
+  - m_Id: 628184692285440
+    m_Key: powerup.prompt_injection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 628184696479744
+    m_Key: powerup.unplug
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

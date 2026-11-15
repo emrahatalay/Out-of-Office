@@ -17,4 +17,5 @@ MonoBehaviour:
   avoidBy: 0
   movement: {fileID: 11400000, guid: 21f81a58e857d4ebfb758eac3d99fd5a, type: 2}
   minDifficulty: 0.35
+  isRobot: 1
   spawnWeight: 0.6

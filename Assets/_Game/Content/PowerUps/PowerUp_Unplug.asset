@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f700f777ad4634224b3a5255c1d6b473, type: 3}
+  m_Name: PowerUp_Unplug
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.PowerUpDefinition
+  id: unplug
+  nameKey: powerup.unplug
+  pickupPrefab: {fileID: 9140563222289157423, guid: c26dd1c0fca5940e6a59a3172294a403, type: 3}
+  duration: 5
+  effects:
+  - {fileID: 11400000, guid: f2efcea6f62e14e9f96c73f08aa7c58e, type: 2}
+  - {fileID: 11400000, guid: fcfd26713b1064a5caac76522b49d8a3, type: 2}
+  spawnWeight: 0.6

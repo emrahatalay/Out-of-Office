@@ -16,6 +16,8 @@
     "Magnet": {"source": "magnet", "task": "01a1d6af-970d-7776-a262-ed13b27c5cce", "fit": {"max": 0.85}, "center_z": 1.1, "texture": 256, "tris": 600, "glow": {"hues": [[160, 205]]}},
     "Overtime": {"source": "overtime", "task": "01a1d6af-9bcb-73ca-854a-8083f7b5bc5d", "fit": {"max": 0.9}, "center_z": 1.1, "texture": 256, "tris": 1000, "glow": {"hues": [[35, 70]], "v": [0.85, 1.0], "s": [0.2, 0.5], "gain": 0.8}},
     "Espresso": {"source": "espresso", "task": "01a1d6af-9ff1-7036-9561-9763fe85938e", "fit": {"max": 0.9}, "center_z": 1.1, "texture": 256, "tris": 1000, "glow": {"hues": [[15, 42]], "v": [0.9, 1.0], "s": [0.45, 0.7]}},
+    "PromptInjection": {"source": "prompt_injection", "task": "01a1dee7-b155-7025-ad1b-a05d0af1ad4b", "fit": {"max": 0.9}, "center_z": 1.1, "texture": 256, "tris": 1000, "glow": {"hues": [[310, 350]], "v": [0.8, 1.0], "gain": 0.8}},
+    "Unplug": {"source": "unplug", "task": "01a1dee7-b5c2-73f6-b7c8-39ffa24a243c", "fit": {"max": 0.95}, "center_z": 1.1, "texture": 256, "tris": 1200, "glow": {"hues": [[345, 25]], "v": [0.55, 1.0], "s": [0.4, 1.0], "gain": 0.8}},
     "Package": {"source": "package", "task": "01a1d6af-a499-77f6-a55d-af6d63307332", "fit": {"max": 0.95}, "center_z": 1.05, "texture": 256, "tris": 800, "glow": {"hues": [[40, 70], [160, 205]], "v": [0.85, 1.0]}},
     "OfficeChair": {"source": "office_chair", "task": "01a1d6af-a8c4-7497-a045-e9a1b65fb277", "fit": {"height": 1.15}, "texture": 256, "tris": 1500, "glow": {"hues": [[160, 205]]}, "face": "forward"},
     "Column": {"source": "column", "task": "01a1d6af-acf5-7191-9685-8cf8816870bc", "fit": {"height": 5.0}, "texture": 512, "tris": 800, "glow": {"hues": [[160, 205], [280, 330]]}},

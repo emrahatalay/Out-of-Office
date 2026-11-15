@@ -22,6 +22,10 @@ namespace OutOfOffice.EditorTools
             var magnet = LoadOrCreate<MagnetEffect>($"{DataDir}/Effects/Effect_Magnet.asset");
             var scoreX2 = LoadOrCreate<ScoreMultiplierEffect>($"{DataDir}/Effects/Effect_ScoreX2.asset");
             var collectPackage = LoadOrCreate<CollectPackageEffect>($"{DataDir}/Effects/Effect_CollectPackage.asset");
+            var autoCollect = LoadOrCreate<AutoCollectEffect>($"{DataDir}/Effects/Effect_AutoCollect.asset");
+            autoCollect.range = 30f;
+            EditorUtility.SetDirty(autoCollect);
+            var unplug = LoadOrCreate<UnplugRobotsEffect>($"{DataDir}/Effects/Effect_UnplugRobots.asset");
             var jumpBoost = LoadOrCreate<JumpBoostEffect>($"{DataDir}/Effects/Effect_JumpBoost.asset");
             var attachDrone = Attach("Effect_AttachDrone", prefabs.CarrierDrone, Vector3.zero, OutOfOffice.Core.Run.PlayerPose.Hanging);
             // Oturan karakterin ağırlık merkezi kökün üstündedir, kalçası onun gerisinde kalır;
@@ -45,8 +49,8 @@ namespace OutOfOffice.EditorTools
             botSweep.frequency = 0.5f;
             EditorUtility.SetDirty(botSweep);
 
-            var devBot = Obstacle("Obstacle_DevBot", "dev_bot", prefabs.DevBot, AvoidType.ChangeLane, botRush, 0f, 1.2f);
-            var designBot = Obstacle("Obstacle_DesignBot", "design_bot", prefabs.DesignBot, AvoidType.ChangeLane, botSweep, 0f, 1.2f);
+            var devBot = Obstacle("Obstacle_DevBot", "dev_bot", prefabs.DevBot, AvoidType.ChangeLane, botRush, 0f, 1.2f, robot: true);
+            var designBot = Obstacle("Obstacle_DesignBot", "design_bot", prefabs.DesignBot, AvoidType.ChangeLane, botSweep, 0f, 1.2f, robot: true);
 
             var developer = Character("Character_Developer", "developer", "char.developer", prefabs.Developer, debug, true, 100, devBot);
             var designer = Character("Character_Designer", "designer", "char.designer", prefabs.Designer, redraw, true, 100, designBot);
@@ -77,9 +81,9 @@ namespace OutOfOffice.EditorTools
             {
                 Obstacle("Obstacle_ServerRack", "server_rack", prefabs.ServerRack, AvoidType.ChangeLane, null, 0f, 1f),
                 Obstacle("Obstacle_CookieWall", "cookie_wall", prefabs.CookieWall, AvoidType.Slide, null, 0f, 0.8f),
-                Obstacle("Obstacle_RobotVacuum", "robot_vacuum", prefabs.RobotVacuum, AvoidType.Jump, null, 0f, 0.8f),
-                Obstacle("Obstacle_CargoDrone", "cargo_drone", prefabs.CargoDrone, AvoidType.Slide, sweep, 0.2f, 0.6f),
-                Obstacle("Obstacle_AutoTaxi", "auto_taxi", prefabs.AutoTaxi, AvoidType.ChangeLane, approach, 0.35f, 0.6f),
+                Obstacle("Obstacle_RobotVacuum", "robot_vacuum", prefabs.RobotVacuum, AvoidType.Jump, null, 0f, 0.8f, robot: true),
+                Obstacle("Obstacle_CargoDrone", "cargo_drone", prefabs.CargoDrone, AvoidType.Slide, sweep, 0.2f, 0.6f, robot: true),
+                Obstacle("Obstacle_AutoTaxi", "auto_taxi", prefabs.AutoTaxi, AvoidType.ChangeLane, approach, 0.35f, 0.6f, robot: true),
             };
 
             // ---- Güçlendirmeler
@@ -93,6 +97,9 @@ namespace OutOfOffice.EditorTools
                 PowerUp("PowerUp_Magnet", "magnet", "powerup.magnet", prefabs.Magnet, 10f, magnet),
                 PowerUp("PowerUp_Overtime", "overtime", "powerup.overtime", prefabs.Overtime, 12f, scoreX2),
                 PowerUp("PowerUp_Espresso", "espresso", "powerup.espresso", prefabs.Espresso, 10f, jumpBoost),
+                // Daha nadir: Prompt Injection altınları toplatır, Fişi Çek robotları kapatır.
+                PowerUp("PowerUp_PromptInjection", "prompt_injection", "powerup.prompt_injection", prefabs.PromptInjection, 8f, 0.6f, autoCollect),
+                PowerUp("PowerUp_Unplug", "unplug", "powerup.unplug", prefabs.Unplug, 5f, 0.6f, stun, unplug),
                 // Sürpriz paket: süresi 0, anında sayılır; içeriği oyun sonunda açılır.
                 PowerUp("PowerUp_Package", "package", "powerup.package", prefabs.Package, 0f, 2f, collectPackage),
             };
@@ -179,7 +186,7 @@ namespace OutOfOffice.EditorTools
             return character;
         }
 
-        static ObstacleDefinition Obstacle(string file, string id, GameObject prefab, AvoidType avoidBy, MovementPattern movement, float minDifficulty, float weight)
+        static ObstacleDefinition Obstacle(string file, string id, GameObject prefab, AvoidType avoidBy, MovementPattern movement, float minDifficulty, float weight, bool robot = false)
         {
             var obstacle = LoadOrCreate<ObstacleDefinition>($"{DataDir}/Obstacles/{file}.asset");
             obstacle.id = id;
@@ -188,6 +195,7 @@ namespace OutOfOffice.EditorTools
             obstacle.movement = movement;
             obstacle.minDifficulty = minDifficulty;
             obstacle.spawnWeight = weight;
+            obstacle.isRobot = robot;
             EditorUtility.SetDirty(obstacle);
             return obstacle;
         }

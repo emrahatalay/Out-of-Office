@@ -66,6 +66,8 @@ namespace OutOfOffice.EditorTools
             new PropSpec("Magnet", 256, 3f),
             new PropSpec("Overtime", 256, 1.5f),
             new PropSpec("Espresso", 256, 2f),
+            new PropSpec("PromptInjection", 256, 2.5f),
+            new PropSpec("Unplug", 256, 2.5f),
             new PropSpec("Package", 256, 2f),
             new PropSpec("OfficeChair", 256, 2.5f),
             // Çevre

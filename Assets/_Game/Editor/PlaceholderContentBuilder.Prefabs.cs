@@ -11,6 +11,7 @@ namespace OutOfOffice.EditorTools
             public GameObject ServerRack, CookieWall, RobotVacuum, CargoDrone, AutoTaxi;
             public GameObject Coin, Captcha, Hallucination, Shield;
             public GameObject DronePickup, Magnet, Overtime, Espresso, OfficeChair, Package, CarrierDrone;
+            public GameObject PromptInjection, Unplug;
             public GameObject Ground;
         }
 
@@ -29,6 +30,7 @@ namespace OutOfOffice.EditorTools
             var orange = Mat("CookieOrange", new Color(0.95f, 0.55f, 0.15f));
             var green = Mat("CaptchaGreen", new Color(0.25f, 0.85f, 0.45f), 0.6f, 1.5f);
             var purple = Mat("HallucinationPurple", new Color(0.62f, 0.35f, 0.95f), 0.6f, 1.5f);
+            var pink = Mat("PromptPink", new Color(0.98f, 0.35f, 0.6f), 0.6f, 1.5f);
             var cyan = Mat("ShieldCyan", new Color(0.25f, 0.85f, 0.95f), 0.6f, 1.5f);
             var espresso = Mat("EspressoBrown", new Color(0.55f, 0.33f, 0.18f), 0.5f, 1.2f);
             var internGrey = Mat("InternGrey", new Color(0.62f, 0.66f, 0.72f));
@@ -59,6 +61,8 @@ namespace OutOfOffice.EditorTools
                 Magnet = BuildPowerUp("Pickup_Magnet", "Magnet", red, white),
                 Overtime = BuildPowerUp("Pickup_Overtime", "Overtime", yellow, white),
                 Espresso = BuildPowerUp("Pickup_Espresso", "Espresso", espresso, white),
+                PromptInjection = BuildPowerUp("Pickup_PromptInjection", "PromptInjection", pink, white),
+                Unplug = BuildPowerUp("Pickup_Unplug", "Unplug", steel, yellow),
                 OfficeChair = BuildOfficeChair(dark, steel),
                 CarrierDrone = BuildCarrierDrone(white, dark),
                 Package = BuildPackage(espresso, yellow),

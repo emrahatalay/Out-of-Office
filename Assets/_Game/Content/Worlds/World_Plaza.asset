@@ -31,5 +31,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a356c4ce48fd54e05978a93234d206b9, type: 2}
   - {fileID: 11400000, guid: 1e9e29e3d1f02492198359385a667c35, type: 2}
   - {fileID: 11400000, guid: 4a773388f9e5b4c6d80d1a08c5a6084c, type: 2}
+  - {fileID: 11400000, guid: 9d3111d1af6ed4d49adca0e7df4c4bc2, type: 2}
+  - {fileID: 11400000, guid: 02a4485e0bec64567aa0059792c011c7, type: 2}
   - {fileID: 11400000, guid: e6d5a7d4d242347e3b1df760c93ab6d6, type: 2}
   coinPrefab: {fileID: 369921303611913871, guid: 93ae97885982c497a9a33d79573076e4, type: 3}

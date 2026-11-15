@@ -30,6 +30,7 @@ Ne değildir: gerçekçi oran, kirli ya da paslı yüzey, kan, korku, gri-kahver
    | Mor | Yanılsama | Halüsinasyon |
    | Turuncu | Kargo, çerez, kahve | Kargo dronu, çerez duvarı, espresso |
    | Macenta | Tasarım | Grafiker ve robotu |
+   | Pembe | Komut, istem | Prompt Injection |
 
 4. **Her nesne ışıldar.** En az bir ışıyan parça olur (şerit, ekran, göz, kenar). Oyuncunun kaçması ya da toplaması gereken şey sahnenin en parlak şeyidir; dekor ondan sönüktür.
 5. **Siluet oynanışı söyler.** Altı boş nesnenin altından kayılır, alçak nesnenin üstünden atlanır, tam boy nesneden şerit değiştirilerek kaçılır. Biçim bu okumayı bozmaz.

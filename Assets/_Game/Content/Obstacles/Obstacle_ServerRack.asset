@@ -17,4 +17,5 @@ MonoBehaviour:
   avoidBy: 0
   movement: {fileID: 0}
   minDifficulty: 0
+  isRobot: 0
   spawnWeight: 1

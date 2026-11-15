@@ -22,6 +22,8 @@ namespace OutOfOffice.Data
         public MovementPattern movement;
         [Tooltip("Bu zorluktan önce çıkmaz (0: baştan itibaren).")]
         [Range(0f, 1f)] public float minDifficulty;
+        [Tooltip("Robot mu? Fişi Çek güçlendirmesi yalnızca robotları durdurur.")]
+        public bool isRobot;
         [Min(0f)] public float spawnWeight = 1f;
     }
 }
