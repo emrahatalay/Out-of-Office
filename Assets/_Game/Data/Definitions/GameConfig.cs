@@ -140,6 +140,22 @@ namespace OutOfOffice.Data
         [Header("Puan")]
         public int coinScore = 10;
 
+        [Header("Öğretici")]
+        [Tooltip("Son ipucu (\"altınları topla\") ekranda bu kadar saniye kalır, sonra öğretici biter.")]
+        [Min(0.5f)] public float tutorialFinishSeconds = 3f;
+        [Tooltip("Öğretici hareket beklerken zaman bu ölçekte akar (1 = normal).")]
+        [Range(0.05f, 1f)] public float tutorialTimeScale = 0.2f;
+        [Tooltip("Öğretici engeli oyuncunun bu kadar metre önüne konur.")]
+        [Min(20f)] public float tutorialSpawnDistance = 50f;
+        [Tooltip("Engel bu kadar metreye yaklaşınca oyun yavaşlar ve ok belirir.")]
+        [Min(5f)] public float tutorialTriggerDistance = 20f;
+        [Tooltip("Ok oyuncunun bu kadar metre önünde durur.")]
+        public float tutorialArrowAhead = 3.5f;
+        [Tooltip("Okun yerden yüksekliği (m).")]
+        public float tutorialArrowHeight = 1.7f;
+        [Tooltip("Sağ/sol okunun oyuncudan yana uzaklığı (m).")]
+        public float tutorialArrowSide = 1.6f;
+
         [Header("Ayarlar: görüntü kalitesi")]
         [Tooltip("İlk açılışta seçili kalite. Oyuncu Ayarlar sekmesinden değiştirir; seçimi kayıtta durur.")]
         public GraphicsQuality defaultQuality = GraphicsQuality.Medium;

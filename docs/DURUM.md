@@ -4,6 +4,7 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 
 ## Yapılanlar
 
+- Öğretici: ilk koşuda üç gerçek engel (şerit, zıpla, kay); engele yaklaşınca oyun yavaşlar, 3B ok yönü gösterir, oyuncu hareketi yapınca hız normale döner (`TutorialSystem`, `TutorialGuide`, `TutorialPresenter`). Ayarlar'dan yeniden izlenemez (henüz).
 - Çekirdek koşu: üç şerit, zıplama (tepe 3,2 m: en yüksek engel 2,6 m), kayma, girdi tamponu, hızlanma, zorluk eğrisi.
 - Kovalayan robot (İK-9000): tökezlemede yaklaşır, ikinci çarpışmada yakalar.
 - Öğrenen engel yönetmeni (şerit alışkanlığına göre engel dizer).
@@ -38,7 +39,6 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Final sürprizi:** yeni robot modelinin gelişi, İK-9000'in oynanabilir olması.
 - Görevler, günlük ödül, başarımlar, lider tablosu.
 - Reklam ve uygulama içi satın alma.
-- Öğretici (ilk açılışta nasıl oynanır).
 
 ## Bilinen sorunlar ve doğrulanmamışlar
 
@@ -77,6 +77,8 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Prompt Injection / Fişi Çek (15 Kasım 2026):** yeni etkiler (`AutoCollectEffect`, `UnplugRobotsEffect`), `IPlayerStatus.AutoCollectRange`, `IObstacleField.BeginUnplugRobots`, `ObstacleDefinition.isRobot`. Derleme temiz, içerik üretici çalıştı, Play'de eval ile denendi: Prompt Injection 8 sn'de 31 altın topladı (aynı sürede etkisiz 3); Fişi Çek'te robotlar hayalet olup yerinde dondu (yaşları ilerlemedi), robot olmayan engeller etkilenmedi, 5 sn sonra robotlar normale döndü. **Denenmeyenler:** kovalayanın durması (CAPTCHA ile aynı etki, ayrıca bakılmadı), gerçek oynanışta toplanma, kulak/göz hissi, cihaz. Modelleri üretildi ve oyunda görüldü (Prompt Injection: komut istemli konuşma balonu, Fişi Çek: kırmızı neonlu fiş; ikisi de `PropModelBuilder`'da). Fiş modeli 1.246 üçgen (bütçe 1.200'ü biraz aşıyor) ve ışıma payı düşük (%4). Fişi Çek'te robotlar hayalet rengine boyanıyor, ayrı bir "kapalı" görünümü yok.
 
 - **Şoför (15 Kasım 2026):** karakter (iskeletli, `Art/Characters/Driver`), robotu (`DriverBot`) ve kapsülü (`DriverPod`) Meshy ile üretildi. Editörde Play'de görüldü: menüde seçim ve portre, kapsülde oturan karakter (yetenek anında, kalkan etkisiyle), yolda robot. **Denenmeyenler:** kapsüldeyken gerçek çarpışmada kalkanın kırılıp kapsülün kaybolması, Şoför'ün otomatikleşip robotunun tekrar tekrar çıkışı, cihaz. Karakterin ışıma payı çok düşük (%0,6: yalnızca şapka şeridi); robot %0,4, kapsül %1,5. `docs/GORSEL_DIL.md` bütçesine göre robot 2.595 üçgen (büyük engel ≤3.000), kapsül 1.758.
+
+- **Öğretici (15 Kasım 2026):** editörde Play'de, sinyalle verilen hareketlerle uçtan uca denendi: engele yaklaşınca zaman ölçeği 0,2'ye düştü, ok ve ipucu doğru yönde çıktı (sola, yukarı, aşağı), hareketten sonra zaman ölçeği 1'e döndü, üç adım ve son mesaj bitince kayda `tutorial.done` yazıldı (test sonrası silindi). **Denenmeyenler:** gerçek parmakla kaydırma, yanlış hareketle engele çarpınca akış (kodda yavaşlatmayı bırakıp devam eder), yarım kalan koşunun yeniden başlaması, duraklatmada yavaşlatma/ok, cihaz, İngilizce metinlerin ekranda görünüşü. Okun yeri (`tutorialArrow*` ayarları) göz kararı; kaydırma okları dar ekranda binalarla çakışabilir. Mevcut oyuncular da bir kez görür (kayıtta anahtar yok).
 
 ## Yayın öncesi yapılacaklar
 

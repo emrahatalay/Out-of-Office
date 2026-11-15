@@ -294,6 +294,30 @@ MonoBehaviour:
     m_Localized: Drive
     m_Metadata:
       m_Items: []
+  - m_Id: 635462652780544
+    m_Localized: Swipe left or right to change lanes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 635462652780545
+    m_Localized: Jump! Swipe up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 635462652780546
+    m_Localized: Slide! Swipe down
+    m_Metadata:
+      m_Items: []
+  - m_Id: 635462656974848
+    m_Localized: Grab the gold, outrun HR-9000!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 640186445717504
+    m_Localized: Swipe left!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 640186449911808
+    m_Localized: Swipe right!
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

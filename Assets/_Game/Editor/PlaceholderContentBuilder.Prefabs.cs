@@ -11,7 +11,7 @@ namespace OutOfOffice.EditorTools
             public GameObject ServerRack, CookieWall, RobotVacuum, CargoDrone, AutoTaxi;
             public GameObject Coin, Captcha, Hallucination, Shield;
             public GameObject DronePickup, Magnet, Overtime, Espresso, OfficeChair, DriverPod, Package, CarrierDrone;
-            public GameObject PromptInjection, Unplug;
+            public GameObject PromptInjection, Unplug, TutorialArrow;
             public GameObject Ground;
         }
 
@@ -66,6 +66,7 @@ namespace OutOfOffice.EditorTools
                 Espresso = BuildPowerUp("Pickup_Espresso", "Espresso", espresso, white),
                 PromptInjection = BuildPowerUp("Pickup_PromptInjection", "PromptInjection", pink, white),
                 Unplug = BuildPowerUp("Pickup_Unplug", "Unplug", steel, yellow),
+                TutorialArrow = BuildTutorialArrow(Mat("TutorialArrow", new Color(0.1f, 0.8f, 1f), 0.5f, 0.9f)),
                 OfficeChair = BuildOfficeChair(dark, steel),
                 DriverPod = BuildDriverPod(dark, amber),
                 CarrierDrone = BuildCarrierDrone(white, dark),
@@ -141,6 +142,21 @@ namespace OutOfOffice.EditorTools
                 Part(root.transform, PrimitiveType.Cube, "Back", new Vector3(0f, 1.05f, -0.48f), new Vector3(0.9f, 1.1f, 0.12f), seat);
             }
 
+            return SavePrefab(root);
+        }
+
+        // Öğreticinin 3B oku: +X yönüne bakan üç ışıyan şevron (>). Yön, çalışma anında döndürülerek verilir.
+        static GameObject BuildTutorialArrow(Material glow)
+        {
+            var root = new GameObject("Tutorial_Arrow");
+            for (int i = 0; i < 3; i++)
+            {
+                float x = -i * 0.75f;
+                Part(root.transform, PrimitiveType.Cube, "ChevronUp" + i, new Vector3(x - 0.32f, 0.32f, 0f), new Vector3(0.95f, 0.24f, 0.24f), glow, new Vector3(0f, 0f, -45f));
+                Part(root.transform, PrimitiveType.Cube, "ChevronDown" + i, new Vector3(x - 0.32f, -0.32f, 0f), new Vector3(0.95f, 0.24f, 0.24f), glow, new Vector3(0f, 0f, 45f));
+            }
+
+            CombineByMaterial(root, castShadows: false);
             return SavePrefab(root);
         }
 

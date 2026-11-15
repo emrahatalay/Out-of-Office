@@ -135,6 +135,7 @@ namespace OutOfOffice.EditorTools
             var catalog = LoadOrCreate<ContentCatalog>(CatalogPath);
             catalog.characters = new[] { developer, designer, driver, intern };
             catalog.worlds = new[] { world };
+            catalog.tutorialArrow = prefabs.TutorialArrow;
 
             // ---- Aksesuar: kaykay karşılığı. Kalkan + sandalye görseli; çarpınca sandalye kırılır.
             var chair = LoadOrCreate<AccessoryDefinition>($"{DataDir}/Accessories/Accessory_OfficeChair.asset");

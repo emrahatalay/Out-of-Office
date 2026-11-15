@@ -83,7 +83,7 @@ Tek UXML (`GameUI.uxml`), dört ekran: `menuScreen`, `hudScreen`, `pauseScreen`,
   - **Mağaza:** her ürün bir satır: vitrin karesinde ürünün gerçek görseli, adı, adedi, sarı satın alma butonu.
   - **Ayarlar:** üç ayar satırı (Dil: TÜRKÇE / ENGLISH, Ses: AÇIK / KAPALI, Görüntü kalitesi: DÜŞÜK / ORTA / YÜKSEK); seçili seçenek sarıdır. Dil adları her dilde kendi dilinde yazılır. Altta "GELİŞTİRİCİ" başlığıyla geliştirici kartı (baş harfli yuvarlak avatar, ad, rol, konum), GitHub profilini açan mavi buton ve sürüm.
   - Koleksiyon ve mağaza paneli içeriği kadar yer kaplar; altında sahne görünür.
-- **HUD:** üstte duraklat, skor, altın. Altta aksesuar ve yetenek düğmesi. Etkin güçlendirme rozeti. Oyun alanını kapatmayacak kadar az şey; karartma ya da geçiş bandı yok.
+- **HUD:** üstte duraklat, skor, altın. Altta aksesuar ve yetenek düğmesi. Etkin güçlendirme rozeti. İlk koşuda öğretici ipucu (`.tutorial-hint`: koyu çip, sarı kenar, güçlendirme rozetinin altında). Oyun alanını kapatmayacak kadar az şey; karartma ya da geçiş bandı yok.
 - **Duraklatma ve oyun sonu:** karartma üstünde tek panel, üst kenarında şerit başlık (oyun sonunda kırmızı). Oyun sonunda önce devam teklifi (varsa), sonra skor, rekor ve paketlerden çıkanlar.
 
 Ekran kenarlarında `SafeArea` kullanılır (çentik ve köşeler). Panel 1080x1920'ye göre ölçeklenir (genişlik-yükseklik dengesi 0,5). Başlık boyutu en uzun dile göre seçilir: İngilizce "OUT OF OFFICE" tek satıra sığmalıdır.

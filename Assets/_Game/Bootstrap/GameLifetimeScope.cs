@@ -72,6 +72,8 @@ namespace OutOfOffice.Bootstrap
             RegisterAlwaysOn<RewardSystem>(builder);
             builder.RegisterEntryPoint<StoreSystem>();
             builder.RegisterEntryPoint<SettingsSystem>().AsSelf();
+            builder.RegisterEntryPoint<TutorialSystem>();
+            builder.RegisterEntryPoint<TutorialGuide>();
 
             // His ve efektler (sadece sinyal dinler; çıkarılsalar oyun aynen çalışır)
             builder.RegisterEntryPoint<TimeFeelSystem>();
@@ -91,6 +93,7 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<MenuTabsPresenter>();
             builder.RegisterEntryPoint<CollectionPresenter>();
             builder.RegisterEntryPoint<SettingsPresenter>();
+            builder.RegisterEntryPoint<TutorialPresenter>();
         }
 
         /// <summary>Yalnızca sinyal dinleyen (Tick'i olmayan) sistemler için: kimse istemese de kurulur.</summary>

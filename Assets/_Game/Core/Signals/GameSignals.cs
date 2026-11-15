@@ -149,6 +149,48 @@ namespace OutOfOffice.Core.Signals
     public readonly struct PlayerCaughtSignal { }
     public readonly struct ShieldBrokenSignal { }
 
+    // ---------------------------------------------------------------- Öğretici
+
+    /// <summary>Öğreticinin 3B okunun yönü. None: ok yok.</summary>
+    public enum TutorialCue
+    {
+        None,
+        Left,
+        Right,
+        Up,
+        Down
+    }
+
+    /// <summary>
+    /// Öğretici ipucu değişti. Anahtar boşsa ipucu gizlenir. Çeviri anahtarı taşır; metni arayüz bağlar.
+    /// Cue sahnedeki okun yönünü söyler.
+    /// </summary>
+    public readonly struct TutorialHintSignal
+    {
+        public readonly string TextKey;
+        public readonly TutorialCue Cue;
+
+        public TutorialHintSignal(string textKey, TutorialCue cue = TutorialCue.None)
+        {
+            TextKey = textKey;
+            Cue = cue;
+        }
+    }
+
+    /// <summary>Öğretici sürerken rastgele engel ve altın dizilmez; öğretici kendi engellerini koyar.</summary>
+    public readonly struct TutorialActiveSignal
+    {
+        public readonly bool Active;
+        public TutorialActiveSignal(bool active) { Active = active; }
+    }
+
+    /// <summary>Öğretici oyuncunun hareket etmesini beklerken oyunu yavaşlatır, bitince normale döndürür.</summary>
+    public readonly struct TutorialSlowMotionSignal
+    {
+        public readonly bool On;
+        public TutorialSlowMotionSignal(bool on) { On = on; }
+    }
+
     // ---------------------------------------------------------------- Puan ve toplananlar
 
     public readonly struct ScoreChangedSignal

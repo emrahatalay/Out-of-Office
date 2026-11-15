@@ -294,6 +294,30 @@ MonoBehaviour:
     m_Localized: "S\xFCr"
     m_Metadata:
       m_Items: []
+  - m_Id: 635462652780544
+    m_Localized: "\u015Eerit de\u011Fi\u015Ftirmek i\xE7in sa\u011Fa ya da sola kayd\u0131r"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 635462652780545
+    m_Localized: "Z\u0131pla! Yukar\u0131 kayd\u0131r"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 635462652780546
+    m_Localized: "Kay! A\u015Fa\u011F\u0131 kayd\u0131r"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 635462656974848
+    m_Localized: "Alt\u0131nlar\u0131 topla, \u0130K-9000'den ka\xE7!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 640186445717504
+    m_Localized: "Sola kayd\u0131r!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 640186449911808
+    m_Localized: "Sa\u011Fa kayd\u0131r!"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

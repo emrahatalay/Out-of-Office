@@ -25,11 +25,12 @@ namespace OutOfOffice.Gameplay
         readonly Workforce _workforce;
         readonly IGameStateProvider _state;
         readonly List<ObstacleDefinition> _candidates = new List<ObstacleDefinition>(16);
-        readonly IDisposable _subscription;
+        readonly SubscriptionBag _subscriptions = new SubscriptionBag();
         readonly bool[] _laneUsed;
         readonly float[] _laneWeights;
         float _nextRowZ;
         bool _wasFlying;
+        bool _tutorialActive;
 
         const int AirCoinCount = 34;
         const float AirCoinSpacing = 3f;
@@ -57,11 +58,20 @@ namespace OutOfOffice.Gameplay
             _laneUsed = new bool[config.laneCount];
             _laneWeights = new float[config.laneCount];
 
-            _subscription = bus.Subscribe<RunStartedSignal>(_ => OnRunStarted());
+            _subscriptions.Add(bus.Subscribe<RunStartedSignal>(_ => OnRunStarted()));
+            _subscriptions.Add(bus.Subscribe<TutorialActiveSignal>(OnTutorialActive));
+        }
+
+        // Öğretici kendi engellerini koyarken rastgele dizilim durur; bitince oyuncunun önünden devam eder.
+        void OnTutorialActive(TutorialActiveSignal signal)
+        {
+            _tutorialActive = signal.Active;
+            if (!signal.Active) _nextRowZ = _player.Position.z + _config.firstRowDistance;
         }
 
         void OnRunStarted()
         {
+            _tutorialActive = false;
             _nextRowZ = _config.firstRowDistance;
             _wasFlying = false;
 
@@ -74,7 +84,7 @@ namespace OutOfOffice.Gameplay
 
         public void Tick()
         {
-            if (_state.Current != GameState.Running) return;
+            if (_state.Current != GameState.Running || _tutorialActive) return;
 
             bool flying = _player.FlightHeight > 0f;
             if (flying && !_wasFlying) SpawnAirCoins();
@@ -258,7 +268,7 @@ namespace OutOfOffice.Gameplay
 
         public void Dispose()
         {
-            _subscription.Dispose();
+            _subscriptions.Dispose();
         }
     }
 }

@@ -14,5 +14,7 @@ namespace OutOfOffice.Data
         public LootTable packageLoot;
         [Tooltip("Mağazada satılan ürünler, görünme sırasıyla.")]
         public StoreItemDefinition[] storeItems;
+        [Tooltip("Öğreticinin 3B oku: +X yönüne bakan, ışıyan şevron. Boşsa ok çıkmaz.")]
+        public GameObject tutorialArrow;
     }
 }

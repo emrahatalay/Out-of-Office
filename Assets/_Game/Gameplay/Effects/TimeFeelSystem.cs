@@ -25,6 +25,7 @@ namespace OutOfOffice.Gameplay
 
             bus.Subscribe<PlayerStumbledSignal>(_ => Slow(_config.stumbleTimeScale, _config.stumbleSlowSeconds)).AddTo(_subscriptions);
             bus.Subscribe<GameStateChangedSignal>(OnStateChanged).AddTo(_subscriptions);
+            bus.Subscribe<TutorialSlowMotionSignal>(OnTutorialSlow).AddTo(_subscriptions);
         }
 
         void Slow(float scale, float seconds)
@@ -32,6 +33,20 @@ namespace OutOfOffice.Gameplay
             if (seconds <= 0f) return;
             Time.timeScale = scale;
             _remaining = seconds;
+        }
+
+        // Öğretici yavaşlatması süreyle değil bayrakla çalışır: oyuncu hareketi yapana kadar sürer.
+        void OnTutorialSlow(TutorialSlowMotionSignal signal)
+        {
+            if (signal.On)
+            {
+                _remaining = 0f;
+                Time.timeScale = _config.tutorialTimeScale;
+                return;
+            }
+
+            // Başka bir yavaşlatma (ör. tökezleme) sürüyorsa onu bozma.
+            if (_remaining <= 0f && _state.Current == GameState.Running) Time.timeScale = 1f;
         }
 
         void OnStateChanged(GameStateChangedSignal signal)

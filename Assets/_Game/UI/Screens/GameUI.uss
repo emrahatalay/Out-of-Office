@@ -740,6 +740,25 @@
     -unity-font-definition: var(--font-bold);
 }
 
+.tutorial-hint {
+    align-self: center;
+    max-width: 92%;
+    margin-top: var(--space-lg);
+    padding: 20px 40px;
+    background-color: var(--color-ink-soft);
+    border-width: 3px;
+    border-color: var(--color-accent);
+    border-radius: 48px;
+}
+
+.tutorial-text {
+    color: var(--color-text);
+    font-size: 40px;
+    white-space: normal;
+    -unity-font-definition: var(--font-bold);
+    -unity-text-align: middle-center;
+}
+
 .hud-bottom {
     flex-direction: row;
     justify-content: space-between;

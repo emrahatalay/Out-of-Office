@@ -291,6 +291,30 @@ MonoBehaviour:
     m_Key: ability.drive
     m_Metadata:
       m_Items: []
+  - m_Id: 635462652780544
+    m_Key: tutorial.lane
+    m_Metadata:
+      m_Items: []
+  - m_Id: 635462652780545
+    m_Key: tutorial.jump
+    m_Metadata:
+      m_Items: []
+  - m_Id: 635462652780546
+    m_Key: tutorial.slide
+    m_Metadata:
+      m_Items: []
+  - m_Id: 635462656974848
+    m_Key: tutorial.go
+    m_Metadata:
+      m_Items: []
+  - m_Id: 640186445717504
+    m_Key: tutorial.left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 640186449911808
+    m_Key: tutorial.right
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
