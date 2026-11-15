@@ -10,7 +10,7 @@ Slogan: "Yapay zekâ işini aldı. Sıra sende." Yakalanınca ekranda "İK-9000 
 
 **Planlanan final sürprizi (henüz yapılmadı):** belli bir mesafeden sonra İK-9000'in arkasında daha yeni bir model belirir; onu da işinden etmeye gelmiştir. İK-9000 oyuncunun safına geçer ve oynanabilir karakter olarak açılır.
 
-**Planlanan dünyalar:** Plaza (var) → otonom şehir → lojistik deposu → veri merkezi → Analog Kasaba.
+**Dünyalar:** Plaza (0 m) → **Otonom Şehir** (1200 m, yapıldı: gün batımı) → lojistik deposu → veri merkezi → Analog Kasaba (planlanan). Geçiş aynı koşuda mesafeyle olur; yeni bölgeye girince afiş çıkar, gökyüzü ve zemin değişir.
 
 ## Ton
 
@@ -50,6 +50,14 @@ Yeni içerik adlandırırken aynı kaynaktan beslen: ofis hayatı (mesai, kıdem
 | Robot Süpürge | Zıpla | Sabit |
 | Kargo Dronu | Kay | Şeritler arasında süzülür; zorluk 0,2'den sonra |
 | Otonom Taksi | Şerit değiştir | Oyuncuya doğru gelir; zorluk 0,35'ten sonra |
+
+**Otonom Şehir engelleri** (Plaza'dakilerden taksi, kargo dronu ve robot süpürge de çıkar):
+
+| Engel | Nasıl kaçılır | Davranış |
+|---|---|---|
+| Otonom Otobüs (robot) | Şerit değiştir | Yavaşça (4 m/sn) oyuncuya doğru gelir |
+| Kontrol Noktası Bariyeri | Kay | Sabit; kolu yüksektir, altından kayılır |
+| Trafik Konisi Robotu (robot) | Zıpla | Sabit |
 
 ## Güçlendirmeler
 

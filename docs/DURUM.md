@@ -6,6 +6,7 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 
 - Öğretici: ilk koşuda üç gerçek engel (şerit, zıpla, kay); engele yaklaşınca oyun yavaşlar, 3B ok yönü gösterir, oyuncu hareketi yapınca hız normale döner (`TutorialSystem`, `TutorialGuide`, `TutorialPresenter`). Ayarlar'dan yeniden izlenemez (henüz).
 - Menü sekmeleri düğme sesi çıkarır (`MenuTabClickedSignal`). Şerit değiştirme yana adım klibi, İK-9000'in yakalama hareketi, dron pervanelerinin ve taksi tekerleklerinin dönmesi.
+- **Dünyalar arası geçiş ve Otonom Şehir:** mesafeye göre geçiş (`WorldTimeline`, `WorldProgressSystem`, `WorldAtmosphereSystem`), yeni bölge afişi, dünyaya özel zemin (`GroundStyle`), hava, engel havuzu. Otonom Şehir: gün batımı gökyüzü, neon bina paleti, pembe oklar, 3 yeni engel (Otobüs, Bariyer, Koni Robotu), dünyaya özel yol kenarı ve binalar: akıllı lamba, şarj istasyonu, hologramlı durak, iki yeni bina modeli (yığılmış yuvarlak katlar, halkalı balkon kulesi).
 - Çekirdek koşu: üç şerit, zıplama (tepe 3,2 m: en yüksek engel 2,6 m), kayma, girdi tamponu, hızlanma, zorluk eğrisi.
 - Kovalayan robot (İK-9000): tökezlemede yaklaşır, ikinci çarpışmada yakalar.
 - Öğrenen engel yönetmeni (şerit alışkanlığına göre engel dizer).
@@ -35,7 +36,7 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Eksik animasyonlar:** yok (şerit değiştirme, yakalama hareketi, dron pervanesi ve taksi tekerleği yapıldı; aşağıya bak).
 - **Meslek:** başka meslekler (Şoför yapıldı).
 - **Öğretici** Ayarlar'dan yeniden izlenemez.
-- **Diğer dünyalar** ve dünyalar arası geçiş: otonom şehir, lojistik deposu, veri merkezi, Analog Kasaba.
+- **Diğer dünyalar:** lojistik deposu, veri merkezi, Analog Kasaba (altyapı ve Otonom Şehir hazır; aynı kalıpla eklenir, `docs/MIMARI.md` "Yeni dünya").
 - **Final sürprizi:** yeni robot modelinin gelişi, İK-9000'in oynanabilir olması.
 - Görevler, günlük ödül, başarımlar, lider tablosu.
 - Reklam ve uygulama içi satın alma.
@@ -81,6 +82,8 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Öğretici (15 Kasım 2026):** editörde Play'de, sinyalle verilen hareketlerle uçtan uca denendi: engele yaklaşınca zaman ölçeği 0,2'ye düştü, ok ve ipucu doğru yönde çıktı (sola, yukarı, aşağı), hareketten sonra zaman ölçeği 1'e döndü, üç adım ve son mesaj bitince kayda `tutorial.done` yazıldı (test sonrası silindi). **Denenmeyenler:** gerçek parmakla kaydırma, yanlış hareketle engele çarpınca akış (kodda yavaşlatmayı bırakıp devam eder), yarım kalan koşunun yeniden başlaması, duraklatmada yavaşlatma/ok, cihaz, İngilizce metinlerin ekranda görünüşü. Okun yeri (`tutorialArrow*` ayarları) göz kararı; kaydırma okları dar ekranda binalarla çakışabilir. Mevcut oyuncular da bir kez görür (kayıtta anahtar yok).
 
 - **Animasyonlar ve sekme sesi (15 Kasım 2026):** editörde Play'de görüldü. Şerit değiştirme: yana adım ayrı bir üst gövde katmanında oynuyor, bacaklar koşuyu sürdürüyor (iki ekran görüntüsünde adım sırasında ayaklar koşu hareketinde; sol/sağ ayna gözle ayırt edilmedi). Yakalama: kovalayan öne eğilip kollarını uzatıyor (geçiş sırasında bir kare görüldü, tam poz değil). Pervane ve tekerlekler: dönüş açıları kareler arasında değişiyor, ekran görüntüsünde kopma yok. **Denenmeyenler:** gerçek yakalamada tam Grab pozu ve yakalama sonrası bekleyişi, şerit değiştirmenin hızlı art arda geçişlerde görünüşü (klip 0,35 sn, koşuyu böler), sekme sesinin kulakla duyulması ve gerçek dokunuşla tetiklenmesi, tekerlek yönünün hareketle uyumu, cihaz. Her `CharacterModelBuilder` çalışmasında konsolda `RightFoot 1,5 mm` kemik uzunluğu uyarısı çıkıyor (klip dosyalarının iskeleti; görsel etkisi yok).
+
+- **Dünyalar ve Otonom Şehir (15 Kasım 2026):** editörde Play'de zaman ölçeği 6 ile hızlandırılarak denendi: 1081 m'de hava karışmaya başladı, 1208-1381 m'de Otonom Şehir'e geçti (gökyüzü, sis, zemin, bina renkleri, afiş), konsol hatasız. Yeni üç engel yan yana dizilip ekran görüntüsüyle bakıldı. **Denenmeyenler:** gerçek hızda sınırdan geçiş akıcılığı (zemin parçası dikişi, sis uyumu), yeni engellerin gerçek çarpışmada doğru çalıştığı (bariyer altından kayma, koni üstünden atlama, otobüsün gelişi), Otonom Şehir'de dengeleme (1200 m ~70 sn; engel sıklığı ve zorluk), dünya değişirken yansıma haritası (hâlâ Plaza'nınki), gerçek dokunuş ve cihaz. Koni robotunun kırmızı gözü ışımıyor (maske %0,1). Şehir binaları ekran görüntüsünde denendi (iki bina modeli, dört neon renk); Hologramlı Durak'ın ve lambanın yola dönüklüğü (yaw) göz kararı, lambanın pembe küresi soluk görünüyor. Otobüs 2.889 üçgen (büyük engel ≤3.000).
 
 ## Yayın öncesi yapılacaklar
 

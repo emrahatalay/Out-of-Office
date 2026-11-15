@@ -740,6 +740,18 @@
     -unity-font-definition: var(--font-bold);
 }
 
+.world-banner {
+    align-self: center;
+    align-items: center;
+    margin-top: var(--space-lg);
+}
+
+.world-banner-name {
+    font-size: 64px;
+    -unity-font-definition: var(--font-bold);
+    -unity-text-align: middle-center;
+}
+
 .tutorial-hint {
     align-self: center;
     max-width: 92%;

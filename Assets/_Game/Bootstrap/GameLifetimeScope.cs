@@ -61,6 +61,9 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<ChaserSystem>();
             builder.RegisterEntryPoint<ObstacleField>().AsSelf();
             builder.RegisterEntryPoint<PickupField>().AsSelf();
+            builder.Register<WorldTimeline>(Lifetime.Singleton);
+            builder.RegisterEntryPoint<WorldProgressSystem>();
+            builder.RegisterEntryPoint<WorldAtmosphereSystem>();
             builder.RegisterEntryPoint<TrackSystem>();
             builder.RegisterEntryPoint<AdaptiveDirector>();
             builder.RegisterEntryPoint<SpawnDirector>();
@@ -94,6 +97,7 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<CollectionPresenter>();
             builder.RegisterEntryPoint<SettingsPresenter>();
             builder.RegisterEntryPoint<TutorialPresenter>();
+            builder.RegisterEntryPoint<WorldBannerPresenter>();
         }
 
         /// <summary>Yalnızca sinyal dinleyen (Tick'i olmayan) sistemler için: kimse istemese de kurulur.</summary>

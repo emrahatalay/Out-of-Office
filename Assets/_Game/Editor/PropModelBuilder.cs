@@ -56,6 +56,10 @@ namespace OutOfOffice.EditorTools
             new PropSpec("DevBot", 512, 2.5f),
             new PropSpec("DesignBot", 512, 2.5f),
             new PropSpec("DriverBot", 512, 2.5f),
+            // Otonom Şehir engelleri
+            new PropSpec("AutoBus", 512, 2.5f),
+            new PropSpec("GateBarrier", 512, 3f),
+            new PropSpec("TrafficCone", 512, 3f),
             // Toplananlar ve aksesuar
             // Altının dokusu koddan çizilir (make_coin.py); ışıma çok hafif: fazlası bloom'la beyaza kaçıp amblemi siliyordu.
             new PropSpec("Coin", 256, 1f),
@@ -76,12 +80,18 @@ namespace OutOfOffice.EditorTools
             // Kolon da boyanabilir: gövdesi açık renge döner, neon çizgileri kendi renginde kalır.
             new PropSpec("Column", 512, 1.4f, tintable: true),
             new PropSpec("Kiosk", 512, 2f),
+            new PropSpec("ChargingStation", 512, 2.5f),
+            new PropSpec("StreetLamp", 512, 2.5f),
+            new PropSpec("HoloStop", 512, 2.5f),
             new PropSpec("Billboard", 512, 2f),
             // Binalar boyanabilir: her kopya ayrı bir pastel renk alır. Gündüz pencereler ışık
             // saçmaz, gökyüzünü yansıtan cam gibi hafifçe parlar. Ekranın büyük bölümünü
             // kapladıkları için dokuları 1024'tür (256'da pencere ızgarası lekeye dönüyordu).
             new PropSpec("TowerA", 1024, 0.15f, tintable: true),
             new PropSpec("TowerB", 1024, 0.15f, tintable: true),
+            // Otonom Şehir binaları: gövde boyanır (şehir paleti), neon şeritler ışır.
+            new PropSpec("TowerC", 1024, 1.4f, tintable: true),
+            new PropSpec("TowerD", 1024, 1.4f, tintable: true),
         };
 
         // Renksiz dokunun ayarları: gövdenin en koyu ve en açık yeri bu aralığa yayılır. Taban

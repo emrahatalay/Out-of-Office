@@ -88,6 +88,8 @@ namespace OutOfOffice.EditorTools
             new[] { "acc.chair", "Sandalye", "Chair" },
             new[] { "chaser.hr9000", "İK-9000", "HR-9000" },
             new[] { "world.plaza", "Plaza", "Plaza" },
+            new[] { "world.autonomous_city", "Otonom Şehir", "Autonomous City" },
+            new[] { "ui.newarea", "YENİ BÖLGE", "NEW AREA" },
         };
 
         static string BuildLocalization()

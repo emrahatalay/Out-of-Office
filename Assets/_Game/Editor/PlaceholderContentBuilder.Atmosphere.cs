@@ -28,6 +28,49 @@ namespace OutOfOffice.EditorTools
         // Güneşin sahnedeki yönü; hem ışık hem gökyüzündeki disk bundan türetilir.
         static readonly Quaternion SunRotation = Quaternion.Euler(50f, -30f, 0f);
 
+        // ---- Dünyaların havası (WorldDefinition.atmosphere). Sahnedeki başlangıç havası ilk dünyanınkidir;
+        // oyun sırasında WorldAtmosphereSystem dünyalar arasında karıştırır.
+
+        /// <summary>Plaza: parlak mavi gündüz.</summary>
+        static OutOfOffice.Data.AtmosphereSettings PlazaAtmosphere()
+        {
+            return new OutOfOffice.Data.AtmosphereSettings
+            {
+                zenithColor = SkyZenith,
+                horizonColor = SkyHorizon,
+                cloudColor = Color.white,
+                cloudShadeColor = new Color(0.86f, 0.92f, 1f),
+                cloudCoverage = 0.47f,
+                sunColor = new Color(1f, 0.95f, 0.84f),
+                sunIntensity = 1.65f,
+                ambientSky = new Color(0.5f, 0.63f, 0.9f),
+                ambientEquator = new Color(0.52f, 0.54f, 0.65f),
+                ambientGround = new Color(0.3f, 0.3f, 0.4f),
+                fogStart = 72f,
+                fogEnd = 140f,
+            };
+        }
+
+        /// <summary>Otonom Şehir: gün batımı. Mor tepe, pembe-şeftali ufuk; neon ışıkları ön plana çıkar.</summary>
+        static OutOfOffice.Data.AtmosphereSettings CityAtmosphere()
+        {
+            return new OutOfOffice.Data.AtmosphereSettings
+            {
+                zenithColor = new Color(0.22f, 0.14f, 0.55f),
+                horizonColor = new Color(1f, 0.64f, 0.58f),
+                cloudColor = new Color(1f, 0.8f, 0.72f),
+                cloudShadeColor = new Color(0.72f, 0.46f, 0.66f),
+                cloudCoverage = 0.5f,
+                sunColor = new Color(1f, 0.72f, 0.5f),
+                sunIntensity = 1.45f,
+                ambientSky = new Color(0.58f, 0.48f, 0.82f),
+                ambientEquator = new Color(0.62f, 0.52f, 0.64f),
+                ambientGround = new Color(0.36f, 0.3f, 0.42f),
+                fogStart = 64f,
+                fogEnd = 128f,
+            };
+        }
+
         /// <summary>Işık, ortam, sis, gökyüzü ve yansıma. Sahne kurulurken çağrılır.</summary>
         static void BuildAtmosphere()
         {

@@ -8,6 +8,9 @@ namespace OutOfOffice.EditorTools
 {
     public static partial class PlaceholderContentBuilder
     {
+        /// <summary>Otonom Şehir koşunun kaçıncı metresinde başlar (Plaza ~70 sn sürer).</summary>
+        const float CityStartDistance = 1200f;
+
         static void BuildData(PlaceholderPrefabs prefabs)
         {
             // ---- Etkiler: güçlendirme ve yeteneklerin yapı taşları
@@ -99,6 +102,20 @@ namespace OutOfOffice.EditorTools
                 Obstacle("Obstacle_AutoTaxi", "auto_taxi", prefabs.AutoTaxi, AvoidType.ChangeLane, approach, 0.35f, 0.6f, robot: true),
             };
 
+            // Otonom Şehir engelleri: yeni üçü + Plaza'dan şehre yakışanlar (taksi, dron, süpürge).
+            var busApproach = LoadOrCreate<ApproachPattern>($"{DataDir}/Movement/Movement_BusApproach.asset");
+            busApproach.speed = 4f;
+            EditorUtility.SetDirty(busApproach);
+            var cityObstacles = new[]
+            {
+                Obstacle("Obstacle_AutoBus", "auto_bus", prefabs.AutoBus, AvoidType.ChangeLane, busApproach, 0f, 1f, robot: true),
+                Obstacle("Obstacle_GateBarrier", "gate_barrier", prefabs.GateBarrier, AvoidType.Slide, null, 0f, 0.9f),
+                Obstacle("Obstacle_TrafficCone", "traffic_cone", prefabs.TrafficCone, AvoidType.Jump, null, 0f, 0.9f, robot: true),
+                obstacles[4], // otonom taksi
+                obstacles[3], // kargo dronu
+                obstacles[2], // robot süpürge
+            };
+
             // Dönen parçalar: dron pervaneleri (dönüş yönü karşılıklı) ve taksi tekerlekleri (yere doğru gelirken ileri yuvarlanır).
             obstacles[3].spinParts = new[]
             {
@@ -139,14 +156,31 @@ namespace OutOfOffice.EditorTools
             world.obstacles = obstacles;
             world.powerUps = powerUps;
             world.coinPrefab = prefabs.Coin;
+            world.startDistance = 0f;
+            world.atmosphere = PlazaAtmosphere();
             EditorUtility.SetDirty(world);
+
+            // Otonom Şehir: Plaza'dan sonra gelir. İçerik (zemin, dekor, engel) ayrıca özelleşir; şimdilik Plaza'nın içeriğini
+            // kullanır ve yalnızca havası farklıdır.
+            var city = LoadOrCreate<WorldDefinition>($"{DataDir}/Worlds/World_AutonomousCity.asset");
+            city.id = "autonomous_city";
+            city.nameKey = "world.autonomous_city";
+            city.groundSegmentPrefab = prefabs.CityGround;
+            city.segmentLength = 30f;
+            city.chaser = chaser;
+            city.obstacles = cityObstacles;
+            city.powerUps = powerUps;
+            city.coinPrefab = prefabs.Coin;
+            city.startDistance = CityStartDistance;
+            city.atmosphere = CityAtmosphere();
+            EditorUtility.SetDirty(city);
 
             // ---- Ayarlar ve katalog (ayarlar yalnızca ilk kez oluşturulur; dengelemen korunur)
             LoadOrCreate<GameConfig>(ConfigPath);
 
             var catalog = LoadOrCreate<ContentCatalog>(CatalogPath);
             catalog.characters = new[] { developer, designer, driver, intern };
-            catalog.worlds = new[] { world };
+            catalog.worlds = new[] { world, city };
             catalog.tutorialArrow = prefabs.TutorialArrow;
 
             // ---- Aksesuar: kaykay karşılığı. Kalkan + sandalye görseli; çarpınca sandalye kırılır.

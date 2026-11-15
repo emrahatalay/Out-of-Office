@@ -35,26 +35,88 @@ namespace OutOfOffice.EditorTools
         const int RoadTextureHeight = 1024;
         const int SidewalkTextureSize = 512;
 
-        // Renkler (sRGB). Asfalt açık ve serindir: koyu gövdeli engeller ve renkli karakterler üstünde okunur.
-        static readonly Color AsphaltColor = new Color(0.47f, 0.47f, 0.58f);
-        static readonly Color MarkingColor = new Color(0.96f, 0.97f, 1f);
-        static readonly Color ArrowColor = new Color(0.22f, 0.92f, 1f);
-        static readonly Color StudColor = new Color(0.3f, 0.95f, 1f);
-        static readonly Color SlabColorA = new Color(0.95f, 0.9f, 0.84f);
-        static readonly Color SlabColorB = new Color(0.98f, 0.86f, 0.82f);
-        static readonly Color JointColor = new Color(0.72f, 0.68f, 0.7f);
+        /// <summary>
+        /// Bir dünyanın zemin görünümü: asfalt, çizgi ve ok renkleri, kaldırım, bina paleti. Zemin kurulurken
+        /// <see cref="_style"/> bu stile ayarlanır; doku ve materyal adları sonekle ayrışır.
+        /// </summary>
+        sealed class GroundStyle
+        {
+            public string Name;
+            public string Suffix;
+            public Color Asphalt, Marking, Arrow, Stud, SlabA, SlabB, Joint;
+            public Color LaneGlow;
+            public Color[] Towers;
+            public Color ColumnTint;
+        }
+
+        // Plaza: açık, serin asfalt (koyu gövdeli engeller ve renkli karakterler üstünde okunur), turkuaz oklar, şeker renkli binalar.
+        static readonly GroundStyle PlazaStyle = new GroundStyle
+        {
+            Name = "Office",
+            Suffix = string.Empty,
+            Asphalt = new Color(0.47f, 0.47f, 0.58f),
+            Marking = new Color(0.96f, 0.97f, 1f),
+            Arrow = new Color(0.22f, 0.92f, 1f),
+            Stud = new Color(0.3f, 0.95f, 1f),
+            SlabA = new Color(0.95f, 0.9f, 0.84f),
+            SlabB = new Color(0.98f, 0.86f, 0.82f),
+            Joint = new Color(0.72f, 0.68f, 0.7f),
+            LaneGlow = new Color(0.1f, 0.78f, 0.82f),
+            // Sıra, yan yana ve karşı karşıya gelenler birbirinden ayrışacak şekildedir (sol yakın, sol uzak, sağ yakın, sağ uzak).
+            Towers = new[]
+            {
+                new Color(1f, 0.46f, 0.56f),   // mercan pembesi
+                new Color(0.3f, 0.86f, 0.66f), // nane
+                new Color(1f, 0.76f, 0.28f),   // bal sarısı
+                new Color(0.56f, 0.52f, 1f),   // lavanta
+            },
+            ColumnTint = new Color(1f, 0.97f, 0.92f),
+        };
+
+        // Otonom Şehir: gün batımı. Orta tonlu mor-gri asfalt, pembe oklar, turuncu çiviler, neon renkli binalar.
+        static readonly GroundStyle CityStyle = new GroundStyle
+        {
+            Name = "City",
+            Suffix = "_City",
+            Asphalt = new Color(0.42f, 0.38f, 0.52f),
+            Marking = new Color(1f, 0.92f, 0.96f),
+            Arrow = new Color(1f, 0.36f, 0.76f),
+            Stud = new Color(1f, 0.64f, 0.3f),
+            SlabA = new Color(0.9f, 0.8f, 0.86f),
+            SlabB = new Color(0.84f, 0.78f, 0.92f),
+            Joint = new Color(0.62f, 0.56f, 0.68f),
+            LaneGlow = new Color(1f, 0.36f, 0.76f),
+            Towers = new[]
+            {
+                new Color(0.22f, 0.82f, 0.86f), // turkuaz
+                new Color(0.96f, 0.36f, 0.72f), // macenta
+                new Color(1f, 0.7f, 0.26f),     // amber
+                new Color(0.62f, 0.46f, 1f),    // menekşe
+            },
+            ColumnTint = new Color(1f, 0.92f, 0.95f),
+        };
+
+        static GroundStyle _style = PlazaStyle;
+
+        static Color AsphaltColor => _style.Asphalt;
+        static Color MarkingColor => _style.Marking;
+        static Color ArrowColor => _style.Arrow;
+        static Color StudColor => _style.Stud;
+        static Color SlabColorA => _style.SlabA;
+        static Color SlabColorB => _style.SlabB;
+        static Color JointColor => _style.Joint;
 
         static Material RoadMaterial()
         {
-            var texture = BuildTexture("Road_BaseColor", RoadTextureWidth, RoadTextureHeight, DrawRoad, TextureWrapMode.Clamp, TextureWrapMode.Repeat, 8);
+            var texture = BuildTexture("Road_BaseColor" + _style.Suffix, RoadTextureWidth, RoadTextureHeight, DrawRoad, TextureWrapMode.Clamp, TextureWrapMode.Repeat, 8);
             // Işıma gücü düşük: gündüz çizgiler ve oklar hafifçe parlar, bloom yalnızca okları yayar.
-            return TexturedMat("Road", texture, 0.18f, 1.3f);
+            return TexturedMat("Road" + _style.Suffix, texture, 0.18f, 1.3f);
         }
 
         static Material SidewalkMaterial()
         {
-            var texture = BuildTexture("Sidewalk_BaseColor", SidewalkTextureSize, SidewalkTextureSize, DrawSidewalk, TextureWrapMode.Repeat, TextureWrapMode.Repeat, 4);
-            return TexturedMat("Sidewalk", texture, 0.15f, 0f);
+            var texture = BuildTexture("Sidewalk_BaseColor" + _style.Suffix, SidewalkTextureSize, SidewalkTextureSize, DrawSidewalk, TextureWrapMode.Repeat, TextureWrapMode.Repeat, 4);
+            return TexturedMat("Sidewalk" + _style.Suffix, texture, 0.15f, 0f);
         }
 
         static Material TexturedMat(string name, Texture2D texture, float smoothness, float glow)

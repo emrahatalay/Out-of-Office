@@ -152,6 +152,26 @@ namespace OutOfOffice.Core.Signals
     public readonly struct PlayerCaughtSignal { }
     public readonly struct ShieldBrokenSignal { }
 
+    // ---------------------------------------------------------------- Dünyalar
+
+    /// <summary>Oyuncu yeni bir dünyanın sınırını geçti (koşunun başındaki ilk dünya için atılmaz).</summary>
+    public readonly struct WorldChangedSignal
+    {
+        public readonly string Id;
+        public readonly string NameKey;
+        public readonly int Index;
+        /// <summary>Dünya adı afişinin ekranda kalma süresi (sn).</summary>
+        public readonly float BannerSeconds;
+
+        public WorldChangedSignal(string id, string nameKey, int index, float bannerSeconds)
+        {
+            Id = id;
+            NameKey = nameKey;
+            Index = index;
+            BannerSeconds = bannerSeconds;
+        }
+    }
+
     // ---------------------------------------------------------------- Öğretici
 
     /// <summary>Öğreticinin 3B okunun yönü. None: ok yok.</summary>

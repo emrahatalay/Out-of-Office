@@ -140,6 +140,12 @@ namespace OutOfOffice.Data
         [Header("Puan")]
         public int coinScore = 10;
 
+        [Header("Dünyalar")]
+        [Tooltip("Yeni dünyanın gökyüzü ve sisi, sınırdan bu kadar metre önce karışmaya başlar; sınırda tamamlanır.")]
+        [Min(10f)] public float worldBlendDistance = 150f;
+        [Tooltip("Dünya adı afişinin ekranda kalma süresi (sn).")]
+        [Min(0.5f)] public float worldBannerSeconds = 3f;
+
         [Header("Öğretici")]
         [Tooltip("Son ipucu (\"altınları topla\") ekranda bu kadar saniye kalır, sonra öğretici biter.")]
         [Min(0.5f)] public float tutorialFinishSeconds = 3f;

@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76eb8f3d2ec1545ee922dfc972afa0dc, type: 3}
+  m_Name: World_AutonomousCity
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.WorldDefinition
+  id: autonomous_city
+  nameKey: world.autonomous_city
+  startDistance: 1200
+  atmosphere:
+    zenithColor: {r: 0.22, g: 0.14, b: 0.55, a: 1}
+    horizonColor: {r: 1, g: 0.64, b: 0.58, a: 1}
+    cloudColor: {r: 1, g: 0.8, b: 0.72, a: 1}
+    cloudShadeColor: {r: 0.72, g: 0.46, b: 0.66, a: 1}
+    cloudCoverage: 0.5
+    sunColor: {r: 1, g: 0.72, b: 0.5, a: 1}
+    sunIntensity: 1.45
+    ambientSky: {r: 0.58, g: 0.48, b: 0.82, a: 1}
+    ambientEquator: {r: 0.62, g: 0.52, b: 0.64, a: 1}
+    ambientGround: {r: 0.36, g: 0.3, b: 0.42, a: 1}
+    fogStart: 64
+    fogEnd: 128
+  groundSegmentPrefab: {fileID: 5571056232240331789, guid: 99e3242f7e8cd4287919bd17ec1af290, type: 3}
+  segmentLength: 30
+  chaser: {fileID: 11400000, guid: 49033a05132d94f6d99fd877ce8612bc, type: 2}
+  obstacles:
+  - {fileID: 11400000, guid: f1e9b91fcb2654266ae85ef4ff3df039, type: 2}
+  - {fileID: 11400000, guid: 17c5628d34ed54121bac9799e4d58e75, type: 2}
+  - {fileID: 11400000, guid: f5461f4b190b34deba0d016e7f226db8, type: 2}
+  - {fileID: 11400000, guid: ca1a7fc002cf1407290e7c71b76b17eb, type: 2}
+  - {fileID: 11400000, guid: 8cde404c518c5422eb2d609a3c29264e, type: 2}
+  - {fileID: 11400000, guid: 17f62ea6e5b244c2393157b5a49fa29c, type: 2}
+  powerUps:
+  - {fileID: 11400000, guid: 75c40e422dcba4bb484dc06f4520fd07, type: 2}
+  - {fileID: 11400000, guid: 9438361fa79e74daf88a96ae8cd21550, type: 2}
+  - {fileID: 11400000, guid: b145875dab8f74ecba6f874fd79060a4, type: 2}
+  - {fileID: 11400000, guid: 8a218e7f975d64cf4bb73a731ebfa856, type: 2}
+  - {fileID: 11400000, guid: a356c4ce48fd54e05978a93234d206b9, type: 2}
+  - {fileID: 11400000, guid: 1e9e29e3d1f02492198359385a667c35, type: 2}
+  - {fileID: 11400000, guid: 4a773388f9e5b4c6d80d1a08c5a6084c, type: 2}
+  - {fileID: 11400000, guid: 9d3111d1af6ed4d49adca0e7df4c4bc2, type: 2}
+  - {fileID: 11400000, guid: 02a4485e0bec64567aa0059792c011c7, type: 2}
+  - {fileID: 11400000, guid: e6d5a7d4d242347e3b1df760c93ab6d6, type: 2}
+  coinPrefab: {fileID: 369921303611913871, guid: 93ae97885982c497a9a33d79573076e4, type: 3}

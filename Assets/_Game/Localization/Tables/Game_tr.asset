@@ -318,6 +318,14 @@ MonoBehaviour:
     m_Localized: "Sa\u011Fa kayd\u0131r!"
     m_Metadata:
       m_Items: []
+  - m_Id: 657464037990400
+    m_Localized: "Otonom \u015Eehir"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 657464037990401
+    m_Localized: "YEN\u0130 B\xD6LGE"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

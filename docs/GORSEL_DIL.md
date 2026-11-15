@@ -57,6 +57,10 @@ Mobil hedef. Aşılacaksa gerekçesi `docs/DURUM.md`'ye yazılır.
 - **Işıma maskesi dokunun alfa kanalındadır:** alfa 1 = ışımaz, alfa 0 = tam ışır. Ayrı ışıma dokusu yok. Maskeyi model hattı üretir (aşağıda).
 - Z boyunca 4 m'den uzun mesh 2,5 m'de bir bölünür (kıvrımlı dünya yalnızca köşe noktalarını büker).
 
+## Dünyaların havası
+
+Her dünyanın kendi havası vardır (`WorldDefinition.atmosphere`); bu bölüm Plaza'yı anlatır. Yeni dünyada kurallar aynı kalır: ufuk rengi = sis rengi, okunurluk sırası (toplananlar ve engeller > oyuncu > dekor > gökyüzü), gerçek gölge yok, ölçülü post-processing. **Otonom Şehir:** gün batımı. Mor tepe, pembe-şeftali ufuk, şeftali bulutlar, sıcak turuncu güneş; neon bina paleti (turkuaz, macenta, amber, menekşe), pembe zemin okları ve kenar ışığı, kaldırım ve asfalt mor-gri. Dünyalar arasında hava yumuşakça karışır.
+
 ## Sahnenin havası
 
 Modeller kadar bağlayıcıdır; hepsi `PlaceholderContentBuilder.Atmosphere.cs` içinde koddan kurulur.

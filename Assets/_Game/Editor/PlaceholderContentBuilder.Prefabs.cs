@@ -9,10 +9,11 @@ namespace OutOfOffice.EditorTools
             public GameObject Developer, Designer, Driver, Intern, Chaser;
             public GameObject DevBot, DesignBot, DriverBot;
             public GameObject ServerRack, CookieWall, RobotVacuum, CargoDrone, AutoTaxi;
+            public GameObject AutoBus, GateBarrier, TrafficCone;
             public GameObject Coin, Captcha, Hallucination, Shield;
             public GameObject DronePickup, Magnet, Overtime, Espresso, OfficeChair, DriverPod, Package, CarrierDrone;
             public GameObject PromptInjection, Unplug, TutorialArrow;
-            public GameObject Ground;
+            public GameObject Ground, CityGround;
         }
 
         // Ölçüler: oyuncu 1.8 m boyunda, kayarken 0.8 m. Zıplama tepesi 3.2 m (GameConfig.jumpHeight).
@@ -56,6 +57,9 @@ namespace OutOfOffice.EditorTools
                 RobotVacuum = BuildRobotVacuum(steel, red),
                 CargoDrone = BuildCargoDrone(white, dark, orange),
                 AutoTaxi = BuildAutoTaxi(yellow, dark),
+                AutoBus = BuildAutoBus(green, dark),
+                GateBarrier = BuildGateBarrier(red, dark),
+                TrafficCone = BuildTrafficCone(orange, dark),
                 Coin = BuildCoin(yellow),
                 Captcha = BuildPowerUp("Pickup_Captcha", "Captcha", green, white),
                 Hallucination = BuildPowerUp("Pickup_Hallucination", "Hallucination", purple, white),
@@ -71,7 +75,8 @@ namespace OutOfOffice.EditorTools
                 DriverPod = BuildDriverPod(dark, amber),
                 CarrierDrone = BuildCarrierDrone(white, dark),
                 Package = BuildPackage(espresso, yellow),
-                Ground = BuildGround(curb, laneGlow, dark),
+                Ground = BuildGround(PlazaStyle, curb, laneGlow, dark),
+                CityGround = BuildGround(CityStyle, curb, Mat("LaneGlowCity", CityStyle.LaneGlow, 0.5f, 0.7f), dark),
             };
         }
 
@@ -307,6 +312,59 @@ namespace OutOfOffice.EditorTools
             return SavePrefab(root);
         }
 
+        // Otonom Şehir: yavaş yavaş gelen otonom otobüs; şerit değiştirerek kaçılır.
+        static GameObject BuildAutoBus(Material body, Material trim)
+        {
+            var root = new GameObject("Obstacle_AutoBus");
+            bool real = Model(root, "AutoBus");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 1.25f, 0f), new Vector3(2f, 2f, 3.2f), body);
+                Part(root.transform, PrimitiveType.Cube, "Skirt", new Vector3(0f, 0.35f, 0f), new Vector3(2.1f, 0.5f, 3.3f), trim);
+            }
+
+            BlobShadow(root, new Vector2(2.5f, 3.6f));
+            BoxTrigger(root, new Vector3(0f, 1.25f, 0f), new Vector3(2f, 2.5f, 2.9f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
+        // Otonom Şehir: kontrol noktası bariyeri. Kolu yüksektir, altından kayılır.
+        static GameObject BuildGateBarrier(Material arm, Material post)
+        {
+            var root = new GameObject("Obstacle_GateBarrier");
+            bool real = Model(root, "GateBarrier");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Arm", new Vector3(0f, 1.4f, 0f), new Vector3(2.8f, 0.4f, 0.3f), arm);
+                Part(root.transform, PrimitiveType.Cube, "PostLeft", new Vector3(-1.4f, 0.8f, 0f), new Vector3(0.35f, 1.6f, 0.35f), post);
+                Part(root.transform, PrimitiveType.Cube, "PostRight", new Vector3(1.4f, 0.8f, 0f), new Vector3(0.35f, 1.6f, 0.35f), post);
+            }
+
+            BlobShadow(root, new Vector2(3.1f, 0.9f));
+            // Yalnızca kol çarpar (şerit genişliği kadar); kayan oyuncu altından geçer.
+            BoxTrigger(root, new Vector3(0f, 1.45f, 0f), new Vector3(2.4f, 0.9f, 0.7f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
+        // Otonom Şehir: tekerlekli trafik konisi robotu; üstünden atlanır.
+        static GameObject BuildTrafficCone(Material cone, Material baseMat)
+        {
+            var root = new GameObject("Obstacle_TrafficCone");
+            bool real = Model(root, "TrafficCone");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cylinder, "Base", new Vector3(0f, 0.2f, 0f), new Vector3(0.9f, 0.1f, 0.9f), baseMat);
+                Part(root.transform, PrimitiveType.Cylinder, "Cone", new Vector3(0f, 0.6f, 0f), new Vector3(0.5f, 0.35f, 0.5f), cone);
+            }
+
+            BlobShadow(root, new Vector2(1.2f, 1.2f));
+            BoxTrigger(root, new Vector3(0f, 0.5f, 0f), new Vector3(0.85f, 1f, 0.85f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
         // Oyuncuya doğru gelir, şerit değiştirerek kaçılır.
         static GameObject BuildAutoTaxi(Material body, Material glass)
         {
@@ -365,11 +423,12 @@ namespace OutOfOffice.EditorTools
         // Asfalt, bordür ve kaldırım koddan kurulur (dilimli ve ek yeri kusursuz olmalı;
         // PlaceholderContentBuilder.Road.cs); dekor gerçek modellerdir. Hepsi materyal başına tek
         // mesh'te birleşir.
-        static GameObject BuildGround(Material curb, Material line, Material desk)
+        static GameObject BuildGround(GroundStyle style, Material curb, Material line, Material desk)
         {
             const float length = 30f;
+            _style = style;
 
-            var root = new GameObject("Ground_Office");
+            var root = new GameObject("Ground_" + style.Name);
             BuildRoad(root.transform, length, curb, line);
 
             bool realDecor = PropModelBuilder.Exists("Column");
@@ -391,41 +450,50 @@ namespace OutOfOffice.EditorTools
             }
 
             CombineByMaterial(root, castShadows: false);
-            return SavePrefab(root);
+            var prefab = SavePrefab(root);
+            _style = PlazaStyle;
+            return prefab;
         }
 
         // Yolun bir yanındaki dekor. Modeller gelen oyuncuya (-Z) bakar; yan dekor yola doğru çevrilir.
         // İki yan aynı dizilmez: sol ve sağ yarım parça kaydırılır, kuleler yer değiştirir.
         static void BuildDecor(Transform root, int side)
         {
+            bool city = _style == CityStyle;
             float shift = side < 0 ? 0f : 5f;
             float inward = side * 55f;
 
+            // Yol kenarı: Plaza'da kolonlar, kiosk ve reklam panosu; şehirde akıllı lambalar, şarj istasyonu ve hologramlı durak.
             for (int i = 0; i < 3; i++)
-                PropModelBuilder.TryAddModel(root, "Column", false, new Vector3(side * 5.7f, SidewalkTop, 5f + i * 10f), 0f, ColumnTint);
+            {
+                var position = new Vector3(side * (city ? 5.9f : 5.7f), SidewalkTop, 5f + i * 10f);
+                if (city) PropModelBuilder.TryAddModel(root, "StreetLamp", false, position, side * 90f);
+                else PropModelBuilder.TryAddModel(root, "Column", false, position, 0f, ColumnTint);
+            }
 
-            PropModelBuilder.TryAddModel(root, "Kiosk", false, new Vector3(side * 7.6f, SidewalkTop, 9f + shift), inward);
-            PropModelBuilder.TryAddModel(root, "Billboard", false, new Vector3(side * 7.2f, SidewalkTop, 19f + shift), side * 30f);
+            if (city)
+            {
+                PropModelBuilder.TryAddModel(root, "ChargingStation", false, new Vector3(side * 7.6f, SidewalkTop, 9f + shift), inward);
+                PropModelBuilder.TryAddModel(root, "HoloStop", false, new Vector3(side * 9.2f, SidewalkTop, 19f + shift), -side * 90f);
+            }
+            else
+            {
+                PropModelBuilder.TryAddModel(root, "Kiosk", false, new Vector3(side * 7.6f, SidewalkTop, 9f + shift), inward);
+                PropModelBuilder.TryAddModel(root, "Billboard", false, new Vector3(side * 7.2f, SidewalkTop, 19f + shift), side * 30f);
+            }
 
-            // Binalar: aynı iki model, her kopya ayrı bir pastel renkte (TowerPalette).
-            string near = side < 0 ? "TowerA" : "TowerB";
-            string far = side < 0 ? "TowerB" : "TowerA";
+            // Binalar: her kopya ayrı renkte (zemin stilinin paleti). Şehirde farklı iki bina modeli, daha geriye.
+            string near = city ? (side < 0 ? "TowerC" : "TowerD") : (side < 0 ? "TowerA" : "TowerB");
+            string far = city ? (side < 0 ? "TowerD" : "TowerC") : (side < 0 ? "TowerB" : "TowerA");
             int first = side < 0 ? 0 : 2;
-            PropModelBuilder.TryAddModel(root, near, false, new Vector3(side * 13.5f, SidewalkTop, 7f + shift), side * 90f, TowerPalette[first]);
-            PropModelBuilder.TryAddModel(root, far, false, new Vector3(side * 16f, SidewalkTop, 22f - shift), side * 90f, TowerPalette[first + 1]);
+            float nearX = city ? 16f : 13.5f;
+            float farX = city ? 18f : 16f;
+            PropModelBuilder.TryAddModel(root, near, false, new Vector3(side * nearX, SidewalkTop, 7f + shift), side * 90f, TowerPalette[first]);
+            PropModelBuilder.TryAddModel(root, far, false, new Vector3(side * farX, SidewalkTop, 22f - shift), side * 90f, TowerPalette[first + 1]);
         }
 
-        // Binaların renkleri: şeker pastelleri. Sıra, yan yana ve karşı karşıya gelenler birbirinden
-        // ayrışacak şekildedir (sol yakın, sol uzak, sağ yakın, sağ uzak).
-        static readonly Color[] TowerPalette =
-        {
-            new Color(1f, 0.46f, 0.56f),  // mercan pembesi
-            new Color(0.3f, 0.86f, 0.66f), // nane
-            new Color(1f, 0.76f, 0.28f),  // bal sarısı
-            new Color(0.56f, 0.52f, 1f),  // lavanta
-        };
-
-        // Kolonların gövdesi: krem beyazı. Neon çizgileri dokudan gelir.
-        static readonly Color ColumnTint = new Color(1f, 0.97f, 0.92f);
+        // Binaların renkleri ve kolonların gövdesi zemin stilinden gelir (GroundStyle). Neon çizgileri dokudan gelir.
+        static Color[] TowerPalette => _style.Towers;
+        static Color ColumnTint => _style.ColumnTint;
     }
 }

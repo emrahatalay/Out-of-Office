@@ -24,7 +24,9 @@ namespace OutOfOffice.Gameplay
         readonly ILaneBias _bias;
         readonly Workforce _workforce;
         readonly IGameStateProvider _state;
-        readonly List<ObstacleDefinition> _candidates = new List<ObstacleDefinition>(16);
+        readonly WorldTimeline _timeline;
+        readonly List<ObstacleDefinition>[] _candidatesByWorld;
+        List<ObstacleDefinition> _candidates;
         readonly SubscriptionBag _subscriptions = new SubscriptionBag();
         readonly bool[] _laneUsed;
         readonly float[] _laneWeights;
@@ -44,6 +46,7 @@ namespace OutOfOffice.Gameplay
             PickupField pickups,
             ILaneBias bias,
             Workforce workforce,
+            WorldTimeline timeline,
             IGameStateProvider state,
             ISignalBus bus)
         {
@@ -54,6 +57,10 @@ namespace OutOfOffice.Gameplay
             _pickups = pickups;
             _bias = bias;
             _workforce = workforce;
+            _timeline = timeline;
+            _candidatesByWorld = new List<ObstacleDefinition>[Mathf.Max(1, timeline.Count)];
+            for (int i = 0; i < _candidatesByWorld.Length; i++) _candidatesByWorld[i] = new List<ObstacleDefinition>(16);
+            _candidates = _candidatesByWorld[0];
             _state = state;
             _laneUsed = new bool[config.laneCount];
             _laneWeights = new float[config.laneCount];
@@ -75,11 +82,15 @@ namespace OutOfOffice.Gameplay
             _nextRowZ = _config.firstRowDistance;
             _wasFlying = false;
 
-            // Bu koşunun engel havuzu: dünyanın engelleri + işini kaptıran mesleklerin robotları.
-            _candidates.Clear();
-            var world = _session.World;
-            if (world != null && world.obstacles != null) _candidates.AddRange(world.obstacles);
-            _workforce.CollectRobots(_candidates);
+            // Bu koşunun engel havuzu, dünya başına: dünyanın engelleri + işini kaptıran mesleklerin robotları.
+            for (int i = 0; i < _candidatesByWorld.Length; i++)
+            {
+                var list = _candidatesByWorld[i];
+                list.Clear();
+                var world = _timeline.Count > 0 ? _timeline.Get(i) : null;
+                if (world != null && world.obstacles != null) list.AddRange(world.obstacles);
+                _workforce.CollectRobots(list);
+            }
         }
 
         public void Tick()
@@ -103,8 +114,11 @@ namespace OutOfOffice.Gameplay
 
         void SpawnRow(float z)
         {
-            var world = _session.World;
+            // Sıra hangi dünyaya düşüyorsa onun engelleri, güçlendirmeleri ve altını kullanılır.
+            int worldIndex = _timeline.IndexAt(z);
+            var world = _timeline.WorldAt(z);
             if (world == null) return;
+            _candidates = _candidatesByWorld[Mathf.Min(worldIndex, _candidatesByWorld.Length - 1)];
 
             int lanes = _config.laneCount;
             float difficulty = _session.Difficulty;
@@ -157,7 +171,7 @@ namespace OutOfOffice.Gameplay
         // Uçuş süresince toplanacak, şeritler arasında kıvrılan altın yolu.
         void SpawnAirCoins()
         {
-            var world = _session.World;
+            var world = _timeline.WorldAt(_player.Position.z);
             if (world == null || world.coinPrefab == null) return;
 
             int lane = _player.Lane;

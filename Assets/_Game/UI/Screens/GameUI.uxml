@@ -207,6 +207,10 @@
                         <ui:Label name="effectName" class="effect-name" />
                         <ui:Label name="effectTime" class="effect-time" />
                     </ui:VisualElement>
+                    <ui:VisualElement name="worldBanner" class="world-banner hidden" picking-mode="Ignore">
+                        <ui:Label text="#ui.newarea" class="eyebrow eyebrow--over-scene" picking-mode="Ignore" />
+                        <ui:Label name="worldBannerName" class="world-banner-name over-scene" picking-mode="Ignore" />
+                    </ui:VisualElement>
                     <ui:VisualElement name="tutorialHint" class="tutorial-hint hidden" picking-mode="Ignore">
                         <ui:Label name="tutorialText" class="tutorial-text" picking-mode="Ignore" />
                     </ui:VisualElement>
