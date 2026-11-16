@@ -140,6 +140,10 @@ namespace OutOfOffice.Data
         [Header("Puan")]
         public int coinScore = 10;
 
+        [Header("Günlük görevler")]
+        [Tooltip("Her gün kaç görev verilir (farklı türlerden seçilir).")]
+        [Min(1)] public int dailyMissionCount = 3;
+
         [Header("Dünyalar")]
         [Tooltip("Yeni dünyanın gökyüzü ve sisi, sınırdan bu kadar metre önce karışmaya başlar; sınırda tamamlanır.")]
         [Min(10f)] public float worldBlendDistance = 150f;

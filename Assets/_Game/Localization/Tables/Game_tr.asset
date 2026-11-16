@@ -326,6 +326,62 @@ MonoBehaviour:
     m_Localized: "YEN\u0130 B\xD6LGE"
     m_Metadata:
       m_Items: []
+  - m_Id: 952645966618624
+    m_Localized: "G\xD6REVLER"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812928
+    m_Localized: "G\xDCNL\xDCK G\xD6REVLER"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812929
+    m_Localized: "Her g\xFCn yeni g\xF6revler. Mesaiye devam!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812930
+    m_Localized: AL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812931
+    m_Localized: ALINDI
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812932
+    m_Localized: "Alt\u0131n topla"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812933
+    m_Localized: "Metre ko\u015F"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812934
+    m_Localized: "Z\u0131pla"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812935
+    m_Localized: Kay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812936
+    m_Localized: "\u015Eerit de\u011Fi\u015Ftir"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812937
+    m_Localized: "G\xFC\xE7lendirme topla"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812938
+    m_Localized: Engel yok et
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812939
+    m_Localized: "Mesaiye gir (ko\u015Fu yap)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812940
+    m_Localized: "Tek ko\u015Fuda puan yap"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

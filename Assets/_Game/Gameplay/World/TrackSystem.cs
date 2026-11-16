@@ -27,6 +27,10 @@ namespace OutOfOffice.Gameplay
             _pool = pool;
             _config = config;
 
+            // İlk açılışta da, sonraki temizlikler gibi, oyuncunun bir parça gerisinden başla;
+            // yoksa menü kamerasının baktığı karakterin arkası boş kalır.
+            ResetStart();
+
             bus.Subscribe<RunStartedSignal>(_ => Clear()).AddTo(_subscriptions);
             bus.Subscribe<RunClearedSignal>(_ => Clear()).AddTo(_subscriptions);
         }
@@ -57,6 +61,11 @@ namespace OutOfOffice.Gameplay
         void Clear()
         {
             while (_segments.Count > 0) _pool.Despawn(_segments.Dequeue());
+            ResetStart();
+        }
+
+        void ResetStart()
+        {
             var first = _timeline.Get(0);
             _nextZ = first != null ? -first.segmentLength : 0f;
         }

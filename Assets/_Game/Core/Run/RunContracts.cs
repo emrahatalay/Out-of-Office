@@ -19,6 +19,26 @@ namespace OutOfOffice.Core.Run
         Key
     }
 
+    /// <summary>Günlük görevin neyi saydığı. Her biri oyundaki bir olaya (sinyale) karşılık gelir.</summary>
+    public enum MissionMetric
+    {
+        /// <summary>Toplanan altın adedi.</summary>
+        Coins,
+        /// <summary>Koşulan metre (koşu bitince eklenir).</summary>
+        Distance,
+        Jumps,
+        Slides,
+        LaneChanges,
+        /// <summary>Toplanan güçlendirme adedi.</summary>
+        PowerUps,
+        /// <summary>Yok edilen engel adedi (kalkan, yetenek ya da güçlendirmeyle).</summary>
+        Obstacles,
+        /// <summary>Tamamlanan koşu sayısı.</summary>
+        Runs,
+        /// <summary>Tek koşuda ulaşılan en yüksek puan (birikmez, en iyisi sayılır).</summary>
+        ScoreInRun
+    }
+
     /// <summary>Oyuncunun o anki durumu. Etkiler ve sistemler oyuncuyu bu arayüzden görür.</summary>
     public interface IPlayerStatus
     {

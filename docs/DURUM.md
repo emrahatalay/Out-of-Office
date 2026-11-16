@@ -4,6 +4,8 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 
 ## Yapılanlar
 
+- **Günlük görevler (16 Kasım 2026):** her gün havuzdan farklı türde 3 görev (`MissionSystem`, 11 görevlik havuz, `Görevler` sekmesi, ilerleme çubuğu, AL butonu, sekme rozeti). Editörde Play'de denendi: seçim ve kayıt, duraklatınca/oyun sonunda ilerleme yazımı, AL ile 40 altın verilmesi, rozetin sönmesi, ekran görüntüsü. **Denenmeyenler:** gece yarısı geçişi (yeni görevler), anahtar ödüllü görev, İngilizce görünüm, gerçek dokunuş, cihaz. Hedef ve ödül dengesi göz kararı. Cihaz saati geri alınarak hile yapılabilir.
+
 - Öğretici: ilk koşuda üç gerçek engel (şerit, zıpla, kay); engele yaklaşınca oyun yavaşlar, 3B ok yönü gösterir, oyuncu hareketi yapınca hız normale döner (`TutorialSystem`, `TutorialGuide`, `TutorialPresenter`). Ayarlar'dan yeniden izlenemez (henüz).
 - Menü sekmeleri düğme sesi çıkarır (`MenuTabClickedSignal`). Şerit değiştirme yana adım klibi, İK-9000'in yakalama hareketi, dron pervanelerinin ve taksi tekerleklerinin dönmesi.
 - **Dünyalar arası geçiş ve Otonom Şehir:** mesafeye göre geçiş (`WorldTimeline`, `WorldProgressSystem`, `WorldAtmosphereSystem`), yeni bölge afişi, dünyaya özel zemin (`GroundStyle`), hava, engel havuzu. Otonom Şehir: gün batımı gökyüzü, neon bina paleti, pembe oklar, 3 yeni engel (Otobüs, Bariyer, Koni Robotu), dünyaya özel yol kenarı ve binalar: akıllı lamba, şarj istasyonu, hologramlı durak, iki yeni bina modeli (yığılmış yuvarlak katlar, halkalı balkon kulesi).
@@ -38,7 +40,7 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Öğretici** Ayarlar'dan yeniden izlenemez.
 - **Diğer dünyalar:** lojistik deposu, veri merkezi, Analog Kasaba (altyapı ve Otonom Şehir hazır; aynı kalıpla eklenir, `docs/MIMARI.md` "Yeni dünya").
 - **Final sürprizi:** yeni robot modelinin gelişi, İK-9000'in oynanabilir olması.
-- Görevler, günlük ödül, başarımlar, lider tablosu.
+- Günlük giriş ödülü, başarımlar, lider tablosu. Görevlerde tümünü bitirme bonusu ve yenilenmeye kalan süre yok.
 - Reklam ve uygulama içi satın alma.
 
 ## Bilinen sorunlar ve doğrulanmamışlar

@@ -38,6 +38,7 @@ namespace OutOfOffice.Bootstrap
             // Altyapı (hepsi arayüz arkasında)
             builder.Register<SignalBus>(Lifetime.Singleton).As<ISignalBus>();
             builder.Register<PlayerPrefsSaveService>(Lifetime.Singleton).As<ISaveService>();
+            builder.Register<SystemClock>(Lifetime.Singleton).As<IClock>();
             builder.Register<PoolService>(Lifetime.Singleton).As<IPoolService>();
             builder.RegisterEntryPoint<UnityLocalizationService>();
             builder.RegisterEntryPoint<InputReader>();
@@ -73,6 +74,7 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<PoolWarmupSystem>();
             builder.RegisterEntryPoint<AccessorySystem>().AsSelf();
             RegisterAlwaysOn<RewardSystem>(builder);
+            builder.RegisterEntryPoint<MissionSystem>();
             builder.RegisterEntryPoint<StoreSystem>();
             builder.RegisterEntryPoint<SettingsSystem>().AsSelf();
             builder.RegisterEntryPoint<TutorialSystem>();
@@ -95,6 +97,7 @@ namespace OutOfOffice.Bootstrap
             builder.RegisterEntryPoint<StorePresenter>();
             builder.RegisterEntryPoint<MenuTabsPresenter>();
             builder.RegisterEntryPoint<CollectionPresenter>();
+            builder.RegisterEntryPoint<MissionsPresenter>();
             builder.RegisterEntryPoint<SettingsPresenter>();
             builder.RegisterEntryPoint<TutorialPresenter>();
             builder.RegisterEntryPoint<WorldBannerPresenter>();

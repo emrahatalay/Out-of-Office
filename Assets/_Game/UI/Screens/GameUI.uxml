@@ -78,6 +78,14 @@
                         </ui:Button>
                     </ui:VisualElement>
 
+                    <ui:VisualElement name="missionsPage" class="page page--panel hidden">
+                        <ui:VisualElement class="ribbon" picking-mode="Ignore">
+                            <ui:Label text="#ui.missions" class="ribbon-label" />
+                        </ui:VisualElement>
+                        <ui:Label text="#ui.missions.hint" class="dialog-hint" />
+                        <ui:VisualElement name="missionList" class="mission-list" />
+                    </ui:VisualElement>
+
                     <ui:VisualElement name="collectionPage" class="page page--panel hidden">
                         <ui:VisualElement class="ribbon" picking-mode="Ignore">
                             <ui:Label text="#ui.collection" class="ribbon-label" />
@@ -168,6 +176,11 @@
                         <ui:Button name="homeTab" class="tab">
                             <ui:VisualElement class="tab-icon tab-icon--home" picking-mode="Ignore" />
                             <ui:Label text="#ui.tab.home" class="tab-label" picking-mode="Ignore" />
+                        </ui:Button>
+                        <ui:Button name="missionsTab" class="tab">
+                            <ui:VisualElement class="tab-icon tab-icon--missions" picking-mode="Ignore" />
+                            <ui:Label text="#ui.tab.missions" class="tab-label" picking-mode="Ignore" />
+                            <ui:Label name="missionsBadge" text="0" class="tab-badge hidden" picking-mode="Ignore" />
                         </ui:Button>
                         <ui:Button name="collectionTab" class="tab">
                             <ui:VisualElement class="tab-icon tab-icon--collection" picking-mode="Ignore" />

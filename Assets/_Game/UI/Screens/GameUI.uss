@@ -983,6 +983,10 @@
     background-image: url("project://database/Assets/_Game/UI/Sprites/tab_home.png");
 }
 
+.tab-icon--missions {
+    background-image: url("project://database/Assets/_Game/UI/Sprites/tab_missions.png");
+}
+
 .tab-icon--collection {
     background-image: url("project://database/Assets/_Game/UI/Sprites/tab_collection.png");
 }
@@ -999,7 +1003,7 @@
     margin: 4px 0 0 0;
     padding: 0;
     color: var(--color-muted);
-    font-size: 28px;
+    font-size: 26px;
     -unity-font-definition: var(--font-bold);
 }
 
@@ -1232,6 +1236,125 @@
     color: var(--color-tech);
     font-size: 40px;
     -unity-font-definition: var(--font-bold);
+}
+
+/* ---------------------------------------------------------------- Günlük görevler
+   Her görev bir yuva satırıdır: solda ad, ilerleme çubuğu ve sayı; sağda ödül çipi, tamamlanınca
+   sarı "AL" butonu, alınınca "ALINDI". Çubuk dolgusunun genişliğini sunucu yüzde olarak verir. */
+
+.mission-list {
+    align-self: stretch;
+    margin: var(--space-sm) 0 0 0;
+}
+
+.mission-row {
+    flex-direction: row;
+    align-items: center;
+    margin: 0 -7px var(--space-xs) -7px;
+    padding: 22px 26px 32px 30px;
+    background-image: var(--sprite-slot);
+    -unity-slice-left: 72;
+    -unity-slice-top: 72;
+    -unity-slice-right: 72;
+    -unity-slice-bottom: 84;
+    -unity-slice-scale: 0.5px;
+}
+
+.mission-row--claimed {
+    opacity: 0.55;
+}
+
+.mission-info {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 var(--space-sm) 0 0;
+}
+
+.mission-name {
+    margin: 0;
+    padding: 0;
+    font-size: 40px;
+    white-space: normal;
+    -unity-font-definition: var(--font-bold);
+    text-shadow: 0 3px 0 var(--color-ink-shadow);
+}
+
+.mission-track {
+    height: 28px;
+    margin: 14px 0 0 0;
+    background-color: var(--color-well);
+    border-width: 4px;
+    border-color: var(--color-ink);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.mission-fill {
+    height: 100%;
+    background-color: var(--color-tech);
+    border-radius: 10px;
+}
+
+.mission-fill--done {
+    background-color: var(--color-accent);
+}
+
+.mission-progress {
+    margin: 8px 0 0 0;
+    padding: 0;
+    color: var(--color-muted);
+    font-size: 30px;
+    -unity-font-definition: var(--font-semibold);
+}
+
+.mission-reward {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    margin: 0 0 0 var(--space-xs);
+    padding: 0 22px 0 22px;
+    height: 72px;
+    background-color: var(--color-ink-soft);
+    border-width: 2px;
+    border-color: var(--color-line);
+    border-radius: 36px;
+}
+
+.mission-reward-amount {
+    margin: 0 0 0 10px;
+    padding: 0;
+    color: var(--color-accent);
+    font-size: 36px;
+    -unity-font-definition: var(--font-bold);
+}
+
+.mission-done {
+    flex-shrink: 0;
+    margin: 0 var(--space-xs) 0 var(--space-xs);
+    padding: 0;
+    color: var(--color-accent);
+    font-size: 34px;
+    letter-spacing: 2px;
+    -unity-font-definition: var(--font-bold);
+}
+
+/* Sekmedeki rozet: ödülü alınabilir görev sayısı. */
+.tab-badge {
+    position: absolute;
+    top: 0;
+    right: 18px;
+    min-width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0 8px;
+    background-color: var(--color-primary);
+    border-width: 3px;
+    border-color: var(--color-ink);
+    border-radius: 20px;
+    color: var(--color-text);
+    font-size: 26px;
+    -unity-font-definition: var(--font-bold);
+    -unity-text-align: middle-center;
 }
 
 /* ---------------------------------------------------------------- Ayarlar

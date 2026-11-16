@@ -77,8 +77,9 @@ Adlandırma: sınıflar kebab-case, durum ekleri `--` ile (`.tab--active`, `.scr
 
 Tek UXML (`GameUI.uxml`), dört ekran: `menuScreen`, `hudScreen`, `pauseScreen`, `gameOverScreen`. Hangisinin görüneceğine `ScreenRouter` oyun durumuna göre karar verir; geçiş 0,22 sn'lik soluklaşma ve hafif kaymadır.
 
-- **Menü:** altta sekme çubuğu (Ana Sayfa, Koleksiyon, Mağaza, Ayarlar); etkin sekme sarı ve çubuktan yukarı taşar. Üstte altın ve giriş kartı sayaçları.
+- **Menü:** altta sekme çubuğu (Ana Sayfa, Görevler, Koleksiyon, Mağaza, Ayarlar); etkin sekme sarı ve çubuktan yukarı taşar. Üstte altın ve giriş kartı sayaçları.
   - **Ana sayfa:** logo, rekor, ortada sahnedeki gerçek karakter, altında isim plakası (portre, meslek adı, yetenek ya da "OTOMATİKLEŞTİ"), aksesuar satırı ve büyük OYNA butonu. Menü kamerası karakteri logo ile plakanın arasına oturtur (`GameConfig.menuCameraOffset`, `menuLookAt`); araya eleman eklenirse karakterin üstünü kapatmamalı.
+  - **Görevler:** günlük 3 görev, her biri yuva satırı: ad, ilerleme çubuğu (mavi, tamamlanınca sarı), sayı; sağda ödül çipi, tamamlanınca sarı AL butonu, alınınca soluk satır ve ALINDI. Alınabilir ödül varsa sekmede kırmızı rozet.
   - **Koleksiyon:** her meslek için portreli kart. Seçili kart sarı çerçeve ve "SEÇİLİ" etiketi alır; otomatikleşen mesleğin portresi soluklaşır, köşesine kilit ve altına geri alma bedeli gelir.
   - **Mağaza:** her ürün bir satır: vitrin karesinde ürünün gerçek görseli, adı, adedi, sarı satın alma butonu.
   - **Ayarlar:** üç ayar satırı (Dil: TÜRKÇE / ENGLISH, Ses: AÇIK / KAPALI, Görüntü kalitesi: DÜŞÜK / ORTA / YÜKSEK); seçili seçenek sarıdır. Dil adları her dilde kendi dilinde yazılır. Altta "GELİŞTİRİCİ" başlığıyla geliştirici kartı (baş harfli yuvarlak avatar, ad, rol, konum), GitHub profilini açan mavi buton ve sürüm.

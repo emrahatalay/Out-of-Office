@@ -5,7 +5,7 @@ namespace OutOfOffice.EditorTools
     /// <summary>
     /// Menünün alt sekme ikonları: tek renkli çizgi ikon değil, oyunun diliyle renkli küçük çizimler
     /// (kalın koyu dış çizgi, düşey renk geçişi, üstte parlama, altta yumuşak gölge).
-    /// Ana Sayfa = kırmızı çatılı ofis evi, Koleksiyon = kravatlı çalışan, Mağaza = kurdeleli hediye,
+    /// Ana Sayfa = kırmızı çatılı ofis evi, Görevler = onay işaretli yapılacaklar panosu, Koleksiyon = kravatlı çalışan, Mağaza = kurdeleli hediye,
     /// Ayarlar = metal dişli. Renkler temanın anlamına uyar (docs/TASARIM.md). Dokuda yazı yok.
     /// Ölçüler 256 birimlik tuvale göredir; y aşağı doğru artar.
     /// </summary>
@@ -20,6 +20,7 @@ namespace OutOfOffice.EditorTools
         {
             int count = 0;
             count += Write("tab_home", DrawIcon(TabIconSize, PaintHome), TabIconSize);
+            count += Write("tab_missions", DrawIcon(TabIconSize, PaintMissions), TabIconSize);
             count += Write("tab_collection", DrawIcon(TabIconSize, PaintCollection), TabIconSize);
             count += Write("tab_store", DrawIcon(TabIconSize, PaintStore), TabIconSize);
             count += Write("tab_settings", DrawIcon(TabIconSize, PaintSettings), TabIconSize);
@@ -73,6 +74,46 @@ namespace OutOfOffice.EditorTools
             float cross = Mathf.Max(window + 7f, Mathf.Min(Mathf.Abs(x + 30f) - 2.5f, Mathf.Abs(y - 26f) - 2.5f));
             Over(ref c, Ink, Coverage(cross * u));
         }
+
+        // ------------------------------------------------------------ Görevler: yapılacaklar panosu
+
+        static void PaintMissions(float x, float y, ref Color c, float u)
+        {
+            GroundShadow(x, y, ref c, 78f);
+
+            // Pano: mavi (nötr), üstünde beyaz kâğıt.
+            Layer(ref c, RoundedBox(x, y - 8f, 68f, 84f, 16f), Gradient(y, -76f, 76f, Hex(0x8c9aff), Hex(0x3f4bd6)), u);
+            Layer(ref c, RoundedBox(x, y - 14f, 50f, 62f, 8f), Gradient(y, -48f, 48f, Hex(0xffffff), Hex(0xdde4ff)), u, 6f);
+            Shine(ref c, RoundedBox(x + 52f, y - 6f, 5f, 56f, 5f), u, 0.25f);
+
+            // Üç satır: ilk ikisi tamamlanmış (sarı onay), sonuncusu boş halka. Çizgiler gri-mavi.
+            for (int row = 0; row < 3; row++)
+            {
+                float cy = -26f + row * 32f;
+                float badge = Circle(x + 26f, y - cy, 12f);
+                if (row < 2)
+                {
+                    Layer(ref c, badge, Gradient(y, cy - 12f, cy + 12f, Hex(0xffe27a), Hex(0xf5a812)), u, 6f);
+                    Over(ref c, Ink, Coverage(Polygon(x + 26f, y - cy, CheckShape) * u));
+                }
+                else
+                {
+                    Layer(ref c, badge, Hex(0xeef2ff), u, 6f);
+                }
+
+                Over(ref c, Hex(0x8e9ad6), Coverage(RoundedBox(x - 12f, y - cy, 22f, 4.5f, 3f) * u));
+            }
+
+            // Mandal: altın, panonun tepesinde.
+            Layer(ref c, RoundedBox(x, y + 78f, 28f, 13f, 7f), Gradient(y, -92f, -66f, Hex(0xffe27a), Hex(0xf0a21a)), u, 7f);
+            Over(ref c, Ink, Coverage(Circle(x, y + 78f, 4f) * u));
+        }
+
+        static readonly Vector2[] CheckShape =
+        {
+            new Vector2(-8f, 0f), new Vector2(-5f, -3f), new Vector2(-1.5f, 1f),
+            new Vector2(5f, -6f), new Vector2(8f, -3f), new Vector2(-1.5f, 6.5f)
+        };
 
         // ------------------------------------------------------------ Koleksiyon: kravatlı çalışan
 

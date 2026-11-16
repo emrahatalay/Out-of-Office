@@ -58,6 +58,7 @@ namespace OutOfOffice.Gameplay
             bus.Subscribe<SoundSetRequestedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);
             bus.Subscribe<QualitySetRequestedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);
             bus.Subscribe<DeveloperPageRequestedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);
+            bus.Subscribe<MissionClaimRequestedSignal>(_ => Play(SfxEvent.PowerUpCollected)).AddTo(_subscriptions);
             bus.Subscribe<CharacterSelectRequestedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);
             bus.Subscribe<CharacterCycleRequestedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);
             bus.Subscribe<StorePurchaseRequestedSignal>(_ => Play(SfxEvent.UiClicked)).AddTo(_subscriptions);

@@ -49,6 +49,13 @@ namespace OutOfOffice.Core.Signals
     public readonly struct AccessoryUseRequestedSignal { }
     public readonly struct AccessoryBuyRequestedSignal { }
 
+    /// <summary>Tamamlanan günlük görevin ödülünü al. Slot, bugünkü görev sırasıdır (0'dan).</summary>
+    public readonly struct MissionClaimRequestedSignal
+    {
+        public readonly int Slot;
+        public MissionClaimRequestedSignal(int slot) { Slot = slot; }
+    }
+
     /// <summary>Koleksiyondan bir mesleği seç.</summary>
     public readonly struct CharacterSelectRequestedSignal
     {
@@ -341,6 +348,41 @@ namespace OutOfOffice.Core.Signals
             Amount = amount;
             Price = price;
         }
+    }
+
+    /// <summary>
+    /// Bugünkü bir görevin güncel hali (durum yayını). Her görev için açılışta, gün değişince,
+    /// koşu bitince ve ödül alınınca duyurulur; arayüz satırı bununla çizer.
+    /// </summary>
+    public readonly struct MissionChangedSignal
+    {
+        public readonly int Slot;
+        public readonly string NameKey;
+        public readonly int Progress;
+        public readonly int Target;
+        public readonly RewardKind RewardKind;
+        public readonly int RewardAmount;
+        public readonly bool Claimed;
+
+        public MissionChangedSignal(int slot, string nameKey, int progress, int target, RewardKind rewardKind, int rewardAmount, bool claimed)
+        {
+            Slot = slot;
+            NameKey = nameKey;
+            Progress = progress;
+            Target = target;
+            RewardKind = rewardKind;
+            RewardAmount = rewardAmount;
+            Claimed = claimed;
+        }
+
+        public bool IsComplete { get { return Progress >= Target; } }
+    }
+
+    /// <summary>Ödülü alınabilir (tamamlanmış, alınmamış) görev sayısı. Sekmedeki rozet için.</summary>
+    public readonly struct MissionsClaimableSignal
+    {
+        public readonly int Count;
+        public MissionsClaimableSignal(int count) { Count = count; }
     }
 
     public readonly struct AccessoryChangedSignal

@@ -12,6 +12,13 @@ namespace OutOfOffice.Core.Services
         void Flush();
     }
 
+    /// <summary>Takvim saati. Günlük görevler "bugün" bilgisini buradan alır; testte sahte saat verilebilir.</summary>
+    public interface IClock
+    {
+        /// <summary>Yerel takvimde bugünün sıra numarası (1 Ocak 1970'ten beri geçen gün). Gece yarısı bir artar.</summary>
+        int Today { get; }
+    }
+
     /// <summary>Ayarlar sekmesindeki görüntü kalitesi seçenekleri. Sayısal karşılıkları GameConfig'tedir.</summary>
     public enum GraphicsQuality
     {

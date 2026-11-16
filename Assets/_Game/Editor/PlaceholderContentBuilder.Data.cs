@@ -212,9 +212,40 @@ namespace OutOfOffice.EditorTools
                 StoreItem("Store_Key1", "key_1", "item.key", "AccessCard", OutOfOffice.Core.Run.RewardKind.Key, 1, 300),
                 StoreItem("Store_Key3", "key_3", "item.key", "AccessCard", OutOfOffice.Core.Run.RewardKind.Key, 3, 800),
             };
+
+            // ---- Günlük görev havuzu: her gün farklı türden 3 tanesi seçilir (MissionSystem).
+            // Hedefler bir koşunun ~60-90 sn sürdüğü, 3-5 koşunun bir günün hafif oyunu olduğu varsayımıyla;
+            // anahtar ödülü yalnızca zor hedeflerde.
+            catalog.missions = new[]
+            {
+                Mission("coins_60", "mission.coins", OutOfOffice.Core.Run.MissionMetric.Coins, 60, OutOfOffice.Core.Run.RewardKind.Coins, 50),
+                Mission("coins_200", "mission.coins", OutOfOffice.Core.Run.MissionMetric.Coins, 200, OutOfOffice.Core.Run.RewardKind.Coins, 150),
+                Mission("distance_2000", "mission.distance", OutOfOffice.Core.Run.MissionMetric.Distance, 2000, OutOfOffice.Core.Run.RewardKind.Coins, 60),
+                Mission("distance_5000", "mission.distance", OutOfOffice.Core.Run.MissionMetric.Distance, 5000, OutOfOffice.Core.Run.RewardKind.Key, 1),
+                Mission("jumps_20", "mission.jumps", OutOfOffice.Core.Run.MissionMetric.Jumps, 20, OutOfOffice.Core.Run.RewardKind.Coins, 40),
+                Mission("slides_15", "mission.slides", OutOfOffice.Core.Run.MissionMetric.Slides, 15, OutOfOffice.Core.Run.RewardKind.Coins, 40),
+                Mission("lanes_40", "mission.lanes", OutOfOffice.Core.Run.MissionMetric.LaneChanges, 40, OutOfOffice.Core.Run.RewardKind.Coins, 40),
+                Mission("powerups_4", "mission.powerups", OutOfOffice.Core.Run.MissionMetric.PowerUps, 4, OutOfOffice.Core.Run.RewardKind.Coins, 60),
+                Mission("obstacles_8", "mission.obstacles", OutOfOffice.Core.Run.MissionMetric.Obstacles, 8, OutOfOffice.Core.Run.RewardKind.Key, 1),
+                Mission("runs_4", "mission.runs", OutOfOffice.Core.Run.MissionMetric.Runs, 4, OutOfOffice.Core.Run.RewardKind.Coins, 60),
+                Mission("score_2500", "mission.score", OutOfOffice.Core.Run.MissionMetric.ScoreInRun, 2500, OutOfOffice.Core.Run.RewardKind.Coins, 100),
+            };
             EditorUtility.SetDirty(catalog);
 
             AssetDatabase.SaveAssets();
+        }
+
+        static MissionDefinition Mission(string id, string nameKey, OutOfOffice.Core.Run.MissionMetric metric, int target, OutOfOffice.Core.Run.RewardKind rewardKind, int rewardAmount)
+        {
+            var mission = LoadOrCreate<MissionDefinition>($"{DataDir}/Missions/Mission_{id}.asset");
+            mission.id = id;
+            mission.nameKey = nameKey;
+            mission.metric = metric;
+            mission.target = target;
+            mission.rewardKind = rewardKind;
+            mission.rewardAmount = rewardAmount;
+            EditorUtility.SetDirty(mission);
+            return mission;
         }
 
         static AbilityDefinition Ability(string file, string id, string nameKey, float cooldown, float duration, params EffectDefinition[] effects)

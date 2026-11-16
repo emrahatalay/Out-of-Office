@@ -326,6 +326,62 @@ MonoBehaviour:
     m_Localized: NEW AREA
     m_Metadata:
       m_Items: []
+  - m_Id: 952645966618624
+    m_Localized: MISSIONS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812928
+    m_Localized: DAILY MISSIONS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812929
+    m_Localized: New missions every day. Keep clocking in!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812930
+    m_Localized: CLAIM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812931
+    m_Localized: DONE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812932
+    m_Localized: Collect coins
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812933
+    m_Localized: Run meters
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812934
+    m_Localized: Jump
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812935
+    m_Localized: Slide
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812936
+    m_Localized: Switch lanes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812937
+    m_Localized: Grab power-ups
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812938
+    m_Localized: Smash obstacles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812939
+    m_Localized: Clock in (finish runs)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812940
+    m_Localized: Score in a single run
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

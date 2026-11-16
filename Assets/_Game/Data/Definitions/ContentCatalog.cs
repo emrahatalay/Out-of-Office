@@ -14,6 +14,8 @@ namespace OutOfOffice.Data
         public LootTable packageLoot;
         [Tooltip("Mağazada satılan ürünler, görünme sırasıyla.")]
         public StoreItemDefinition[] storeItems;
+        [Tooltip("Günlük görev havuzu. Her gün buradan, farklı türde GameConfig.dailyMissionCount görev seçilir.")]
+        public MissionDefinition[] missions;
         [Tooltip("Öğreticinin 3B oku: +X yönüne bakan, ışıyan şevron. Boşsa ok çıkmaz.")]
         public GameObject tutorialArrow;
     }

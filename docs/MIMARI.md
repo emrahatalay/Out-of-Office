@@ -22,13 +22,13 @@ Assets/_Game/
 ├─ Gameplay/
 │  ├─ Flow/           GameFlow, RunSystem, RunSession, PlayerProfile, CharacterSelection,
 │  │                  Workforce, AccessorySystem, RewardSystem, StoreSystem, CatalogArt,
-│  │                  SettingsSystem
+│  │                  SettingsSystem, MissionSystem
 │  ├─ Player/         PlayerSystem, PlayerStatus, PlayerRig, CollisionSystem, CameraFollowSystem
 │  ├─ Chaser/         ChaserSystem
 │  ├─ World/          TrackSystem, SpawnDirector, AdaptiveDirector, ObstacleField, PickupField,
 │  │                  WorldCurveSystem, PoolWarmupSystem, ObstacleView, PickupView
 │  └─ Effects/        EffectRunner, AbilitySystem, TimeFeelSystem, VfxSystem, SfxSystem
-├─ Infrastructure/    PlayerPrefsSaveService, PoolService, InputReader,
+├─ Infrastructure/    PlayerPrefsSaveService, SystemClock, PoolService, InputReader,
 │                     UnityLocalizationService, FrameRateService, UrpRenderQuality
 ├─ UI/                sunucular (*Presenter), ScreenRouter, UiText, RadialProgress, SafeArea
 │  ├─ Screens/        GameUI.uxml, GameUI.uss
@@ -134,7 +134,7 @@ builder.Register<Impl>(Lifetime.Singleton).As<IService>();   // servis
 
 ## Kayıt
 
-`ISaveService` (şimdilik PlayerPrefs, önek `ooo.`). Anahtarlar: `best_score`, `total_coins`, `keys`, `character`, `automated` (virgüllü kimlik listesi), `automated_count.<id>`, `accessory.<id>`, `sound` (1 açık, 0 kapalı), `quality` (`GraphicsQuality`: 0 düşük, 1 orta, 2 yüksek). Seçili dili Localization paketi kendisi kaydeder. Yeni kalıcı değer eklerken anahtarı bu listeye de yaz. Bulut kaydına geçmek için yalnızca yeni bir `ISaveService` yazılır.
+`ISaveService` (şimdilik PlayerPrefs, önek `ooo.`). Anahtarlar: `best_score`, `total_coins`, `keys`, `character`, `automated` (virgüllü kimlik listesi), `automated_count.<id>`, `accessory.<id>`, `missions.day` / `missions.ids` / `missions.progress` / `missions.claimed` (günlük görevler; virgüllü listeler), `sound` (1 açık, 0 kapalı), `quality` (`GraphicsQuality`: 0 düşük, 1 orta, 2 yüksek). Seçili dili Localization paketi kendisi kaydeder. Yeni kalıcı değer eklerken anahtarı bu listeye de yaz. Bulut kaydına geçmek için yalnızca yeni bir `ISaveService` yazılır.
 
 ## Çeviri
 
@@ -273,6 +273,13 @@ Menünün Ayarlar sekmesi: dil, ses, görüntü kalitesi ve geliştirici kartı.
 - Kalitenin sayısal karşılığı `GameConfig`'tedir (`renderScaleLow/Medium/High`, `postProcessingOnLow`, `defaultQuality`). Nasıl uygulanacağını `IRenderQuality` bilir; URP karşılığı `UrpRenderQuality` (Infrastructure) render ölçeğini etkin URP asset'ine, post-processing'i kameraya yazar ve kapanışta asset'in özgün ölçeğini geri koyar (editörde Play'den sonra asset değişik kalmasın).
 - Geliştirici kartının metinleri çeviri tablosundadır (`ui.dev.*`, GitHub profilinden), bağlantı `GameConfig.developerUrl`. Avatar yok; baş harfler gösterilir.
 - Yeni seçenek: Core'a istek sinyali, `SettingsSystem`'e alan ve kayıt anahtarı, UXML'e buton, `SettingsPresenter`'daki tabloya satır.
+
+## Günlük görevler
+
+- `MissionDefinition` (Data) görev havuzudur: tür (`MissionMetric`), hedef, ödül (`RewardKind` + adet). Havuz `ContentCatalog.missions`'ta, günlük adet `GameConfig.dailyMissionCount`.
+- `MissionSystem` (Gameplay/Flow) günün numarasını (`IClock.Today`, uygulaması `SystemClock`) tohum yapıp havuzdan **farklı türde** görevleri seçer; aynı gün aynı görevler gelir. Sayma yalnızca sinyallerle yapılır (altın, zıplama, kayma, şerit, güçlendirme, engel yok etme; koşu bitince koşu sayısı, metre ve tek koşu puanı). İlerleme koşu bitince, menüye dönünce ve duraklatınca kayda yazılır; koşu ortasında uygulama kapanırsa o koşunun sayımı kaybolur.
+- Arayüz `MissionChangedSignal` ile satırlarını çizer, ödülü `MissionClaimRequestedSignal` ile ister; `MissionsClaimableSignal` sekme rozetini yakar. Ödül `RewardSystem.Grant` ile verilir.
+- Yeni görev: `PlaceholderContentBuilder.Data`'daki `Mission(...)` listesine satır, türün çeviri satırı (`mission.<tür>`) yoksa ekle. Yeni sayılacak şey: `MissionMetric`'e değer ve `MissionSystem` kurucusuna tek abonelik satırı.
 
 ## Gölge ve zemin
 

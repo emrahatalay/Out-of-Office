@@ -6,7 +6,7 @@ using VContainer.Unity;
 
 namespace OutOfOffice.UI
 {
-    /// <summary>Menünün alt sekme çubuğu: Ana Sayfa, Koleksiyon, Mağaza, Ayarlar. Yeni sekme = listeye bir satır.</summary>
+    /// <summary>Menünün alt sekme çubuğu: Ana Sayfa, Görevler, Koleksiyon, Mağaza, Ayarlar. Yeni sekme = listeye bir satır.</summary>
     public sealed class MenuTabsPresenter : IStartable, IDisposable
     {
         const string ActiveClass = "tab--active";
@@ -14,6 +14,7 @@ namespace OutOfOffice.UI
         static readonly (string tab, string page)[] Tabs =
         {
             ("homeTab", "homePage"),
+            ("missionsTab", "missionsPage"),
             ("collectionTab", "collectionPage"),
             ("storeTab", "storePage"),
             ("settingsTab", "settingsPage"),

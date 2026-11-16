@@ -323,6 +323,62 @@ MonoBehaviour:
     m_Key: ui.newarea
     m_Metadata:
       m_Items: []
+  - m_Id: 952645966618624
+    m_Key: ui.tab.missions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812928
+    m_Key: ui.missions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812929
+    m_Key: ui.missions.hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812930
+    m_Key: ui.mission.claim
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812931
+    m_Key: ui.mission.claimed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812932
+    m_Key: mission.coins
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812933
+    m_Key: mission.distance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812934
+    m_Key: mission.jumps
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812935
+    m_Key: mission.slides
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812936
+    m_Key: mission.lanes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812937
+    m_Key: mission.powerups
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812938
+    m_Key: mission.obstacles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812939
+    m_Key: mission.runs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 952645970812940
+    m_Key: mission.score
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

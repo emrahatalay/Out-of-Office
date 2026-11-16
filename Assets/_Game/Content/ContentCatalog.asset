@@ -28,4 +28,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 22bbadb9ca879441ab053d6f8e657048, type: 2}
   - {fileID: 11400000, guid: b2fad0cb6ad5747f28745f83601262ea, type: 2}
   - {fileID: 11400000, guid: 7c16f66ac32004e3cbb22dcc5b87af0d, type: 2}
+  missions:
+  - {fileID: 11400000, guid: 1133443d3affa425ea4df4ddc9f7504b, type: 2}
+  - {fileID: 11400000, guid: b649f5bd0fc024304b95c0b3fcd2f194, type: 2}
+  - {fileID: 11400000, guid: 3a6c9714fbf3f4c289e385f5673e3923, type: 2}
+  - {fileID: 11400000, guid: 8b8949959af3247e49b1cc46cd62f331, type: 2}
+  - {fileID: 11400000, guid: d82eb808d953943788e8c164d7eef904, type: 2}
+  - {fileID: 11400000, guid: 41b6fcbedaed34320b19f50b1f098021, type: 2}
+  - {fileID: 11400000, guid: 9b7a71dedff0b40c39624980315c149d, type: 2}
+  - {fileID: 11400000, guid: c69c821c9c63a4ea4ae2deea1173b725, type: 2}
+  - {fileID: 11400000, guid: 2fb8234e18c464d3f80d2d8ff3d84545, type: 2}
+  - {fileID: 11400000, guid: bc14e475bd84c4dbf94887fcd8f9ff4c, type: 2}
+  - {fileID: 11400000, guid: da6396230483e45d49cb53767b0e9b92, type: 2}
   tutorialArrow: {fileID: 5537436665120655403, guid: b060cd47f0e44435899900afc0d35ba3, type: 3}
