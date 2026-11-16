@@ -10,6 +10,12 @@ namespace OutOfOffice.EditorTools
     {
         /// <summary>Otonom Şehir koşunun kaçıncı metresinde başlar (Plaza ~70 sn sürer).</summary>
         const float CityStartDistance = 1200f;
+        /// <summary>Lojistik Deposu koşunun kaçıncı metresinde başlar (Otonom Şehir ~80 sn sürer).</summary>
+        const float DepotStartDistance = 2600f;
+        /// <summary>Veri Merkezi koşunun kaçıncı metresinde başlar (Lojistik Deposu ~85 sn sürer).</summary>
+        const float DataCenterStartDistance = 4200f;
+        /// <summary>Analog Kasaba (son dünya) koşunun kaçıncı metresinde başlar.</summary>
+        const float VillageStartDistance = 6000f;
 
         static void BuildData(PlaceholderPrefabs prefabs)
         {
@@ -116,6 +122,43 @@ namespace OutOfOffice.EditorTools
                 obstacles[2], // robot süpürge
             };
 
+            // Lojistik Deposu engelleri: forklift robotu (yaklaşır), koli duvarı (atla), vinç kapısı (altından kay) + dron ve süpürge.
+            var forkliftApproach = LoadOrCreate<ApproachPattern>($"{DataDir}/Movement/Movement_ForkliftApproach.asset");
+            forkliftApproach.speed = 3f;
+            EditorUtility.SetDirty(forkliftApproach);
+            var depotObstacles = new[]
+            {
+                Obstacle("Obstacle_ForkliftBot", "forklift_bot", prefabs.ForkliftBot, AvoidType.ChangeLane, forkliftApproach, 0f, 1f, robot: true),
+                Obstacle("Obstacle_CrateWall", "crate_wall", prefabs.CrateWall, AvoidType.Jump, null, 0f, 0.9f),
+                Obstacle("Obstacle_CraneGantry", "crane_gantry", prefabs.CraneGantry, AvoidType.Slide, null, 0f, 0.9f),
+                obstacles[3], // kargo dronu
+                obstacles[2], // robot süpürge
+            };
+
+            // Veri Merkezi engelleri: yedekleme robotu (yaklaşır), disk kasası (atla), kablo kapısı (altından kay) + sunucu kabini ve dron.
+            var backupApproach = LoadOrCreate<ApproachPattern>($"{DataDir}/Movement/Movement_BackupApproach.asset");
+            backupApproach.speed = 3.5f;
+            EditorUtility.SetDirty(backupApproach);
+            var dataCenterObstacles = new[]
+            {
+                Obstacle("Obstacle_BackupBot", "backup_bot", prefabs.BackupBot, AvoidType.ChangeLane, backupApproach, 0f, 1f, robot: true),
+                Obstacle("Obstacle_DiskStack", "disk_stack", prefabs.DiskStack, AvoidType.Jump, null, 0f, 0.9f),
+                Obstacle("Obstacle_CableGate", "cable_gate", prefabs.CableGate, AvoidType.Slide, null, 0f, 0.9f),
+                obstacles[0], // sunucu kabini
+                obstacles[3], // kargo dronu
+            };
+
+            // Analog Kasaba engelleri: eski traktör (yavaş yaklaşır), saman balyaları (atla), kasaba kapısı (altından kay) + çit yerine Plaza'nın robot süpürgesi.
+            var tractorApproach = LoadOrCreate<ApproachPattern>($"{DataDir}/Movement/Movement_TractorApproach.asset");
+            tractorApproach.speed = 2.5f;
+            EditorUtility.SetDirty(tractorApproach);
+            var villageObstacles = new[]
+            {
+                Obstacle("Obstacle_OldTractor", "old_tractor", prefabs.OldTractor, AvoidType.ChangeLane, tractorApproach, 0f, 1f),
+                Obstacle("Obstacle_HayBales", "hay_bales", prefabs.HayBales, AvoidType.Jump, null, 0f, 1f),
+                Obstacle("Obstacle_VillageGate", "village_gate", prefabs.VillageGate, AvoidType.Slide, null, 0f, 0.9f),
+            };
+
             // Dönen parçalar: dron pervaneleri (dönüş yönü karşılıklı) ve taksi tekerlekleri (yere doğru gelirken ileri yuvarlanır).
             obstacles[3].spinParts = new[]
             {
@@ -175,12 +218,54 @@ namespace OutOfOffice.EditorTools
             city.atmosphere = CityAtmosphere();
             EditorUtility.SetDirty(city);
 
+            // Lojistik Deposu: Otonom Şehir'den sonra gelir.
+            var depot = LoadOrCreate<WorldDefinition>($"{DataDir}/Worlds/World_LogisticsDepot.asset");
+            depot.id = "logistics_depot";
+            depot.nameKey = "world.logistics_depot";
+            depot.groundSegmentPrefab = prefabs.DepotGround;
+            depot.segmentLength = 30f;
+            depot.chaser = chaser;
+            depot.obstacles = depotObstacles;
+            depot.powerUps = powerUps;
+            depot.coinPrefab = prefabs.Coin;
+            depot.startDistance = DepotStartDistance;
+            depot.atmosphere = DepotAtmosphere();
+            EditorUtility.SetDirty(depot);
+
+            // Veri Merkezi: Lojistik Deposu'ndan sonra gelir.
+            var dataCenter = LoadOrCreate<WorldDefinition>($"{DataDir}/Worlds/World_DataCenter.asset");
+            dataCenter.id = "data_center";
+            dataCenter.nameKey = "world.data_center";
+            dataCenter.groundSegmentPrefab = prefabs.DataCenterGround;
+            dataCenter.segmentLength = 30f;
+            dataCenter.chaser = chaser;
+            dataCenter.obstacles = dataCenterObstacles;
+            dataCenter.powerUps = powerUps;
+            dataCenter.coinPrefab = prefabs.Coin;
+            dataCenter.startDistance = DataCenterStartDistance;
+            dataCenter.atmosphere = DataCenterAtmosphere();
+            EditorUtility.SetDirty(dataCenter);
+
+            // Analog Kasaba: son dünya. Robotsuz, sakin: yalnızca kasaba engelleri.
+            var village = LoadOrCreate<WorldDefinition>($"{DataDir}/Worlds/World_AnalogVillage.asset");
+            village.id = "analog_village";
+            village.nameKey = "world.analog_village";
+            village.groundSegmentPrefab = prefabs.VillageGround;
+            village.segmentLength = 30f;
+            village.chaser = chaser;
+            village.obstacles = villageObstacles;
+            village.powerUps = powerUps;
+            village.coinPrefab = prefabs.Coin;
+            village.startDistance = VillageStartDistance;
+            village.atmosphere = VillageAtmosphere();
+            EditorUtility.SetDirty(village);
+
             // ---- Ayarlar ve katalog (ayarlar yalnızca ilk kez oluşturulur; dengelemen korunur)
             LoadOrCreate<GameConfig>(ConfigPath);
 
             var catalog = LoadOrCreate<ContentCatalog>(CatalogPath);
             catalog.characters = new[] { developer, designer, driver, intern };
-            catalog.worlds = new[] { world, city };
+            catalog.worlds = new[] { world, city, depot, dataCenter, village };
             catalog.tutorialArrow = prefabs.TutorialArrow;
 
             // ---- Aksesuar: kaykay karşılığı. Kalkan + sandalye görseli; çarpınca sandalye kırılır.

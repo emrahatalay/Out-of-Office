@@ -47,6 +47,19 @@ namespace OutOfOffice.EditorTools
             public Color LaneGlow;
             public Color[] Towers;
             public Color ColumnTint;
+
+            // Yol kenarı dekoru (BuildDecor). Modeller PropModelBuilder.Props'ta tanımlıdır; yönler "taraf x derece"dir.
+            /// <summary>Her 10 m'de bir dizilen yol kenarı nesnesi (kolon, lamba, projektör).</summary>
+            public string Roadside;
+            public float RoadsideX, RoadsideYaw;
+            /// <summary>Yol kenarı nesnesi boyanır mı (kolon: evet).</summary>
+            public bool RoadsideTinted;
+            /// <summary>İki büyük yol kenarı nesnesi (kiosk/pano, şarj istasyonu/durak, palet/konteyner).</summary>
+            public string PropA, PropB;
+            public float PropAX, PropBX, PropAYaw, PropBYaw;
+            /// <summary>Binalar: yakın sıra ve uzak sıra; sol/sağ ayrı model (karşı karşıya aynı olmasın).</summary>
+            public string NearLeft, NearRight, FarLeft, FarRight;
+            public float NearX, FarX;
         }
 
         // Plaza: açık, serin asfalt (koyu gövdeli engeller ve renkli karakterler üstünde okunur), turkuaz oklar, şeker renkli binalar.
@@ -71,6 +84,11 @@ namespace OutOfOffice.EditorTools
                 new Color(0.56f, 0.52f, 1f),   // lavanta
             },
             ColumnTint = new Color(1f, 0.97f, 0.92f),
+            Roadside = "Column", RoadsideX = 5.7f, RoadsideYaw = 0f, RoadsideTinted = true,
+            PropA = "Kiosk", PropAX = 7.6f, PropAYaw = 55f,
+            PropB = "Billboard", PropBX = 7.2f, PropBYaw = 30f,
+            NearLeft = "TowerA", NearRight = "TowerB", FarLeft = "TowerB", FarRight = "TowerA",
+            NearX = 13.5f, FarX = 16f,
         };
 
         // Otonom Şehir: gün batımı. Orta tonlu mor-gri asfalt, pembe oklar, turuncu çiviler, neon renkli binalar.
@@ -94,6 +112,95 @@ namespace OutOfOffice.EditorTools
                 new Color(0.62f, 0.46f, 1f),    // menekşe
             },
             ColumnTint = new Color(1f, 0.92f, 0.95f),
+            Roadside = "StreetLamp", RoadsideX = 5.9f, RoadsideYaw = 90f, RoadsideTinted = false,
+            PropA = "ChargingStation", PropAX = 7.6f, PropAYaw = 55f,
+            PropB = "HoloStop", PropBX = 9.2f, PropBYaw = -90f,
+            NearLeft = "TowerC", NearRight = "TowerD", FarLeft = "TowerD", FarRight = "TowerC",
+            NearX = 16f, FarX = 18f,
+        };
+
+        // Lojistik Deposu: sabah sisi. Sıcak beton asfalt, sarı tehlike çizgileri, turuncu oklar, hangar ve silo renkleri.
+        static readonly GroundStyle DepotStyle = new GroundStyle
+        {
+            Name = "Depot",
+            Suffix = "_Depot",
+            Asphalt = new Color(0.5f, 0.47f, 0.46f),
+            Marking = new Color(1f, 0.88f, 0.4f),
+            Arrow = new Color(1f, 0.55f, 0.14f),
+            Stud = new Color(1f, 0.7f, 0.2f),
+            SlabA = new Color(0.8f, 0.77f, 0.72f),
+            SlabB = new Color(0.74f, 0.72f, 0.68f),
+            Joint = new Color(0.58f, 0.56f, 0.53f),
+            LaneGlow = new Color(1f, 0.58f, 0.12f),
+            Towers = new[]
+            {
+                new Color(1f, 0.62f, 0.26f),   // turuncu
+                new Color(0.28f, 0.78f, 0.8f), // petrol
+                new Color(1f, 0.84f, 0.32f),   // hardal
+                new Color(0.58f, 0.72f, 0.98f),// çelik mavisi
+            },
+            ColumnTint = new Color(1f, 0.95f, 0.86f),
+            Roadside = "Floodlight", RoadsideX = 5.9f, RoadsideYaw = 90f, RoadsideTinted = false,
+            PropA = "PalletStack", PropAX = 7.6f, PropAYaw = 55f,
+            PropB = "ContainerStack", PropBX = 10f, PropBYaw = 0f,
+            NearLeft = "TowerE", NearRight = "TowerF", FarLeft = "TowerF", FarRight = "TowerE",
+            NearX = 16f, FarX = 18f,
+        };
+
+        // Veri Merkezi: serin, yapay gün ışığı. Arduvaz asfalt, yeşil oklar, camgöbeği çiviler, nane ve camgöbeği binalar.
+        static readonly GroundStyle DataCenterStyle = new GroundStyle
+        {
+            Name = "DataCenter",
+            Suffix = "_DataCenter",
+            Asphalt = new Color(0.34f, 0.4f, 0.5f),
+            Marking = new Color(0.86f, 1f, 0.95f),
+            Arrow = new Color(0.25f, 0.95f, 0.5f),
+            Stud = new Color(0.3f, 0.9f, 1f),
+            SlabA = new Color(0.7f, 0.78f, 0.82f),
+            SlabB = new Color(0.64f, 0.72f, 0.78f),
+            Joint = new Color(0.5f, 0.58f, 0.64f),
+            LaneGlow = new Color(0.15f, 0.9f, 0.5f),
+            Towers = new[]
+            {
+                new Color(0.36f, 0.9f, 0.7f),  // nane
+                new Color(0.3f, 0.76f, 0.96f), // camgöbeği
+                new Color(0.72f, 0.95f, 0.36f),// misket limonu
+                new Color(0.56f, 0.62f, 1f),   // lavanta mavisi
+            },
+            ColumnTint = new Color(0.9f, 1f, 0.97f),
+            Roadside = "FiberPole", RoadsideX = 5.9f, RoadsideYaw = 90f, RoadsideTinted = false,
+            PropA = "CoolingUnit", PropAX = 7.6f, PropAYaw = 55f,
+            PropB = "BatteryBank", PropBX = 10f, PropBYaw = 0f,
+            NearLeft = "TowerG", NearRight = "TowerH", FarLeft = "TowerH", FarRight = "TowerG",
+            NearX = 16f, FarX = 18f,
+        };
+
+        // Analog Kasaba: altın saat. Toprak-taş kaldırım yol, krem çizgiler, sıcak turuncu oklar, boyalı ev ve değirmen renkleri.
+        static readonly GroundStyle VillageStyle = new GroundStyle
+        {
+            Name = "Village",
+            Suffix = "_Village",
+            Asphalt = new Color(0.54f, 0.46f, 0.4f),
+            Marking = new Color(1f, 0.95f, 0.8f),
+            Arrow = new Color(1f, 0.74f, 0.24f),
+            Stud = new Color(1f, 0.8f, 0.4f),
+            SlabA = new Color(0.84f, 0.74f, 0.62f),
+            SlabB = new Color(0.78f, 0.68f, 0.56f),
+            Joint = new Color(0.6f, 0.52f, 0.44f),
+            LaneGlow = new Color(1f, 0.72f, 0.22f),
+            Towers = new[]
+            {
+                new Color(0.96f, 0.52f, 0.42f), // kiremit
+                new Color(1f, 0.86f, 0.5f),     // bal kreması
+                new Color(0.58f, 0.82f, 0.58f), // adaçayı
+                new Color(0.52f, 0.76f, 0.96f), // gök mavisi
+            },
+            ColumnTint = new Color(1f, 0.95f, 0.85f),
+            Roadside = "GasLamp", RoadsideX = 5.9f, RoadsideYaw = 90f, RoadsideTinted = false,
+            PropA = "FlowerCart", PropAX = 7.4f, PropAYaw = 55f,
+            PropB = "VillageWell", PropBX = 8.6f, PropBYaw = 0f,
+            NearLeft = "TowerI", NearRight = "TowerJ", FarLeft = "TowerJ", FarRight = "TowerI",
+            NearX = 16f, FarX = 18f,
         };
 
         static GroundStyle _style = PlazaStyle;

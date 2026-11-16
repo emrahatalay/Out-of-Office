@@ -103,6 +103,9 @@ namespace OutOfOffice.EditorTools
             new[] { "chaser.hr9000", "İK-9000", "HR-9000" },
             new[] { "world.plaza", "Plaza", "Plaza" },
             new[] { "world.autonomous_city", "Otonom Şehir", "Autonomous City" },
+            new[] { "world.logistics_depot", "Lojistik Deposu", "Logistics Depot" },
+            new[] { "world.data_center", "Veri Merkezi", "Data Center" },
+            new[] { "world.analog_village", "Analog Kasaba", "Analog Village" },
             new[] { "ui.newarea", "YENİ BÖLGE", "NEW AREA" },
         };
 

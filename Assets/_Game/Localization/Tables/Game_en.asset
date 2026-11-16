@@ -382,6 +382,18 @@ MonoBehaviour:
     m_Localized: Score in a single run
     m_Metadata:
       m_Items: []
+  - m_Id: 957681866104832
+    m_Localized: Logistics Depot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 964951517683712
+    m_Localized: Data Center
+    m_Metadata:
+      m_Items: []
+  - m_Id: 966223335514112
+    m_Localized: Analog Village
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ec9f4ffe46d54c7a8b8d0bd1bd03e65, type: 3}
+  m_Name: Obstacle_ForkliftBot
+  m_EditorClassIdentifier: OutOfOffice.Data::OutOfOffice.Data.ObstacleDefinition
+  id: forklift_bot
+  prefab: {fileID: 703976099477175180, guid: 9dde81b7e80f04905809a115ad246ee7, type: 3}
+  avoidBy: 0
+  movement: {fileID: 11400000, guid: c03a715646884438d804c32aa1e6cb74, type: 2}
+  minDifficulty: 0
+  isRobot: 1
+  spinParts: []
+  spawnWeight: 1

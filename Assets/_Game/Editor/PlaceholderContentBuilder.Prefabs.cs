@@ -13,7 +13,8 @@ namespace OutOfOffice.EditorTools
             public GameObject Coin, Captcha, Hallucination, Shield;
             public GameObject DronePickup, Magnet, Overtime, Espresso, OfficeChair, DriverPod, Package, CarrierDrone;
             public GameObject PromptInjection, Unplug, TutorialArrow;
-            public GameObject Ground, CityGround;
+            public GameObject Ground, CityGround, DepotGround, DataCenterGround, VillageGround;
+            public GameObject ForkliftBot, CrateWall, CraneGantry, BackupBot, DiskStack, CableGate, OldTractor, HayBales, VillageGate;
         }
 
         // Ölçüler: oyuncu 1.8 m boyunda, kayarken 0.8 m. Zıplama tepesi 3.2 m (GameConfig.jumpHeight).
@@ -60,6 +61,15 @@ namespace OutOfOffice.EditorTools
                 AutoBus = BuildAutoBus(green, dark),
                 GateBarrier = BuildGateBarrier(red, dark),
                 TrafficCone = BuildTrafficCone(orange, dark),
+                ForkliftBot = BuildForkliftBot(steel, orange),
+                CrateWall = BuildCrateWall(dark, orange),
+                CraneGantry = BuildCraneGantry(orange, dark),
+                BackupBot = BuildBackupBot(steel, green),
+                DiskStack = BuildDiskStack(dark, green),
+                CableGate = BuildCableGate(green, dark),
+                OldTractor = BuildOldTractor(green, dark),
+                HayBales = BuildHayBales(yellow, orange),
+                VillageGate = BuildVillageGate(espresso, orange),
                 Coin = BuildCoin(yellow),
                 Captcha = BuildPowerUp("Pickup_Captcha", "Captcha", green, white),
                 Hallucination = BuildPowerUp("Pickup_Hallucination", "Hallucination", purple, white),
@@ -77,6 +87,9 @@ namespace OutOfOffice.EditorTools
                 Package = BuildPackage(espresso, yellow),
                 Ground = BuildGround(PlazaStyle, curb, laneGlow, dark),
                 CityGround = BuildGround(CityStyle, curb, Mat("LaneGlowCity", CityStyle.LaneGlow, 0.5f, 0.7f), dark),
+                VillageGround = BuildGround(VillageStyle, curb, Mat("LaneGlowVillage", VillageStyle.LaneGlow, 0.5f, 0.7f), dark),
+                DataCenterGround = BuildGround(DataCenterStyle, curb, Mat("LaneGlowDataCenter", DataCenterStyle.LaneGlow, 0.5f, 0.7f), dark),
+                DepotGround = BuildGround(DepotStyle, curb, Mat("LaneGlowDepot", DepotStyle.LaneGlow, 0.5f, 0.7f), dark),
             };
         }
 
@@ -348,6 +361,165 @@ namespace OutOfOffice.EditorTools
             return SavePrefab(root);
         }
 
+        // Lojistik Deposu: forklift robotu. Şerit değiştirerek kaçılır; üstünden de atlanır.
+        static GameObject BuildForkliftBot(Material body, Material fork)
+        {
+            var root = new GameObject("Obstacle_ForkliftBot");
+            bool real = Model(root, "ForkliftBot");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 0.8f, 0.2f), new Vector3(1.8f, 1.2f, 1.4f), body);
+                Part(root.transform, PrimitiveType.Cube, "Fork", new Vector3(0f, 0.25f, -1f), new Vector3(1.4f, 0.2f, 0.9f), fork);
+            }
+
+            BlobShadow(root, new Vector2(2.6f, 2.2f));
+            BoxTrigger(root, new Vector3(0f, 0.85f, 0f), new Vector3(2.2f, 1.7f, 1.7f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
+        // Lojistik Deposu: alçak koli duvarı; üstünden atlanır.
+        static GameObject BuildCrateWall(Material crate, Material strap)
+        {
+            var root = new GameObject("Obstacle_CrateWall");
+            bool real = Model(root, "CrateWall");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Crates", new Vector3(0f, 0.65f, 0f), new Vector3(2.3f, 1.3f, 0.6f), crate);
+                Part(root.transform, PrimitiveType.Cube, "Strap", new Vector3(0f, 0.65f, 0f), new Vector3(2.35f, 0.2f, 0.65f), strap);
+            }
+
+            BlobShadow(root, new Vector2(2.8f, 1.2f));
+            BoxTrigger(root, new Vector3(0f, 0.65f, 0f), new Vector3(2.3f, 1.3f, 0.8f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
+        // Lojistik Deposu: vinç kapısı. Üst kiriş çarpar, altından kayılır (bariyerle aynı oyun mantığı).
+        static GameObject BuildCraneGantry(Material beam, Material leg)
+        {
+            var root = new GameObject("Obstacle_CraneGantry");
+            bool real = Model(root, "CraneGantry");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Beam", new Vector3(0f, 1.8f, 0f), new Vector3(2.8f, 0.8f, 1.6f), beam);
+                Part(root.transform, PrimitiveType.Cube, "LegLeft", new Vector3(-1.2f, 0.7f, 0f), new Vector3(0.4f, 1.4f, 1.2f), leg);
+                Part(root.transform, PrimitiveType.Cube, "LegRight", new Vector3(1.2f, 0.7f, 0f), new Vector3(0.4f, 1.4f, 1.2f), leg);
+            }
+
+            BlobShadow(root, new Vector2(3.2f, 2.4f));
+            // Yalnızca kiriş çarpar (şerit genişliği kadar); kayan oyuncu altından geçer.
+            BoxTrigger(root, new Vector3(0f, 1.7f, 0f), new Vector3(2.4f, 1.0f, 1.2f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
+        // Veri Merkezi: yedekleme robotu. Üstünde sunucu rafı taşır; şerit değiştirerek kaçılır.
+        static GameObject BuildBackupBot(Material body, Material screen)
+        {
+            var root = new GameObject("Obstacle_BackupBot");
+            bool real = Model(root, "BackupBot");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 1.1f, 0f), new Vector3(1.6f, 2f, 1.1f), body);
+                Part(root.transform, PrimitiveType.Cube, "Screen", new Vector3(0f, 1.6f, -0.56f), new Vector3(1f, 0.6f, 0.03f), screen);
+            }
+
+            BlobShadow(root, new Vector2(2.2f, 1.7f));
+            BoxTrigger(root, new Vector3(0f, 1.2f, 0f), new Vector3(2f, 2.4f, 1.4f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
+        // Veri Merkezi: disk kasası yığını; üstünden atlanır.
+        static GameObject BuildDiskStack(Material blades, Material handle)
+        {
+            var root = new GameObject("Obstacle_DiskStack");
+            bool real = Model(root, "DiskStack");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Blades", new Vector3(0f, 0.65f, 0f), new Vector3(2.2f, 1.3f, 2f), blades);
+                Part(root.transform, PrimitiveType.Cube, "Handles", new Vector3(0f, 0.9f, -1f), new Vector3(2f, 0.15f, 0.1f), handle);
+            }
+
+            BlobShadow(root, new Vector2(2.8f, 2.8f));
+            BoxTrigger(root, new Vector3(0f, 0.65f, 0f), new Vector3(2.2f, 1.3f, 2f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
+        // Veri Merkezi: kablo kapısı. Üst kablo yatağı çarpar, altından kayılır.
+        static GameObject BuildCableGate(Material cables, Material leg)
+        {
+            var root = new GameObject("Obstacle_CableGate");
+            bool real = Model(root, "CableGate");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Tray", new Vector3(0f, 1.8f, 0f), new Vector3(2.8f, 0.7f, 0.8f), cables);
+                Part(root.transform, PrimitiveType.Cube, "LegLeft", new Vector3(-1.3f, 0.7f, 0f), new Vector3(0.4f, 1.4f, 0.6f), leg);
+                Part(root.transform, PrimitiveType.Cube, "LegRight", new Vector3(1.3f, 0.7f, 0f), new Vector3(0.4f, 1.4f, 0.6f), leg);
+            }
+
+            BlobShadow(root, new Vector2(3.4f, 1.2f));
+            // Yalnızca kablo yatağı çarpar; kayan oyuncu altından geçer.
+            BoxTrigger(root, new Vector3(0f, 1.65f, 0f), new Vector3(2.4f, 0.7f, 0.9f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
+        // Analog Kasaba: eski traktör. Yavaşça yaklaşır; şerit değiştirerek kaçılır.
+        static GameObject BuildOldTractor(Material body, Material wheel)
+        {
+            var root = new GameObject("Obstacle_OldTractor");
+            bool real = Model(root, "OldTractor");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Body", new Vector3(0f, 1f, 0f), new Vector3(1.6f, 1.4f, 2f), body);
+                Part(root.transform, PrimitiveType.Cube, "Wheels", new Vector3(0f, 0.5f, 0.3f), new Vector3(2.1f, 1f, 0.9f), wheel);
+            }
+
+            BlobShadow(root, new Vector2(2.6f, 2.2f));
+            BoxTrigger(root, new Vector3(0f, 1.1f, 0f), new Vector3(2.1f, 2.2f, 1.5f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
+        // Analog Kasaba: saman balyaları; üstünden atlanır.
+        static GameObject BuildHayBales(Material straw, Material rope)
+        {
+            var root = new GameObject("Obstacle_HayBales");
+            bool real = Model(root, "HayBales");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Bales", new Vector3(0f, 0.65f, 0f), new Vector3(1.7f, 1.3f, 1f), straw);
+                Part(root.transform, PrimitiveType.Cube, "Rope", new Vector3(0f, 0.65f, 0f), new Vector3(1.75f, 0.15f, 1.05f), rope);
+            }
+
+            BlobShadow(root, new Vector2(2.2f, 1.6f));
+            BoxTrigger(root, new Vector3(0f, 0.65f, 0f), new Vector3(1.9f, 1.3f, 1f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
+        // Analog Kasaba: kasaba kapısı. Üst kiriş çarpar, altından kayılır.
+        static GameObject BuildVillageGate(Material wood, Material trim)
+        {
+            var root = new GameObject("Obstacle_VillageGate");
+            bool real = Model(root, "VillageGate");
+            if (!real)
+            {
+                Part(root.transform, PrimitiveType.Cube, "Beam", new Vector3(0f, 1.9f, 0f), new Vector3(2.9f, 0.6f, 0.9f), wood);
+                Part(root.transform, PrimitiveType.Cube, "PostLeft", new Vector3(-1.2f, 0.9f, 0f), new Vector3(0.4f, 1.8f, 0.6f), trim);
+                Part(root.transform, PrimitiveType.Cube, "PostRight", new Vector3(1.2f, 0.9f, 0f), new Vector3(0.4f, 1.8f, 0.6f), trim);
+            }
+
+            BlobShadow(root, new Vector2(3.3f, 1.4f));
+            // Yalnızca kiriş çarpar; kayan oyuncu altından geçer.
+            BoxTrigger(root, new Vector3(0f, 1.8f, 0f), new Vector3(2.4f, 0.8f, 1f));
+            if (!real) CombineByMaterial(root, castShadows: false);
+            return SavePrefab(root);
+        }
+
         // Otonom Şehir: tekerlekli trafik konisi robotu; üstünden atlanır.
         static GameObject BuildTrafficCone(Material cone, Material baseMat)
         {
@@ -459,37 +631,27 @@ namespace OutOfOffice.EditorTools
         // İki yan aynı dizilmez: sol ve sağ yarım parça kaydırılır, kuleler yer değiştirir.
         static void BuildDecor(Transform root, int side)
         {
-            bool city = _style == CityStyle;
+            var style = _style;
             float shift = side < 0 ? 0f : 5f;
-            float inward = side * 55f;
 
-            // Yol kenarı: Plaza'da kolonlar, kiosk ve reklam panosu; şehirde akıllı lambalar, şarj istasyonu ve hologramlı durak.
+            // Yol kenarı: her 10 m'de bir nesne (kolon, akıllı lamba, projektör).
             for (int i = 0; i < 3; i++)
             {
-                var position = new Vector3(side * (city ? 5.9f : 5.7f), SidewalkTop, 5f + i * 10f);
-                if (city) PropModelBuilder.TryAddModel(root, "StreetLamp", false, position, side * 90f);
-                else PropModelBuilder.TryAddModel(root, "Column", false, position, 0f, ColumnTint);
+                var position = new Vector3(side * style.RoadsideX, SidewalkTop, 5f + i * 10f);
+                if (style.RoadsideTinted) PropModelBuilder.TryAddModel(root, style.Roadside, false, position, side * style.RoadsideYaw, ColumnTint);
+                else PropModelBuilder.TryAddModel(root, style.Roadside, false, position, side * style.RoadsideYaw);
             }
 
-            if (city)
-            {
-                PropModelBuilder.TryAddModel(root, "ChargingStation", false, new Vector3(side * 7.6f, SidewalkTop, 9f + shift), inward);
-                PropModelBuilder.TryAddModel(root, "HoloStop", false, new Vector3(side * 9.2f, SidewalkTop, 19f + shift), -side * 90f);
-            }
-            else
-            {
-                PropModelBuilder.TryAddModel(root, "Kiosk", false, new Vector3(side * 7.6f, SidewalkTop, 9f + shift), inward);
-                PropModelBuilder.TryAddModel(root, "Billboard", false, new Vector3(side * 7.2f, SidewalkTop, 19f + shift), side * 30f);
-            }
+            // İki büyük yol kenarı nesnesi; iki yan aynı yerde durmaz (shift).
+            PropModelBuilder.TryAddModel(root, style.PropA, false, new Vector3(side * style.PropAX, SidewalkTop, 9f + shift), side * style.PropAYaw);
+            PropModelBuilder.TryAddModel(root, style.PropB, false, new Vector3(side * style.PropBX, SidewalkTop, 19f + shift), side * style.PropBYaw);
 
-            // Binalar: her kopya ayrı renkte (zemin stilinin paleti). Şehirde farklı iki bina modeli, daha geriye.
-            string near = city ? (side < 0 ? "TowerC" : "TowerD") : (side < 0 ? "TowerA" : "TowerB");
-            string far = city ? (side < 0 ? "TowerD" : "TowerC") : (side < 0 ? "TowerB" : "TowerA");
+            // Binalar: her kopya ayrı renkte (zemin stilinin paleti). Yakın sıra ve daha geride uzak sıra.
+            string near = side < 0 ? style.NearLeft : style.NearRight;
+            string far = side < 0 ? style.FarLeft : style.FarRight;
             int first = side < 0 ? 0 : 2;
-            float nearX = city ? 16f : 13.5f;
-            float farX = city ? 18f : 16f;
-            PropModelBuilder.TryAddModel(root, near, false, new Vector3(side * nearX, SidewalkTop, 7f + shift), side * 90f, TowerPalette[first]);
-            PropModelBuilder.TryAddModel(root, far, false, new Vector3(side * farX, SidewalkTop, 22f - shift), side * 90f, TowerPalette[first + 1]);
+            PropModelBuilder.TryAddModel(root, near, false, new Vector3(side * style.NearX, SidewalkTop, 7f + shift), side * 90f, TowerPalette[first]);
+            PropModelBuilder.TryAddModel(root, far, false, new Vector3(side * style.FarX, SidewalkTop, 22f - shift), side * 90f, TowerPalette[first + 1]);
         }
 
         // Binaların renkleri ve kolonların gövdesi zemin stilinden gelir (GroundStyle). Neon çizgileri dokudan gelir.

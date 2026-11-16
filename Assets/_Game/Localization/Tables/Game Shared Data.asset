@@ -379,6 +379,18 @@ MonoBehaviour:
     m_Key: mission.score
     m_Metadata:
       m_Items: []
+  - m_Id: 957681866104832
+    m_Key: world.logistics_depot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 964951517683712
+    m_Key: world.data_center
+    m_Metadata:
+      m_Items: []
+  - m_Id: 966223335514112
+    m_Key: world.analog_village
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

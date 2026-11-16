@@ -59,7 +59,7 @@ Mobil hedef. Aşılacaksa gerekçesi `docs/DURUM.md`'ye yazılır.
 
 ## Dünyaların havası
 
-Her dünyanın kendi havası vardır (`WorldDefinition.atmosphere`); bu bölüm Plaza'yı anlatır. Yeni dünyada kurallar aynı kalır: ufuk rengi = sis rengi, okunurluk sırası (toplananlar ve engeller > oyuncu > dekor > gökyüzü), gerçek gölge yok, ölçülü post-processing. **Otonom Şehir:** gün batımı. Mor tepe, pembe-şeftali ufuk, şeftali bulutlar, sıcak turuncu güneş; neon bina paleti (turkuaz, macenta, amber, menekşe), pembe zemin okları ve kenar ışığı, kaldırım ve asfalt mor-gri. Dünyalar arasında hava yumuşakça karışır.
+Her dünyanın kendi havası vardır (`WorldDefinition.atmosphere`); bu bölüm Plaza'yı anlatır. Yeni dünyada kurallar aynı kalır: ufuk rengi = sis rengi, okunurluk sırası (toplananlar ve engeller > oyuncu > dekor > gökyüzü), gerçek gölge yok, ölçülü post-processing. **Otonom Şehir:** gün batımı. Mor tepe, pembe-şeftali ufuk, şeftali bulutlar, sıcak turuncu güneş; neon bina paleti (turkuaz, macenta, amber, menekşe), pembe zemin okları ve kenar ışığı, kaldırım ve asfalt mor-gri. **Lojistik Deposu:** sabah sisi. Soluk çelik mavisi tepe, kehribar ufuk, sıcak beton asfalt, sarı tehlike çizgileri, turuncu oklar; hangar ve silo binaları turuncu, petrol, hardal ve çelik mavisi. **Veri Merkezi:** serin, yapay gün ışığı. Mavi-yeşil tepe, nane ufuk, arduvaz asfalt, yeşil oklar; binalar nane, camgöbeği, misket limonu ve lavanta mavisi. **Analog Kasaba:** altın saat. Sıcak mavi tepe, bal rengi ufuk, krem bulutlar, toprak-taş yol, sarı-turuncu oklar; ev ve değirmen renkleri kiremit, bal kreması, adaçayı, gök mavisi. Neon yerine sıcak fener ışığı ışır (gaz lambası, pencere, fener). Dünyalar arasında hava yumuşakça karışır.
 
 ## Sahnenin havası
 

@@ -382,6 +382,18 @@ MonoBehaviour:
     m_Localized: "Tek ko\u015Fuda puan yap"
     m_Metadata:
       m_Items: []
+  - m_Id: 957681866104832
+    m_Localized: Lojistik Deposu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 964951517683712
+    m_Localized: Veri Merkezi
+    m_Metadata:
+      m_Items: []
+  - m_Id: 966223335514112
+    m_Localized: Analog Kasaba
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

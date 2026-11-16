@@ -92,6 +92,33 @@ namespace OutOfOffice.EditorTools
             // Otonom Şehir binaları: gövde boyanır (şehir paleti), neon şeritler ışır.
             new PropSpec("TowerC", 1024, 1.4f, tintable: true),
             new PropSpec("TowerD", 1024, 1.4f, tintable: true),
+            // Lojistik Deposu: üç engel, iki bina (hangar, silo), üç yol kenarı nesnesi.
+            new PropSpec("ForkliftBot", 512, 2.5f),
+            new PropSpec("CrateWall", 512, 2.5f),
+            new PropSpec("CraneGantry", 512, 2.5f),
+            new PropSpec("TowerE", 1024, 1.4f, tintable: true),
+            new PropSpec("TowerF", 1024, 1.4f, tintable: true),
+            new PropSpec("PalletStack", 512, 2f),
+            new PropSpec("ContainerStack", 512, 2.5f),
+            new PropSpec("Floodlight", 512, 2.5f),
+            // Veri Merkezi: üç engel, iki bina (veri kulesi, soğutma kuleleri), üç yol kenarı nesnesi.
+            new PropSpec("BackupBot", 512, 2.5f),
+            new PropSpec("DiskStack", 512, 2.5f),
+            new PropSpec("CableGate", 512, 2.5f),
+            new PropSpec("TowerG", 1024, 1.4f, tintable: true),
+            new PropSpec("TowerH", 1024, 1.4f, tintable: true),
+            new PropSpec("FiberPole", 512, 2.5f),
+            new PropSpec("CoolingUnit", 512, 2.5f),
+            new PropSpec("BatteryBank", 512, 2.5f),
+            // Analog Kasaba: üç engel, iki bina (kasaba evi, değirmen), üç yol kenarı nesnesi.
+            new PropSpec("OldTractor", 512, 2.5f),
+            new PropSpec("HayBales", 512, 2f),
+            new PropSpec("VillageGate", 512, 2.5f),
+            new PropSpec("TowerI", 1024, 1.4f, tintable: true),
+            new PropSpec("TowerJ", 1024, 1.4f, tintable: true),
+            new PropSpec("GasLamp", 512, 2.5f),
+            new PropSpec("FlowerCart", 512, 2f),
+            new PropSpec("VillageWell", 512, 2.5f),
         };
 
         // Renksiz dokunun ayarları: gövdenin en koyu ve en açık yeri bu aralığa yayılır. Taban

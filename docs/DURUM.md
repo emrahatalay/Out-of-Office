@@ -4,6 +4,12 @@ Son güncelleme: 14 Kasım 2026. Bir iş bitince ya da yeni bir sorun bulununca 
 
 ## Yapılanlar
 
+- **Analog Kasaba (16 Kasım 2026, 6000 m, son dünya):** altın saat havası, toprak-taş yol, 3 yeni engel (Eski Traktör: şerit, yavaş yaklaşır; Saman Balyaları: atla; Kasaba Kapısı: altından kay), kasaba evi / değirmen, gaz lambası, çiçek arabası, kuyu. 8 model Meshy ile üretildi (192 kredi). Editörde Play'de (z=6050, hayalet mod) ekran görüntüsüyle görüldü, afiş çıktı, konsol hatasız. Bu dünyada yalnızca kendi 3 engeli çıkar (traktör, saman, kapı); otomatikleşen mesleklerin robotları her dünyada olduğu gibi burada da çıkar. **Denenmeyenler:** gerçek çarpışmalar, geçiş akıcılığı, cihaz. Eski Traktör'ün ışıma payı %2,7, değirmen %2,2; saman balyalarının ışıması kasıtlı olarak yalnızca fenere indirildi (aksi halde %32 olup saman ışıyordu). Kasaba Kapısı 2,21 m (çarpışma kutusu kiriş yüksekliğinde, 1,4-2,2 m). Dört dünya geçişi (1200, 2600, 4200, 6000 m) göz kararıdır; gerçek oynanışta denge ayarı gerekir.
+
+- **Veri Merkezi (16 Kasım 2026, 4200 m):** serin yapay gün ışığı, arduvaz yol, 3 yeni engel (Yedekleme Robotu: şerit, yaklaşır; Disk Kasası: atla; Kablo Kapısı: altından kay) + sunucu kabini ve kargo dronu, veri kulesi / soğutma kuleleri, fiber direk, soğutma ünitesi, batarya kabini. 8 model Meshy ile üretildi (192 kredi). Editörde Play'de (z=4300, hayalet mod) ekran görüntüsüyle görüldü, afiş çıktı, konsol hatasız. **Denenmeyenler:** gerçek çarpışmalar, geçiş akıcılığı, cihaz. Yedekleme Robotu, soğutma ünitesi ve veri kulesinde ışıma payı çok düşük (%0,1: yalnızca yüz ekranı ve ince şeritler); kablo kapısı 1.429 üçgen, 1,92 m (çarpışma kutusu kiriş yüksekliğine göre, 1,3-2,0 m). Soğutma kuleleri düşük (6,5 m) ve geniş.
+
+- **Lojistik Deposu (16 Kasım 2026, 2600 m):** sabah sisi havası, sıcak beton yol, 3 yeni engel (Forklift Robotu: şerit, yaklaşır; Koli Duvarı: atla; Vinç Kapısı: altından kay) + kargo dronu ve robot süpürge, hangar/silo binaları, projektör, palet, konteyner. 8 model Meshy ile üretildi (192 kredi). Editörde Play'de (oyuncu z=2620'ye alınıp hayalet modda) ekran görüntüsüyle görüldü; konsol hatasız. **Denenmeyenler:** gerçek hızda geçiş, Forklift'in gerçek çarpışması ve yaklaşma hızı, vinç kapısının altından kayma payı, İngilizce afiş, cihaz. Forklift 2.932, vinç 1.865 üçgen (bütçe içinde). Dengeleme (2600 m ~ koşunun ikinci yarısı) göz kararı.
+
 - **Günlük görevler (16 Kasım 2026):** her gün havuzdan farklı türde 3 görev (`MissionSystem`, 11 görevlik havuz, `Görevler` sekmesi, ilerleme çubuğu, AL butonu, sekme rozeti). Editörde Play'de denendi: seçim ve kayıt, duraklatınca/oyun sonunda ilerleme yazımı, AL ile 40 altın verilmesi, rozetin sönmesi, ekran görüntüsü. **Denenmeyenler:** gece yarısı geçişi (yeni görevler), anahtar ödüllü görev, İngilizce görünüm, gerçek dokunuş, cihaz. Hedef ve ödül dengesi göz kararı. Cihaz saati geri alınarak hile yapılabilir.
 
 - Öğretici: ilk koşuda üç gerçek engel (şerit, zıpla, kay); engele yaklaşınca oyun yavaşlar, 3B ok yönü gösterir, oyuncu hareketi yapınca hız normale döner (`TutorialSystem`, `TutorialGuide`, `TutorialPresenter`). Ayarlar'dan yeniden izlenemez (henüz).
@@ -38,7 +44,7 @@ Hikâyede ve tasarımda olup yapılmayanlar:
 - **Eksik animasyonlar:** yok (şerit değiştirme, yakalama hareketi, dron pervanesi ve taksi tekerleği yapıldı; aşağıya bak).
 - **Meslek:** başka meslekler (Şoför yapıldı).
 - **Öğretici** Ayarlar'dan yeniden izlenemez.
-- **Diğer dünyalar:** lojistik deposu, veri merkezi, Analog Kasaba (altyapı ve Otonom Şehir hazır; aynı kalıpla eklenir, `docs/MIMARI.md` "Yeni dünya").
+- **Dünyalar:** hikâyedeki beş dünyanın hepsi yapıldı. Yeni dünya eklemek için `docs/MIMARI.md` "Yeni dünya".
 - **Final sürprizi:** yeni robot modelinin gelişi, İK-9000'in oynanabilir olması.
 - Günlük giriş ödülü, başarımlar, lider tablosu. Görevlerde tümünü bitirme bonusu ve yenilenmeye kalan süre yok.
 - Reklam ve uygulama içi satın alma.

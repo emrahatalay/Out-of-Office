@@ -10,7 +10,7 @@ Slogan: "Yapay zekâ işini aldı. Sıra sende." Yakalanınca ekranda "İK-9000 
 
 **Planlanan final sürprizi (henüz yapılmadı):** belli bir mesafeden sonra İK-9000'in arkasında daha yeni bir model belirir; onu da işinden etmeye gelmiştir. İK-9000 oyuncunun safına geçer ve oynanabilir karakter olarak açılır.
 
-**Dünyalar:** Plaza (0 m) → **Otonom Şehir** (1200 m, yapıldı: gün batımı) → lojistik deposu → veri merkezi → Analog Kasaba (planlanan). Geçiş aynı koşuda mesafeyle olur; yeni bölgeye girince afiş çıkar, gökyüzü ve zemin değişir.
+**Dünyalar:** Plaza (0 m) → **Otonom Şehir** (1200 m, yapıldı: gün batımı) → **Lojistik Deposu** (2600 m, yapıldı: sabah sisi) → **Veri Merkezi** (4200 m, yapıldı: serin yapay gün ışığı) → **Analog Kasaba** (6000 m, yapıldı: altın saat). Geçiş aynı koşuda mesafeyle olur; yeni bölgeye girince afiş çıkar, gökyüzü ve zemin değişir.
 
 ## Ton
 

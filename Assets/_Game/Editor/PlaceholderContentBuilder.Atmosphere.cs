@@ -71,6 +71,66 @@ namespace OutOfOffice.EditorTools
             };
         }
 
+        /// <summary>Lojistik Deposu: sabah sisi. Soluk çelik mavisi tepe, sıcak kehribar ufuk; turuncu ve koyu gövdeli engeller öne çıkar.</summary>
+        static OutOfOffice.Data.AtmosphereSettings DepotAtmosphere()
+        {
+            return new OutOfOffice.Data.AtmosphereSettings
+            {
+                zenithColor = new Color(0.4f, 0.56f, 0.78f),
+                horizonColor = new Color(1f, 0.86f, 0.64f),
+                cloudColor = new Color(1f, 0.95f, 0.86f),
+                cloudShadeColor = new Color(0.82f, 0.76f, 0.7f),
+                cloudCoverage = 0.58f,
+                sunColor = new Color(1f, 0.86f, 0.66f),
+                sunIntensity = 1.5f,
+                ambientSky = new Color(0.56f, 0.64f, 0.82f),
+                ambientEquator = new Color(0.62f, 0.58f, 0.58f),
+                ambientGround = new Color(0.36f, 0.33f, 0.32f),
+                fogStart = 56f,
+                fogEnd = 120f,
+            };
+        }
+
+        /// <summary>Veri Merkezi: serin, yapay gün ışığı. Mavi-yeşil tepe, nane ufuk; yeşil ve camgöbeği neonlar öne çıkar.</summary>
+        static OutOfOffice.Data.AtmosphereSettings DataCenterAtmosphere()
+        {
+            return new OutOfOffice.Data.AtmosphereSettings
+            {
+                zenithColor = new Color(0.18f, 0.4f, 0.56f),
+                horizonColor = new Color(0.72f, 0.95f, 0.88f),
+                cloudColor = new Color(0.92f, 1f, 0.97f),
+                cloudShadeColor = new Color(0.6f, 0.76f, 0.78f),
+                cloudCoverage = 0.55f,
+                sunColor = new Color(0.88f, 1f, 0.95f),
+                sunIntensity = 1.45f,
+                ambientSky = new Color(0.5f, 0.7f, 0.82f),
+                ambientEquator = new Color(0.52f, 0.62f, 0.66f),
+                ambientGround = new Color(0.3f, 0.36f, 0.4f),
+                fogStart = 60f,
+                fogEnd = 125f,
+            };
+        }
+
+        /// <summary>Analog Kasaba: altın saat. Sıcak mavi tepe, bal rengi ufuk, krem bulutlar; sinyalin çekmediği, sakin bir yer.</summary>
+        static OutOfOffice.Data.AtmosphereSettings VillageAtmosphere()
+        {
+            return new OutOfOffice.Data.AtmosphereSettings
+            {
+                zenithColor = new Color(0.36f, 0.62f, 0.92f),
+                horizonColor = new Color(1f, 0.9f, 0.7f),
+                cloudColor = new Color(1f, 0.97f, 0.9f),
+                cloudShadeColor = new Color(0.86f, 0.8f, 0.76f),
+                cloudCoverage = 0.5f,
+                sunColor = new Color(1f, 0.9f, 0.72f),
+                sunIntensity = 1.6f,
+                ambientSky = new Color(0.56f, 0.68f, 0.9f),
+                ambientEquator = new Color(0.64f, 0.6f, 0.56f),
+                ambientGround = new Color(0.38f, 0.34f, 0.3f),
+                fogStart = 70f,
+                fogEnd = 135f,
+            };
+        }
+
         /// <summary>Işık, ortam, sis, gökyüzü ve yansıma. Sahne kurulurken çağrılır.</summary>
         static void BuildAtmosphere()
         {
